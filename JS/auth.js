@@ -20,7 +20,7 @@ msalInstance.initialize().then(() => {
     msalInstance.handleRedirectPromise().then((response) => {
         if (response) {
             console.log("Login succesvol:", response);
-            window.location.href = "/home.html"; // Automatisch naar startscherm
+            window.location.href = "/index.html"; // Automatisch naar startscherm
         } else {
             updateUI();
         }
