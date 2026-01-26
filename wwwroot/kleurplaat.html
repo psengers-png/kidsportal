@@ -71,16 +71,17 @@ document.addEventListener("DOMContentLoaded", () => {
     msalInstance.initialize().then(() => {
         msalInstance.handleRedirectPromise().finally(() => {
             const accounts = msalInstance.getAllAccounts();
+
             if (accounts.length === 0) {
-                // Niet ingelogd → redirect naar loginpagina
+                // Niet ingelogd → redirect naar home.html
                 window.location.href = "/home.html";
             } else {
-                // ✅ Ingelogd → toon formulier
+                // ✅ Ingelogd → toon eerst formulier, dan logout-knop
                 statusText.textContent = `Welkom, ${accounts[0].username}`;
-                logoutBtn.style.display = "inline-block";
-                form.style.display = "block";
+                form.style.display = "block";      // Eerst formulier
+                logoutBtn.style.display = "inline-block"; // Daarna logout-knop
 
-                // Activeer formulier-functionaliteit NU
+                // Activeer formulier-functionaliteit
                 initFormLogic();
             }
         });
@@ -169,4 +170,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-``
