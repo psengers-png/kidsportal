@@ -50,6 +50,7 @@
 
 <!-- MSAL library -->
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const msalConfig = {
@@ -68,18 +69,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("kleurplaatForm");
 
     msalInstance.initialize().then(() => {
-        msalInstance.handleRedirectPromise().then(() => {
+        msalInstance.handleRedirectPromise().finally(() => {
             const accounts = msalInstance.getAllAccounts();
             if (accounts.length === 0) {
                 // Niet ingelogd → redirect naar loginpagina
-                window.location.href = "/home.html";
+                window.location.href = "/login.html";
             } else {
                 // ✅ Ingelogd → toon formulier
                 statusText.textContent = `Welkom, ${accounts[0].username}`;
                 logoutBtn.style.display = "inline-block";
                 form.style.display = "block";
             }
-        }).catch(err => console.error("Redirect error:", err));
+        });
     });
 
     logoutBtn.addEventListener("click", () => {
