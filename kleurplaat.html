@@ -5,61 +5,16 @@
     <meta charset="UTF-8">
     <title>Kleurplaat Generator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        main {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"], input[type="file"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #resultaat {
-            margin-top: 20px;
-            text-align: center;
-        }
-        #downloadBtn {
-            margin-top: 10px;
-        }
-        img {
-            max-width: 100%;
-            border: 1px solid #000;
-            border-radius: 5px;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
+        main { max-width: 600px; margin: 30px auto; padding: 20px; background-color: white; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        #resultaat { margin-top: 20px; text-align: center; }
+        #downloadBtn { margin-top: 10px; }
+        img { max-width: 100%; border: 1px solid #000; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -88,7 +43,7 @@
 </main>
 
 <!-- MSAL library -->
-<script src="msal-browser.min.js"></script>
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 <script>
 // MSAL-config voor login-check
 const msalConfig = {
@@ -158,11 +113,16 @@ form.addEventListener("submit", async (e) => {
     };
 
     try {
-        const res = await fetch("https://black-mud-0da469403.6.azurestaticapps.net/api/kleurplaat_agent", {
+        const res = await fetch("/api/kleurplaat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
+
+        if (!res.ok) {
+            resultaat.innerHTML = `Fout: ${res.status} (${res.statusText})`;
+            return;
+        }
 
         const data = await res.json();
 
