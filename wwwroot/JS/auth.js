@@ -33,25 +33,30 @@ msalInstance.initialize().then(() => {
     }).catch(err => console.error("Redirect error:", err));
 });
 
-function updateUI() {
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0) {
-        statusText.textContent = `Welkom, ${accounts[0].username}`;
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-        tileContainer.style.display = "flex";
-    } else {
-        statusText.textContent = "Log in om toegang te krijgen tot de portal.";
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-        tileContainer.style.display = "none";
+
+    function updateUI() {
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+            if (statusText) statusText.textContent = `Welkom, ${accounts[0].username}`;
+            if (loginBtn) loginBtn.style.display = "none";
+            if (logoutBtn) logoutBtn.style.display = "inline-block";
+        } else {
+            if (statusText) statusText.textContent = "Log in om toegang te krijgen tot de portal.";
+            if (loginBtn) loginBtn.style.display = "inline-block";
+            if (logoutBtn) logoutBtn.style.display = "none";
+        }
     }
-}
 
-loginBtn.addEventListener("click", () => {
-    msalInstance.loginRedirect({ scopes: ["openid"] });
-});
+    if (loginBtn) {
+        loginBtn.addEventListener("click", () => {
+            msalInstance.loginRedirect({ scopes: ["openid"] });
+        });
+    }
 
-logoutBtn.addEventListener("click", () => {
-    msalInstance.logoutRedirect();
-});
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            msalInstance.logoutRedirect();
+        });
+    }
+
+
