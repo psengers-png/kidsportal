@@ -79,6 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 statusText.textContent = `Welkom, ${accounts[0].username}`;
                 logoutBtn.style.display = "inline-block";
                 form.style.display = "block";
+
+                // Activeer formulier-functionaliteit NU
+                initFormLogic();
             }
         });
     });
@@ -86,86 +89,84 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutBtn.addEventListener("click", () => {
         msalInstance.logoutRedirect();
     });
-});
-</script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const wieInput = document.getElementById("wie");
-    const waarInput = document.getElementById("waar");
-    const activiteitInput = document.getElementById("activiteit");
-    const fotoInput = document.getElementById("foto");
-    const resultaat = document.getElementById("resultaat");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const form = document.getElementById("kleurplaatForm");
+    function initFormLogic() {
+        const wieInput = document.getElementById("wie");
+        const waarInput = document.getElementById("waar");
+        const activiteitInput = document.getElementById("activiteit");
+        const fotoInput = document.getElementById("foto");
+        const resultaat = document.getElementById("resultaat");
+        const downloadBtn = document.getElementById("downloadBtn");
 
-    let currentImageUrl = "";
+        let currentImageUrl = "";
 
-    fotoInput.addEventListener("change", () => {
-        const disabled = fotoInput.files.length > 0;
-        wieInput.disabled = disabled;
-        waarInput.disabled = disabled;
-        activiteitInput.disabled = disabled;
-    });
+        fotoInput.addEventListener("change", () => {
+            const disabled = fotoInput.files.length > 0;
+            wieInput.disabled = disabled;
+            waarInput.disabled = disabled;
+            activiteitInput.disabled = disabled;
+        });
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        resultaat.innerHTML = "Bezig met genereren...";
-        downloadBtn.style.display = "none";
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            resultaat.innerHTML = "Bezig met genereren...";
+            downloadBtn.style.display = "none";
 
-        let foto_base64 = null;
-        if (fotoInput.files.length > 0) {
-            const file = fotoInput.files[0];
-            foto_base64 = await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        const payload = foto_base64 ? { foto_base64 } : {
-            wie: wieInput.value.trim(),
-            waar: waarInput.value.trim(),
-            activiteit: activiteitInput.value.trim()
-        };
-
-        try {
-            const res = await fetch("/api/kleurplaat_agent", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-
-            if (!res.ok) {
-                resultaat.innerHTML = `Fout: ${res.status} (${res.statusText})`;
-                return;
+            let foto_base64 = null;
+            if (fotoInput.files.length > 0) {
+                const file = fotoInput.files[0];
+                foto_base64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
             }
 
-            const data = await res.json();
+            const payload = foto_base64 ? { foto_base64 } : {
+                wie: wieInput.value.trim(),
+                waar: waarInput.value.trim(),
+                activiteit: activiteitInput.value.trim()
+            };
 
-            if (data.image_data_uri) {
-                resultaat.innerHTML = `<img src="${data.image_data_uri}" alt="Kleurplaat">`;
-                currentImageUrl = data.image_data_uri;
-                downloadBtn.style.display = "inline-block";
-            } else {
-                resultaat.innerHTML = data.error || "Onbekende fout";
+            try {
+                const res = await fetch("/api/kleurplaat_agent", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    resultaat.innerHTML = `Fout: ${res.status} (${res.statusText})`;
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (data.image_data_uri) {
+                    resultaat.innerHTML = `<img src="${data.image_data_uri}" alt="Kleurplaat">`;
+                    currentImageUrl = data.image_data_uri;
+                    downloadBtn.style.display = "inline-block";
+                } else {
+                    resultaat.innerHTML = data.error || "Onbekende fout";
+                }
+
+            } catch (err) {
+                resultaat.innerHTML = "Fout: " + err.message;
+                console.error(err);
             }
+        });
 
-        } catch (err) {
-            resultaat.innerHTML = "Fout: " + err.message;
-            console.error(err);
-        }
-    });
-
-    downloadBtn.addEventListener("click", () => {
-        if (!currentImageUrl) return;
-        const a = document.createElement("a");
-        a.href = currentImageUrl;
-        a.download = "kleurplaat.png";
-        a.click();
-    });
+        downloadBtn.addEventListener("click", () => {
+            if (!currentImageUrl) return;
+            const a = document.createElement("a");
+            a.href = currentImageUrl;
+            a.download = "kleurplaat.png";
+            a.click();
+        });
+    }
 });
 </script>
 </body>
 </html>
+``
