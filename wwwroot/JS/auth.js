@@ -11,10 +11,16 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const tileContainer = document.getElementById("tileContainer");
-const statusText = document.getElementById("statusText");
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const tileContainer = document.getElementById("tileContainer");
+    const statusText = document.getElementById("statusText");
+
+    // rest van je code hier
+});
+
 
 msalInstance.initialize().then(() => {
     msalInstance.handleRedirectPromise().then((response) => {
