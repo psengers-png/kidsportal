@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const accounts = msalInstance.getAllAccounts();
             if (accounts.length === 0) {
                 // Niet ingelogd → redirect naar loginpagina
-                window.location.href = "/login.html";
+                window.location.href = "/home.html";
             } else {
                 // ✅ Ingelogd → toon formulier
                 statusText.textContent = `Welkom, ${accounts[0].username}`;
