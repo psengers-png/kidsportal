@@ -97,7 +97,7 @@ form.addEventListener("submit", async (e) => {
     };
 
     try {
-        const res = await fetch("/api/kleurplaat", {
+        const res = await fetch("/api/kleurplaat_agent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
