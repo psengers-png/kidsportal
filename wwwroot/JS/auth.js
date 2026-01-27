@@ -4,7 +4,7 @@ const msalConfig = {
         clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
         authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
         redirectUri: window.location.origin + "/home.html",
-        knownAuthorities: ["kidsportal.ciamlogin.com"]
+        knownAuthorities: ["kidsportal2.ciamlogin.com"]
     },
     cache: { cacheLocation: "localStorage" }
 };
