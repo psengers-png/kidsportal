@@ -4,15 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Kleurplaat Generator</title>
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
-        header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
-        main { max-width: 600px; margin: 30px auto; padding: 20px; background-color: white; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="file"] { width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        #resultaat { margin-top: 20px; text-align: center; }
-        .auth-controls { text-align: center; margin-bottom: 20px; }
+        body { font-family: Arial; background:#f9f9f9; margin:0; padding:0; }
+        header { background:#4CAF50; color:white; padding:20px; text-align:center; }
+        main { max-width:600px; margin:30px auto; padding:20px; background:white; border-radius:10px; }
+        label { font-weight:bold; display:block; margin-bottom:5px; }
+        input[type="text"], input[type="file"] { width:100%; padding:8px; margin-bottom:15px; }
+        button { padding:10px 20px; background:#4CAF50; color:white; border:none; cursor:pointer; }
+        button:hover { background:#45a049; }
+        #resultaat { margin-top:20px; text-align:center; }
+        img { max-width:100%; border:1px solid #000; border-radius:5px; }
     </style>
 </head>
 <body>
@@ -22,7 +24,10 @@
 </header>
 
 <main>
- 
+    <div class="auth-controls">
+        <p id="statusText">Bezig met controleren...</p>
+        <button id="logoutBtn" style="display:none;">Logout</button>
+    </div>
 
     <form id="kleurplaatForm" style="display:none;">
         <label>Wie?</label>
@@ -44,10 +49,12 @@
     <button id="downloadBtn" style="display:none;">Download</button>
 </main>
 
+<!-- 1. Correcte MSAL -->
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 
+<!-- 2. Login / MSAL script -->
 <script>
-// -------------- MSAL LOGIN-CHECK ------------------
+console.log("MSAL laadcontrole: ", typeof msal !== "undefined" ? "MSAL geladen" : "MSAL NIET geladen!");
 
 const msalConfig = {
     auth: {
@@ -56,94 +63,58 @@ const msalConfig = {
         redirectUri: "https://black-mud-0da469403.6.azurestaticapps.net/kleurplaat.html",
         knownAuthorities: ["kidsportal.ciamlogin.com"]
     },
-    cache: {
-        cacheLocation: "localStorage"
-    }
+    cache: { cacheLocation: "localStorage" }
 };
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("kleurplaatForm");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const statusText = document.getElementById("statusText");
+    console.log("DOMContentLoaded: script draait");
 
     msalInstance.initialize().then(() => {
-        msalInstance.handleRedirectPromise().finally(() => {
-            const accounts = msalInstance.getAllAccounts();
-            console.log("Accounts:", accounts);
+        console.log("MSAL init klaar");
 
-            if (accounts.length === 0) {
+        msalInstance.handleRedirectPromise().then((resp) => {
+            console.log("Redirect response:", resp);
+        }).finally(() => {
+            const acc = msalInstance.getAllAccounts();
+            console.log("Accounts gevonden:", acc);
+
+            if (acc.length === 0) {
+                console.warn("Geen sessie → terug naar home");
                 window.location.href = "/home.html";
                 return;
             }
 
-            statusText.textContent = `Welkom, ${accounts[0].username}`;
-            form.style.display = "block";
-            logoutBtn.style.display = "inline-block";
+            console.log("Ingelogd als:", acc[0].username);
+
+            document.getElementById("statusText").textContent =
+                `Welkom, ${acc[0].username}`;
+
+            document.getElementById("kleurplaatForm").style.display = "block";
+            document.getElementById("logoutBtn").style.display = "inline-block";
 
             initFormLogic();
         });
     });
-
-    logoutBtn.addEventListener("click", () => msalInstance.logoutRedirect());
 });
 
-// -------------- FORM LOGIC ------------------
+// ---------------- FORM LOGIC ------------------
 
 function initFormLogic() {
+    console.log("Formulier activeert");
+
+    const fotoInput = document.getElementById("foto");
     const wie = document.getElementById("wie");
     const waar = document.getElementById("waar");
     const activiteit = document.getElementById("activiteit");
-    const foto = document.getElementById("foto");
-    const resultaat = document.getElementById("resultaat");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const form = document.getElementById("kleurplaatForm");
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        resultaat.textContent = "Bezig met genereren...";
-        downloadBtn.style.display = "none";
-
-        let foto_base64 = null;
-        if (foto.files.length > 0) {
-            foto_base64 = await new Promise(resolve => {
-                const r = new FileReader();
-                r.onload = () => resolve(r.result);
-                r.readAsDataURL(foto.files[0]);
-            });
-        }
-
-        const payload = foto_base64 ? { foto_base64 } : {
-            wie: wie.value.trim(),
-            waar: waar.value.trim(),
-            activiteit: activiteit.value.trim()
-        };
-
-        const res = await fetch("/api/kleurplaat_agent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (data.image_data_uri) {
-            resultaat.innerHTML = `<img src="${data.image_data_uri}">`;
-            downloadBtn.style.display = "inline-block";
-
-            downloadBtn.onclick = () => {
-                const a = document.createElement("a");
-                a.href = data.image_data_uri;
-                a.download = "kleurplaat.png";
-                a.click();
-            };
-        } else {
-            resultaat.textContent = "Er ging iets mis";
-        }
+    fotoInput.addEventListener("change", () => {
+        const disabled = fotoInput.files.length > 0;
+        wie.disabled = waar.disabled = activiteit.disabled = disabled;
     });
 }
 </script>
+
 </body>
 </html>
