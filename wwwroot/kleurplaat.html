@@ -12,10 +12,9 @@
         input[type="text"], input[type="file"] { width:100%; padding:8px; margin-bottom:15px; }
         button { padding:10px 20px; background:#4CAF50; color:white; border:none; cursor:pointer; }
         button:hover { background:#45a049; }
-        #resultaat { margin-top:20px; text-align:center; }
-        img { max-width:100%; border:1px solid #000; border-radius:5px; }
     </style>
 </head>
+
 <body>
 
 <header>
@@ -47,46 +46,40 @@
 
     <button id="downloadBtn" style="display:none;">Download</button>
 
-    <!-- Nieuw: knop naar de kleurplaat agent -->
-    <button id="agentBtn" style="display:none; margin-top:20px;">➡️ Open Kleurplaat Agent</button>
+    <!-- AGENT KNOP 🚀 -->
+    <button id="agentBtn" style="display:none; margin-top:20px;">
+        🤖 Open Kleurplaat Agent
+    </button>
 
 </main>
 
-<!-- MSAL correct geladen -->
-<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
-
-<!-- Shared auth -->
-<script src="/JS/auth.js"></script>
+<!-- Scripts -->
+https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js</script>
+/JS/auth.js</script>
 
 <script>
-// Extra logica voor deze pagina:
-
-// Formulier logica
+// Form logica en agent-knop
 function initFormLogic() {
+
     const fotoInput = document.getElementById("foto");
-    const wie = document.getElementById("wie");
-    const waar = document.getElementById("waar");
-    const activiteit = document.getElementById("activiteit");
     const agentBtn = document.getElementById("agentBtn");
 
     fotoInput.addEventListener("change", () => {
         const disabled = fotoInput.files.length > 0;
-        wie.disabled = waar.disabled = activiteit.disabled = disabled;
+        document.getElementById("wie").disabled = disabled;
+        document.getElementById("waar").disabled = disabled;
+        document.getElementById("activiteit").disabled = disabled;
     });
 
-    // Toon agent-knop zodra formulier is ingevuld
     document.getElementById("kleurplaatForm").addEventListener("submit", (e) => {
         e.preventDefault();
 
-        document.getElementById("resultaat").textContent = "Kleurplaat wordt aangemaakt...";
-        
-        // NA invullen → agent-knop tonen
-        agentBtn.style.display = "block";
+        document.getElementById("resultaat").textContent =
+            "Kleurplaat wordt aangemaakt...";
 
-        // Zet hier jouw agent-URL
-        agentBtn.onclick = () => {
-            window.location.href = "https://example.com/kleurplaat-agent";
-        };
+        // Agentknop activeren
+        agentBtn.style.display = "block";
+        agentBtn.onclick = () => window.location.href = "/api/kleurplaat_agent";
     });
 }
 

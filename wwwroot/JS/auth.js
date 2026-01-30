@@ -5,7 +5,7 @@ const msalConfig = {
     auth: {
         clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
         authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-        redirectUri: window.location.origin + "/index.html",
+        redirectUri: window.location.origin + "/home.html",
         knownAuthorities: ["kidsportal2.ciamlogin.com"]
     },
     cache: { cacheLocation: "localStorage" }
@@ -13,43 +13,49 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-
 // ---------------- REDIRECT HANDLING ---------------------
-
 msalInstance.initialize().then(() => {
     msalInstance.handleRedirectPromise()
-        .then((response) => {
-            if (response) {
-                console.log("Login succesvol:", response);
+        .then(response => {
+            if (response && window.location.pathname === "/home.html") {
+                window.location.href = "/index.html";
             }
         })
-        .catch(err => console.error("Redirect error:", err))
         .finally(updateUI);
 });
 
 
-// ---------------- UI & BUTTON LOGIC ---------------------
-
+// ---------------- UI LOGICA ---------------------
 function updateUI() {
-    const accounts = msalInstance.getAllAccounts();
 
+    // HTML-elementen ophalen
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
-    const tileContainer = document.getElementById("tileContainer");
     const statusText = document.getElementById("statusText");
 
-    if (accounts.length > 0) {
-        statusText.textContent = `Welkom, ${accounts[0].username}`;
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-        tileContainer.style.display = "flex";
-    } else {
-        statusText.textContent = "Log in om toegang te krijgen tot de portal.";
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-        tileContainer.style.display = "none";
+    const accounts = msalInstance.getAllAccounts();
+
+    // Niet ingelogd
+    if (accounts.length === 0) {
+        if (window.location.pathname !== "/home.html") {
+            window.location.href = "/home.html";
+            return;
+        }
+
+        if (loginBtn) loginBtn.style.display = "inline-block";
+        if (logoutBtn) logoutBtn.style.display = "none";
+        if (statusText) statusText.textContent = "Log in om verder te gaan.";
+
+        return;
     }
 
-    loginBtn.onclick = () => msalInstance.loginRedirect();
-    logoutBtn.onclick = () => msalInstance.logoutRedirect();
+    // Wel ingelogd
+    if (loginBtn) loginBtn.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "inline-block";
+    if (statusText) statusText.textContent = `Welkom, ${accounts[0].username}`;
+
+    // Logout correct koppelen
+    if (logoutBtn) {
+        logoutBtn.onclick = () => msalInstance.logoutRedirect();
+    }
 }
