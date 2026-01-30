@@ -142,19 +142,19 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         except Exception as e:
             msg = str(e)
-                if "moderation" in msg.lower() or "policy" in msg.lower():
-                    return func.HttpResponse(
-                        json.dumps({"error": "❌ Deze combinatie kan helaas geen kleurplaat opleveren"}),
-                        status_code=400,
-                        mimetype="application/json",
-                        headers=cors_headers
-                    )
+            if "moderation" in msg.lower() or "policy" in msg.lower():
                 return func.HttpResponse(
-                    json.dumps({"error": f"❌ Kleurplaat-agent fout: {msg}"}),
-                    status_code=500,
+                    json.dumps({"error": "❌ Deze combinatie kan helaas geen kleurplaat opleveren"}),
+                    status_code=400,
                     mimetype="application/json",
                     headers=cors_headers
                 )
+            return func.HttpResponse(
+                json.dumps({"error": f"❌ Kleurplaat-agent fout: {msg}"}),
+                status_code=500,
+                mimetype="application/json",
+                headers=cors_headers
+            )
 
     except Exception as e:
         return func.HttpResponse(
