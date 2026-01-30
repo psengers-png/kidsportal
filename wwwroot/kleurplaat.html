@@ -23,6 +23,7 @@
 </header>
 
 <main>
+
     <p id="statusText">Bezig met controleren...</p>
     <button id="logoutBtn" style="display:none;">Logout</button>
 
@@ -43,27 +44,49 @@
     </form>
 
     <div id="resultaat"></div>
+
     <button id="downloadBtn" style="display:none;">Download</button>
+
+    <!-- Nieuw: knop naar de kleurplaat agent -->
+    <button id="agentBtn" style="display:none; margin-top:20px;">➡️ Open Kleurplaat Agent</button>
+
 </main>
 
-<!-- MSAL -->
-</script>https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js</script>
+<!-- MSAL correct geladen -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 
+<!-- Shared auth -->
 <script src="/JS/auth.js"></script>
 
 <script>
-// Alleen extra logica van deze pagina hieronder ↓
+// Extra logica voor deze pagina:
 
-// Disable velden bij foto upload
+// Formulier logica
 function initFormLogic() {
     const fotoInput = document.getElementById("foto");
     const wie = document.getElementById("wie");
     const waar = document.getElementById("waar");
     const activiteit = document.getElementById("activiteit");
+    const agentBtn = document.getElementById("agentBtn");
 
     fotoInput.addEventListener("change", () => {
         const disabled = fotoInput.files.length > 0;
         wie.disabled = waar.disabled = activiteit.disabled = disabled;
+    });
+
+    // Toon agent-knop zodra formulier is ingevuld
+    document.getElementById("kleurplaatForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        document.getElementById("resultaat").textContent = "Kleurplaat wordt aangemaakt...";
+        
+        // NA invullen → agent-knop tonen
+        agentBtn.style.display = "block";
+
+        // Zet hier jouw agent-URL
+        agentBtn.onclick = () => {
+            window.location.href = "https://example.com/kleurplaat-agent";
+        };
     });
 }
 
