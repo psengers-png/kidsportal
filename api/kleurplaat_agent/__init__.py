@@ -12,6 +12,17 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
+    # CORS headers to allow requests from the static site
+    cors_headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type,Authorization",
+    }
+
+    # Handle preflight OPTIONS request
+    if req.method == "OPTIONS":
+        return func.HttpResponse(status_code=204, headers=cors_headers)
+
     try:
         # -----------------------------
         # 1. JSON ophalen
@@ -22,7 +33,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(
                 json.dumps({"error": "❌ HTTP request bevat geen geldige JSON"}),
                 status_code=400,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers=cors_headers
             )
 
         wie = body.get("wie")
@@ -41,7 +53,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(
                 json.dumps({"error": "❌ Geen foto en geen geldige prompt ontvangen"}),
                 status_code=400,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers=cors_headers
             )
 
         # -----------------------------
@@ -76,7 +89,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     return func.HttpResponse(
                         json.dumps({"error": "❌ Ongeldig afbeeldingstype, alleen PNG/JPG/WEBP ondersteund"}),
                         status_code=400,
-                        mimetype="application/json"
+                        mimetype="application/json",
+                        headers=cors_headers
                     )
 
                 # Wrap in BytesIO voor OpenAI
@@ -87,7 +101,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 return func.HttpResponse(
                     json.dumps({"error": f"❌ Fout bij verwerken van foto: {str(e)}"}),
                     status_code=400,
-                    mimetype="application/json"
+                    mimetype="application/json",
+                    headers=cors_headers
                 )
 
         # -----------------------------
@@ -121,26 +136,30 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(
                 json.dumps({"image_data_uri": image_data_uri}),
                 status_code=200,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers=cors_headers
             )
 
         except Exception as e:
             msg = str(e)
-            if "moderation" in msg.lower() or "policy" in msg.lower():
+                if "moderation" in msg.lower() or "policy" in msg.lower():
+                    return func.HttpResponse(
+                        json.dumps({"error": "❌ Deze combinatie kan helaas geen kleurplaat opleveren"}),
+                        status_code=400,
+                        mimetype="application/json",
+                        headers=cors_headers
+                    )
                 return func.HttpResponse(
-                    json.dumps({"error": "❌ Deze combinatie kan helaas geen kleurplaat opleveren"}),
-                    status_code=400,
-                    mimetype="application/json"
+                    json.dumps({"error": f"❌ Kleurplaat-agent fout: {msg}"}),
+                    status_code=500,
+                    mimetype="application/json",
+                    headers=cors_headers
                 )
-            return func.HttpResponse(
-                json.dumps({"error": f"❌ Kleurplaat-agent fout: {msg}"}),
-                status_code=500,
-                mimetype="application/json"
-            )
 
     except Exception as e:
         return func.HttpResponse(
             json.dumps({"error": f"❌ Interne serverfout: {str(e)}"}),
             status_code=500,
-            mimetype="application/json"
+            mimetype="application/json",
+            headers=cors_headers
         )
