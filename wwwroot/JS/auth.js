@@ -54,6 +54,11 @@ function updateUI() {
     if (logoutBtn) logoutBtn.style.display = "inline-block";
     if (statusText) statusText.textContent = `Welkom, ${accounts[0].username}`;
 
+    // Login correct koppelen
+    if (loginBtn) {
+        loginBtn.onclick = () => msalInstance.loginPopup();
+    }
+
     // Logout correct koppelen
     if (logoutBtn) {
         logoutBtn.onclick = () => msalInstance.logoutRedirect();
