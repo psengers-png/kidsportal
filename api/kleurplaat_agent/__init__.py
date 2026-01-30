@@ -3,10 +3,12 @@ import json
 import base64
 from io import BytesIO
 import azure.functions as func
-from openai import OpenAI, APIError
+from openai import OpenAI
 
 # Haal API key op uit local.settings of omgeving
 api_key = os.environ.get("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY is not set in environment variables")
 client = OpenAI(api_key=api_key)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -122,7 +124,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 mimetype="application/json"
             )
 
-        except APIError as e:
+        except Exception as e:
             msg = str(e)
             if "moderation" in msg.lower() or "policy" in msg.lower():
                 return func.HttpResponse(
@@ -132,12 +134,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 )
             return func.HttpResponse(
                 json.dumps({"error": f"❌ Kleurplaat-agent fout: {msg}"}),
-                status_code=500,
-                mimetype="application/json"
-            )
-        except Exception as e:
-            return func.HttpResponse(
-                json.dumps({"error": f"❌ Kleurplaat-agent fout: {str(e)}"}),
                 status_code=500,
                 mimetype="application/json"
             )

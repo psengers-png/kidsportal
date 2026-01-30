@@ -118,7 +118,7 @@ async function initFormLogic() {
         if (foto_base64) payload.foto_base64 = foto_base64;
 
         try {
-            const resp = await fetch('/api/kleurplaat_agent', {
+            const resp = await fetch('https://sengfam1.azurewebsites.net/api/kleurplaat_agent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
