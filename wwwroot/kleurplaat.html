@@ -12,7 +12,6 @@
         input[type="text"], input[type="file"] { width:100%; padding:8px; margin-bottom:15px; }
         button { padding:10px 20px; background:#4CAF50; color:white; border:none; cursor:pointer; }
         button:hover { background:#45a049; }
-        #backBtn { background:#555; margin-left:10px; }
     </style>
 </head>
 
@@ -25,9 +24,7 @@
 <main>
 
     <p id="statusText">Bezig met controleren...</p>
-
     <button id="logoutBtn" style="display:none;">Logout</button>
-    <button id="backBtn" style="display:none;">Terug naar Home</button>
 
     <form id="kleurplaatForm" style="display:none;">
         <label>Wie?</label>
@@ -49,43 +46,24 @@
 
     <button id="downloadBtn" style="display:none;">Download</button>
 
+    <!-- AGENT KNOP 🚀 -->
     <button id="agentBtn" style="display:none; margin-top:20px;">
         🤖 Open Kleurplaat Agent
     </button>
 
 </main>
 
-
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="/JS/auth.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    // 1. Check direct of MSAL een sessie ziet
-    const accounts = msalInstance.getAllAccounts();
-
-    if (!accounts || accounts.length === 0) {
-        window.location.href = "/home.html";
-        return;
-    }
-
-    // 2. Als we hier zijn → gebruiker is ingelogd
-    document.getElementById("kleurplaatForm").style.display = "block";
-    document.getElementById("logoutBtn").style.display = "inline-block";
-    document.getElementById("backBtn").style.display = "inline-block";
-
-    // 3. Achtergrond logica
-    initFormLogic();
-});
-
-// DE FORM LOGICA
-function initFormLogic() {
-
+async function initFormLogic() {
     const fotoInput = document.getElementById("foto");
     const agentBtn = document.getElementById("agentBtn");
-
-    // Terugknop
-    document.getElementById("backBtn").onclick = () =>
-        window.location.href = "/index.html";
+    const form = document.getElementById("kleurplaatForm");
+    const resultaat = document.getElementById("resultaat");
+    const downloadBtn = document.getElementById("downloadBtn");
 
     fotoInput.addEventListener("change", () => {
         const disabled = fotoInput.files.length > 0;
@@ -94,19 +72,65 @@ function initFormLogic() {
         document.getElementById("activiteit").disabled = disabled;
     });
 
-    document.getElementById("kleurplaatForm").addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        resultaat.textContent = "Kleurplaat wordt aangemaakt...";
+        agentBtn.style.display = "none";
 
-        document.getElementById("resultaat").textContent =
-            "Kleurplaat wordt aangemaakt...";
+        const wie = document.getElementById("wie").value;
+        const waar = document.getElementById("waar").value;
+        const activiteit = document.getElementById("activiteit").value;
 
-        agentBtn.style.display = "block";
-        agentBtn.onclick = () => window.location.href = "/api/kleurplaat_agent";
+        let foto_base64 = null;
+        if (fotoInput.files.length > 0) {
+            const file = fotoInput.files[0];
+            foto_base64 = await new Promise((res, rej) => {
+                const reader = new FileReader();
+                reader.onload = () => res(reader.result);
+                reader.onerror = () => rej('read-error');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const payload = { wie, waar, activiteit };
+        if (foto_base64) payload.foto_base64 = foto_base64;
+
+        try {
+            const resp = await fetch('/api/kleurplaat_agent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                resultaat.textContent = data.error || 'Fout bij genereren';
+                return;
+            }
+
+            const img = document.createElement('img');
+            img.src = data.image_data_uri;
+            img.style.maxWidth = '100%';
+            resultaat.innerHTML = '';
+            resultaat.appendChild(img);
+
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = data.image_data_uri;
+                a.download = 'kleurplaat.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+
+        } catch (err) {
+            resultaat.textContent = 'Fout: ' + err;
+        }
     });
 }
+
+initFormLogic();
 </script>
-<!-- MSAL -->
-<script src="JS/msal-browser.min.js"></script>
-<script src="JS/auth.js"></script>
+
 </body>
 </html>
