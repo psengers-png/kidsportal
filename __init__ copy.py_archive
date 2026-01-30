@@ -1,0 +1,139 @@
+
+import azure.functions as func
+
+HTML = """
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Challenge Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #resultaat {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Challenge Generator</h1>
+    </header>
+    <main>
+        <form id="challengeForm">
+            <label>Leeftijdscategorie:</label><br>
+            <select id="leeftijd">
+                <option value="kind">Kind</option>
+                <option value="tiener">Tiener</option>
+                <option value="volwassene">Volwassene</option>
+            </select><br><br>
+
+            <label>Energie-niveau:</label><br>
+            <select id="energie">
+                <option value="laag">Laag</option>
+                <option value="gemiddeld">Gemiddeld</option>
+                <option value="hoog">Hoog</option>
+            </select><br><br>
+
+            <label>Type activiteit:</label><br>
+            <select id="type">
+                <option value="creatief">Creatief</option>
+                <option value="spel">Spel</option>
+                <option value="leerzaam">Leerzaam</option>
+                <option value="fysiek">Fysiek</option>
+            </select><br><br>
+
+            <button type="submit">Genereer Challenge</button>
+        </form>
+
+        <div id="resultaat"></div>
+    </main>
+
+    <script>
+        const form = document.getElementById("challengeForm");
+        const resultaat = document.getElementById("resultaat");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            resultaat.innerHTML = "Bezig met genereren...";
+
+            const payload = {
+                leeftijd: document.getElementById("leeftijd").value,
+                energie: document.getElementById("energie").value,
+                type: document.getElementById("type").value
+            };
+
+            try {
+                const res = await fetch("/api/challenge_agent", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if(data.challenge){
+                    resultaat.innerHTML = `<strong>Jouw challenge:</strong><br>${data.challenge}`;
+                } else {
+                    resultaat.innerHTML = data.error || "Onbekende fout";
+                }
+
+            } catch(err) {
+                resultaat.innerHTML = "Fout: " + err;
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>
+"""
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    return func.HttpResponse(
+        HTML,
+        mimetype="text/html"
+    )
+``

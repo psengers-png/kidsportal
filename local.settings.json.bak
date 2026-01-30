@@ -1,0 +1,21 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "OPENAI_API_KEY": "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",
+    "SMTP_SERVER": "smtp.gmail.com",
+    "SMTP_PORT": "587",
+    "SMTP_USER": "psengers@gmail.com",
+    "SMTP_PASS": "fbuyblhsmjirsnbf",
+    "MAIL_TO": "psengers@gmail.com",
+    "NEWS_URL": "https://sengfam1.azurewebsites.net/api/news_summary",
+   "FOTO_ANALYSE_AGENT_URL": "https://sengfam1.azurewebsites.net/api/foto_analyse_agent",
+    "KLEURPLAAT_AGENT_URL": "http://localhost:7071/api/kleurplaat1_agent"  
+  },
+  
+  "Host": {
+    "CORS": "*"
+  }
+
+}
