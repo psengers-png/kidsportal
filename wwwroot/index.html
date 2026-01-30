@@ -5,37 +5,69 @@
     <title>Kids Portal - Login</title>
 
     <style>
+        * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 500px;
             text-align: center;
-            padding: 40px;
-            background: #f0f4f8;
+        }
+        h1 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 32px;
+        }
+        p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
         }
         button {
             margin: 10px;
             padding: 12px 24px;
             font-size: 16px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
-            background-color: #0078D4;
+            background: #667eea;
             color: white;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        button:hover { background-color: #005A9E; }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 
 <body>
 
-    <h1>Welkom bij Kids Portal</h1>
-    <p id="statusText">Log in om verder te gaan.</p>
+    <!-- Container voor layout -->
+    <div class="container">
+        <h1>🎨 Kids Portal</h1>
+        <p id="statusText">Log in om verder te gaan.</p>
 
-    <button id="loginBtn">Login</button>
-    <button id="logoutBtn" style="display:none;">Logout</button>
+        <button id="loginBtn">🔐 Login</button>
+        <button id="logoutBtn" style="display:none;">Logout</button>
+    </div>
 
     <!-- LET OP: dit zijn de CORRECTE script-tags -->
-<script src="JS/msal-browser.min.js"></script>
-<script src="JS/auth.js"></script>
+    <script src="JS/msal-browser.min.js"></script>
+    <script src="JS/auth.js"></script>
 
 </body>
 </html>
