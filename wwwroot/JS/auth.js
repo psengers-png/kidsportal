@@ -17,50 +17,64 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 msalInstance.initialize().then(() => {
     msalInstance.handleRedirectPromise()
         .then(response => {
-            if (response && window.location.pathname === "/home.html") {
-                window.location.href = "/home.html";
-            }
+            console.log("Redirect response:", response);
+            updateUI();
         })
-        .finally(updateUI);
+        .catch(error => {
+            console.error("Redirect error:", error);
+            updateUI();
+        });
 });
-
 
 // ---------------- UI LOGICA ---------------------
 function updateUI() {
+    console.log("updateUI aangeroepen");
 
     // HTML-elementen ophalen
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const statusText = document.getElementById("statusText");
+    const loginScreen = document.getElementById("loginScreen");
+    const optionsScreen = document.getElementById("optionsScreen");
+    const welcomeText = document.getElementById("welcomeText");
 
     const accounts = msalInstance.getAllAccounts();
+    console.log("Accounts:", accounts);
 
     // Niet ingelogd
     if (accounts.length === 0) {
-        if (window.location.pathname !== "/home.html") {
-            window.location.href = "/home.html";
-            return;
-        }
-
-        if (loginBtn) loginBtn.style.display = "inline-block";
-        if (logoutBtn) logoutBtn.style.display = "none";
+        console.log("Gebruiker niet ingelogd");
+        if (loginScreen) loginScreen.style.display = "block";
+        if (optionsScreen) optionsScreen.style.display = "none";
         if (statusText) statusText.textContent = "Log in om verder te gaan.";
 
+        // Login knop event-listener koppelen
+        if (loginBtn) {
+            loginBtn.onclick = async () => {
+                console.log("Login knop geklikt");
+                try {
+                    const response = await msalInstance.loginPopup();
+                    console.log("Login response:", response);
+                    updateUI();
+                } catch (error) {
+                    console.error("Login error:", error);
+                }
+            };
+        }
         return;
     }
 
     // Wel ingelogd
-    if (loginBtn) loginBtn.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-    if (statusText) statusText.textContent = `Welkom, ${accounts[0].username}`;
+    console.log("Gebruiker ingelogd als:", accounts[0].username);
+    if (loginScreen) loginScreen.style.display = "none";
+    if (optionsScreen) optionsScreen.style.display = "block";
+    if (welcomeText) welcomeText.textContent = `Welkom, ${accounts[0].username}!`;
 
-    // Login correct koppelen
-    if (loginBtn) {
-        loginBtn.onclick = () => msalInstance.loginPopup();
-    }
-
-    // Logout correct koppelen
+    // Logout knop event-listener koppelen
     if (logoutBtn) {
-        logoutBtn.onclick = () => msalInstance.logoutRedirect();
+        logoutBtn.onclick = () => {
+            console.log("Logout knop geklikt");
+            msalInstance.logoutRedirect();
+        };
     }
 }
