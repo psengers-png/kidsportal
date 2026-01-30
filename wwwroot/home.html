@@ -3,7 +3,8 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Kids Portal</title>
+    <title>Kids Portal - Login</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,42 +24,17 @@
             color: white;
         }
         button:hover { background-color: #005A9E; }
-        .tile-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-        }
-        .tile {
-            display: inline-block;
-            margin: 20px;
-            padding: 30px;
-            background: #0078D4;
-            color: white;
-            font-size: 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            width: 200px;
-            height: 150px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background 0.3s ease;
-        }
-        .tile:hover { background: #005A9E; }
     </style>
 </head>
+
 <body>
-    <h1>Welkom bij Kids Portal!</h1>
-    <p id="statusText">Log in om toegang te krijgen tot de portal.</p>
 
-    <!-- Login / Logout Knoppen -->
-    <div id="authButtons">
-        <button id="loginBtn">Login</button>
-        <button id="logoutBtn" style="display:none;">Logout</button>
-    </div>
+    <h1>Welkom bij Kids Portal</h1>
+    <p id="statusText">Log in om verder te gaan.</p>
 
-    <!-- Tegels (verborgen tot login) -->
-    <div id="tileContainer" class="tile-container" style="display:none;">
-        kleurplaat.html🎨<br>Kleurplaat Generator</a>
-    </div>
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" style="display:none;">Logout</button>
+
 
     <!-- Scripts -->
     

@@ -23,10 +23,8 @@
 </header>
 
 <main>
-    <div class="auth-controls">
-        <p id="statusText">Bezig met controleren...</p>
-        <button id="logoutBtn" style="display:none;">Logout</button>
-    </div>
+    <p id="statusText">Bezig met controleren...</p>
+    <button id="logoutBtn" style="display:none;">Logout</button>
 
     <form id="kleurplaatForm" style="display:none;">
         <label>Wie?</label>
@@ -49,58 +47,15 @@
 </main>
 
 <!-- MSAL -->
-<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+</script>https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js</script>
+
+<script src="/JS/auth.js"></script>
 
 <script>
-// ---------------- MSAL CONFIG ---------------------
+// Alleen extra logica van deze pagina hieronder ↓
 
-const msalConfig = {
-    auth: {
-        clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
-        authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-        redirectUri: window.location.origin + "/index.html",
-        knownAuthorities: ["kidsportal2.ciamlogin.com"]
-    },
-    cache: { cacheLocation: "localStorage" }
-};
-
-const msalInstance = new msal.PublicClientApplication(msalConfig);
-
-
-// ---------------- LOGIN FLOW ---------------------
-
-msalInstance.initialize().then(() => {
-    console.log("MSAL init completed");
-
-    msalInstance.handleRedirectPromise().then(response => {
-        console.log("Redirect response:", response);
-    }).finally(() => {
-        const accounts = msalInstance.getAllAccounts();
-        console.log("Accounts gevonden:", accounts);
-
-        if (accounts.length === 0) {
-            console.warn("Geen sessie → redirect naar home");
-            window.location.href = "/index.html";
-            return;
-        }
-
-        const user = accounts[0];
-
-        document.getElementById("statusText").textContent = `Welkom, ${user.username}`;
-        document.getElementById("kleurplaatForm").style.display = "block";
-        document.getElementById("logoutBtn").style.display = "inline-block";
-
-        initFormLogic();
-        initLogout();
-    });
-});
-
-
-// ---------------- FORM LOGIC ---------------------
-
+// Disable velden bij foto upload
 function initFormLogic() {
-    console.log("Formulier actief");
-
     const fotoInput = document.getElementById("foto");
     const wie = document.getElementById("wie");
     const waar = document.getElementById("waar");
@@ -112,15 +67,7 @@ function initFormLogic() {
     });
 }
 
-
-// ---------------- LOGOUT --------------------------
-
-function initLogout() {
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        msalInstance.logoutRedirect();
-    });
-}
-
+initFormLogic();
 </script>
 
 </body>
