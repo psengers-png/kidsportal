@@ -26,13 +26,9 @@
 
     <p id="statusText">Bezig met controleren...</p>
 
-    <!-- logout knop -->
     <button id="logoutBtn" style="display:none;">Logout</button>
-
-    <!-- terug naar home knop -->
     <button id="backBtn" style="display:none;">Terug naar Home</button>
 
-    <!-- het formulier (verborgen tot login bevestigd is) -->
     <form id="kleurplaatForm" style="display:none;">
         <label>Wie?</label>
         <input id="wie" type="text">
@@ -59,20 +55,37 @@
 
 </main>
 
-<!-- MSAL -->
-<script src="/JS/msal-browser.min.js"></script>
-<script src="/JS/auth.js"></script>
+
 
 <script>
-// FORM LOGICA
-function initFormLogic() {
+document.addEventListener("DOMContentLoaded", () => {
 
-    // Terug naar home knop
-    const backBtn = document.getElementById("backBtn");
-    backBtn.onclick = () => window.location.href = "/index.html";
+    // 1. Check direct of MSAL een sessie ziet
+    const accounts = msalInstance.getAllAccounts();
+
+    if (!accounts || accounts.length === 0) {
+        window.location.href = "/home.html";
+        return;
+    }
+
+    // 2. Als we hier zijn → gebruiker is ingelogd
+    document.getElementById("kleurplaatForm").style.display = "block";
+    document.getElementById("logoutBtn").style.display = "inline-block";
+    document.getElementById("backBtn").style.display = "inline-block";
+
+    // 3. Achtergrond logica
+    initFormLogic();
+});
+
+// DE FORM LOGICA
+function initFormLogic() {
 
     const fotoInput = document.getElementById("foto");
     const agentBtn = document.getElementById("agentBtn");
+
+    // Terugknop
+    document.getElementById("backBtn").onclick = () =>
+        window.location.href = "/index.html";
 
     fotoInput.addEventListener("change", () => {
         const disabled = fotoInput.files.length > 0;
@@ -87,25 +100,13 @@ function initFormLogic() {
         document.getElementById("resultaat").textContent =
             "Kleurplaat wordt aangemaakt...";
 
-        // Agent knop tonen
         agentBtn.style.display = "block";
         agentBtn.onclick = () => window.location.href = "/api/kleurplaat_agent";
     });
 }
-
-// WACHT TOT AUTH.JS KLAAR IS
-document.addEventListener("DOMContentLoaded", () => {
-    const accounts = window.msalInstance?.getAllAccounts();
-
-    if (accounts && accounts.length > 0) {
-        document.getElementById("kleurplaatForm").style.display = "block";
-        document.getElementById("logoutBtn").style.display = "inline-block";
-        document.getElementById("backBtn").style.display = "inline-block";
-    }
-
-    initFormLogic();
-});
 </script>
-
+<!-- MSAL -->
+<script src="JS/msal-browser.min.js"></script>
+<script src="JS/auth.js"></script>
 </body>
 </html>
