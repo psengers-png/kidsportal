@@ -13,49 +13,43 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
+
 // ---------------- REDIRECT HANDLING ---------------------
+
 msalInstance.initialize().then(() => {
     msalInstance.handleRedirectPromise()
-        .then(response => {
-            if (response && window.location.pathname === "/home.html") {
-                window.location.href = "/index.html";
+        .then((response) => {
+            if (response) {
+                console.log("Login succesvol:", response);
             }
         })
+        .catch(err => console.error("Redirect error:", err))
         .finally(updateUI);
 });
 
 
-// ---------------- UI LOGICA ---------------------
+// ---------------- UI & BUTTON LOGIC ---------------------
+
 function updateUI() {
-
-    // HTML-elementen ophalen
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const statusText = document.getElementById("statusText");
-
     const accounts = msalInstance.getAllAccounts();
 
-    // Niet ingelogd
-    if (accounts.length === 0) {
-        if (window.location.pathname !== "/home.html") {
-            window.location.href = "/home.html";
-            return;
-        }
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const tileContainer = document.getElementById("tileContainer");
+    const statusText = document.getElementById("statusText");
 
-        if (loginBtn) loginBtn.style.display = "inline-block";
-        if (logoutBtn) logoutBtn.style.display = "none";
-        if (statusText) statusText.textContent = "Log in om verder te gaan.";
-
-        return;
+    if (accounts.length > 0) {
+        statusText.textContent = `Welkom, ${accounts[0].username}`;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        tileContainer.style.display = "flex";
+    } else {
+        statusText.textContent = "Log in om toegang te krijgen tot de portal.";
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        tileContainer.style.display = "none";
     }
 
-    // Wel ingelogd
-    if (loginBtn) loginBtn.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-    if (statusText) statusText.textContent = `Welkom, ${accounts[0].username}`;
-
-    // Logout correct koppelen
-    if (logoutBtn) {
-        logoutBtn.onclick = () => msalInstance.logoutRedirect();
-    }
+    loginBtn.onclick = () => msalInstance.loginRedirect();
+    logoutBtn.onclick = () => msalInstance.logoutRedirect();
 }

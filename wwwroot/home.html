@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Kids Portal</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,25 +45,24 @@
         .tile:hover { background: #005A9E; }
     </style>
 </head>
-<body>
-    <h1>Welkom bij Kids Portal!</h1>
-    <p id="statusText">Log in om toegang te krijgen tot de portal.</p>
 
-    <!-- Login / Logout Knoppen -->
+<body>
+
+    <h1>Welkom bij Kids Portal!</h1>
+    <p id="statusText">Log in om toegang te krijgen.</p>
+
     <div id="authButtons">
         <button id="loginBtn">Login</button>
         <button id="logoutBtn" style="display:none;">Logout</button>
     </div>
 
-    <!-- Tegels (verborgen tot login) -->
     <div id="tileContainer" class="tile-container" style="display:none;">
-        kleurplaat.html🎨<br>Kleurplaat Generator</a>
+        <a class="tile" href="kleurplaat.html">🎨<br>Kleurplaat Generator</a>
     </div>
 
-    <!-- Scripts -->
-    
-<script src="JS/msal-browser.min.js"></script>
-<script src="JS/auth.js?v=20260116"></script>
+    <!-- MSAL -->
+    <script src="JS/msal-browser.min.js"></script>
+    <script src="JS/auth.js?v=20260116"></script>
 
 </body>
 </html>
