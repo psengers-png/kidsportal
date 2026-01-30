@@ -1,12 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <title>Kids Portal Start</title>
+
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f0f4f8; }
+        body { 
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+            background: #f0f4f8; 
+        }
         h1 { color: #333; }
+
         .tile {
             display: inline-block;
             margin: 20px;
@@ -18,13 +24,54 @@
             text-decoration: none;
         }
         .tile:hover { background: #005A9E; }
+
+        #logoutBtn {
+            margin-top: 40px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background-color: #D9534F;
+            color: white;
+        }
+        #logoutBtn:hover {
+            background-color: #B52B27;
+        }
     </style>
 </head>
+
 <body>
+
     <h1>Welkom bij Kids Portal</h1>
-<a href="/kleurplaat.html" class="tile">🎨 Kleurplaat Generator</a>
 
+    🎨 Kleurplaat Generator
 
+    <br><br>
+
+    <button id="logoutBtn">Logout</button>
+
+    <!-- MSAL -->
+    <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+
+    <script>
+        // Zelfde MSAL config als home + kleurplaat
+        const msalConfig = {
+            auth: {
+                clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
+                authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
+                redirectUri: window.location.origin + "/index.html",
+                knownAuthorities: ["kidsportal2.ciamlogin.com"]
+            },
+            cache: { cacheLocation: "localStorage" }
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            msalInstance.logoutRedirect();
+        });
+    </script>
 
 </body>
 </html>
