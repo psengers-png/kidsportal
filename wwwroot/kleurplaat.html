@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -49,12 +48,11 @@
     <button id="downloadBtn" style="display:none;">Download</button>
 </main>
 
-<!-- 1. Correcte MSAL -->
+<!-- MSAL -->
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 
-<!-- 2. Login / MSAL script -->
 <script>
-console.log("MSAL laadcontrole: ", typeof msal !== "undefined" ? "MSAL geladen" : "MSAL NIET geladen!");
+// ---------------- MSAL CONFIG ---------------------
 
 const msalConfig = {
     auth: {
@@ -68,41 +66,40 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOMContentLoaded: script draait");
 
-    msalInstance.initialize().then(() => {
-        console.log("MSAL init klaar");
+// ---------------- LOGIN FLOW ---------------------
 
-        msalInstance.handleRedirectPromise().then((resp) => {
-            console.log("Redirect response:", resp);
-        }).finally(() => {
-            const acc = msalInstance.getAllAccounts();
-            console.log("Accounts gevonden:", acc);
+msalInstance.initialize().then(() => {
+    console.log("MSAL init completed");
 
-            if (acc.length === 0) {
-                console.warn("Geen sessie → terug naar home");
-                window.location.href = "/home.html";
-                return;
-            }
+    msalInstance.handleRedirectPromise().then(response => {
+        console.log("Redirect response:", response);
+    }).finally(() => {
+        const accounts = msalInstance.getAllAccounts();
+        console.log("Accounts gevonden:", accounts);
 
-            console.log("Ingelogd als:", acc[0].username);
+        if (accounts.length === 0) {
+            console.warn("Geen sessie → redirect naar home");
+            window.location.href = "/home.html";
+            return;
+        }
 
-            document.getElementById("statusText").textContent =
-                `Welkom, ${acc[0].username}`;
+        const user = accounts[0];
 
-            document.getElementById("kleurplaatForm").style.display = "block";
-            document.getElementById("logoutBtn").style.display = "inline-block";
+        document.getElementById("statusText").textContent = `Welkom, ${user.username}`;
+        document.getElementById("kleurplaatForm").style.display = "block";
+        document.getElementById("logoutBtn").style.display = "inline-block";
 
-            initFormLogic();
-        });
+        initFormLogic();
+        initLogout();
     });
 });
 
-// ---------------- FORM LOGIC ------------------
+
+// ---------------- FORM LOGIC ---------------------
 
 function initFormLogic() {
-    console.log("Formulier activeert");
+    console.log("Formulier actief");
 
     const fotoInput = document.getElementById("foto");
     const wie = document.getElementById("wie");
@@ -114,6 +111,16 @@ function initFormLogic() {
         wie.disabled = waar.disabled = activiteit.disabled = disabled;
     });
 }
+
+
+// ---------------- LOGOUT --------------------------
+
+function initLogout() {
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        msalInstance.logoutRedirect();
+    });
+}
+
 </script>
 
 </body>
