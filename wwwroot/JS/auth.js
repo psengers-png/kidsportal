@@ -50,15 +50,9 @@ function updateUI() {
 
         // Login knop event-listener koppelen
         if (loginBtn) {
-            loginBtn.onclick = async () => {
+            loginBtn.onclick = () => {
                 console.log("Login knop geklikt");
-                try {
-                    const response = await msalInstance.loginPopup();
-                    console.log("Login response:", response);
-                    updateUI();
-                } catch (error) {
-                    console.error("Login error:", error);
-                }
+                msalInstance.loginRedirect();
             };
         }
         return;
