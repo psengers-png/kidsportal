@@ -12,6 +12,7 @@
         input[type="text"], input[type="file"] { width:100%; padding:8px; margin-bottom:15px; }
         button { padding:10px 20px; background:#4CAF50; color:white; border:none; cursor:pointer; }
         button:hover { background:#45a049; }
+        #backBtn { background:#555; margin-left:10px; }
     </style>
 </head>
 
@@ -24,8 +25,14 @@
 <main>
 
     <p id="statusText">Bezig met controleren...</p>
+
+    <!-- logout knop -->
     <button id="logoutBtn" style="display:none;">Logout</button>
 
+    <!-- terug naar home knop -->
+    <button id="backBtn" style="display:none;">Terug naar Home</button>
+
+    <!-- het formulier (verborgen tot login bevestigd is) -->
     <form id="kleurplaatForm" style="display:none;">
         <label>Wie?</label>
         <input id="wie" type="text">
@@ -46,20 +53,23 @@
 
     <button id="downloadBtn" style="display:none;">Download</button>
 
-    <!-- AGENT KNOP 🚀 -->
     <button id="agentBtn" style="display:none; margin-top:20px;">
         🤖 Open Kleurplaat Agent
     </button>
 
 </main>
 
-<!-- Scripts -->
-<script src="JS/msal-browser.min.js"></script>
-<script src="JS/auth.js"></script>
+<!-- MSAL -->
+<script src="/JS/msal-browser.min.js"></script>
+<script src="/JS/auth.js"></script>
 
 <script>
-// Form logica en agent-knop
+// FORM LOGICA
 function initFormLogic() {
+
+    // Terug naar home knop
+    const backBtn = document.getElementById("backBtn");
+    backBtn.onclick = () => window.location.href = "/index.html";
 
     const fotoInput = document.getElementById("foto");
     const agentBtn = document.getElementById("agentBtn");
@@ -77,13 +87,24 @@ function initFormLogic() {
         document.getElementById("resultaat").textContent =
             "Kleurplaat wordt aangemaakt...";
 
-        // Agentknop activeren
+        // Agent knop tonen
         agentBtn.style.display = "block";
         agentBtn.onclick = () => window.location.href = "/api/kleurplaat_agent";
     });
 }
 
-initFormLogic();
+// WACHT TOT AUTH.JS KLAAR IS
+document.addEventListener("DOMContentLoaded", () => {
+    const accounts = window.msalInstance?.getAllAccounts();
+
+    if (accounts && accounts.length > 0) {
+        document.getElementById("kleurplaatForm").style.display = "block";
+        document.getElementById("logoutBtn").style.display = "inline-block";
+        document.getElementById("backBtn").style.display = "inline-block";
+    }
+
+    initFormLogic();
+});
 </script>
 
 </body>
