@@ -31,3 +31,5 @@ jobs:
           slot-name: 'production'
           package: '.'
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
