@@ -123,9 +123,21 @@ async function initFormLogic() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            const data = await resp.json();
+            
+            const text = await resp.text();
+            console.log("Response status:", resp.status);
+            console.log("Response text:", text);
+            
             if (!resp.ok) {
-                resultaat.textContent = data.error || 'Fout bij genereren';
+                resultaat.textContent = `Fout (${resp.status}): ${text}`;
+                return;
+            }
+            
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                resultaat.textContent = `JSON parsing error: ${text}`;
                 return;
             }
 
@@ -147,6 +159,7 @@ async function initFormLogic() {
 
         } catch (err) {
             resultaat.textContent = 'Fout: ' + err;
+            console.error("Error:", err);
         }
     });
 }
