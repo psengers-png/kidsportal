@@ -2,55 +2,40 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Kids Portal Start</title>
+    <title>Kids Portal - Login</title>
 
     <style>
-        body { 
+        body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 40px;
-            background: #f0f4f8; 
+            background: #f0f4f8;
         }
-
-        .tile {
-            display: inline-block;
-            margin: 20px;
-            padding: 30px;
-            background: #0078D4;
-            color: white;
-            font-size: 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            width: 200px;
-            height: 120px;
-        }
-        .tile:hover { background: #005A9E; }
-
-        #logoutBtn {
-            margin-top: 40px;
+        button {
+            margin: 10px;
             padding: 12px 24px;
-            background-color: #D9534F;
-            border-radius: 6px;
-            color: white;
+            font-size: 16px;
             cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background-color: #0078D4;
+            color: white;
         }
+        button:hover { background-color: #005A9E; }
     </style>
 </head>
 
 <body>
 
     <h1>Welkom bij Kids Portal</h1>
+    <p id="statusText">Log in om verder te gaan.</p>
 
-    kleurplaat.html🎨
-        <br>Kleurplaat Generator
-    </a>
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" style="display:none;">Logout</button>
 
-    <br><br>
-
-    <button id="logoutBtn">Logout</button>
-
-    </script>https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js</script>
-    </script>JS/auth.js</script>
+    <!-- LET OP: dit zijn de CORRECTE script-tags -->
+    https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+    ./JS/auth.js"></script>
 
 </body>
 </html>
