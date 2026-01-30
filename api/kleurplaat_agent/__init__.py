@@ -3,11 +3,11 @@ import json
 import base64
 from io import BytesIO
 import azure.functions as func
-import openai
+from openai import OpenAI, APIError
 
 # Haal API key op uit local.settings of omgeving
 api_key = os.environ.get("OPENAI_API_KEY")
-openai.api_key = api_key
+client = OpenAI(api_key=api_key)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
@@ -93,19 +93,23 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # -----------------------------
         try:
             if modus == "foto":
-                # Image-to-image
-                result = openai.images.edit(
-                    model="gpt-image-1",
+                # Image-to-image (edit)
+                result = client.images.edit(
                     image=image_file,
                     prompt=prompt,
-                    size="1024x1536"  # A4 staand, ongeveer 150 DPI
+                    model="dall-e-2",
+                    n=1,
+                    size="1024x1024",
+                    response_format="b64_json"
                 )
             else:
-                # Prompt-based
-                result = openai.images.generate(
-                    model="gpt-image-1",
+                # Prompt-based generation
+                result = client.images.generate(
+                    model="dall-e-2",
                     prompt=prompt,
-                    size="1024x1536"  # A4 staand, ongeveer 150 DPI
+                    n=1,
+                    size="1024x1024",
+                    response_format="b64_json"
                 )
 
             # Base64 ophalen
@@ -118,9 +122,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 mimetype="application/json"
             )
 
-        except Exception as e:
+        except APIError as e:
             msg = str(e)
-            if "moderation_blocked" in msg:
+            if "moderation" in msg.lower() or "policy" in msg.lower():
                 return func.HttpResponse(
                     json.dumps({"error": "❌ Deze combinatie kan helaas geen kleurplaat opleveren"}),
                     status_code=400,
@@ -128,6 +132,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 )
             return func.HttpResponse(
                 json.dumps({"error": f"❌ Kleurplaat-agent fout: {msg}"}),
+                status_code=500,
+                mimetype="application/json"
+            )
+        except Exception as e:
+            return func.HttpResponse(
+                json.dumps({"error": f"❌ Kleurplaat-agent fout: {str(e)}"}),
                 status_code=500,
                 mimetype="application/json"
             )
