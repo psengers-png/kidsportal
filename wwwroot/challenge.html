@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Challenge Generator</title>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin: 0; 
+            padding: 0;
+            min-height: 100vh;
+        }
+        header { 
+            background: rgba(0,0,0,0.3);
+            color: white; 
+            padding: 25px 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            flex: 1;
+        }
+        .header-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #f5576c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .header-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        main { 
+            max-width: 700px; 
+            margin: 30px auto; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label { 
+            font-weight: 600; 
+            display: block; 
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+        select, input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #f5576c;
+            color: white; 
+            border: none; 
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        button:hover:not(:disabled) { 
+            background: #f093fb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #statusText {
+            text-align: center;
+            color: #f5576c;
+            font-weight: 600;
+        }
+        .challenge-box {
+            background: #f9f9f9;
+            border-left: 4px solid #f5576c;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            min-height: 80px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎯 Challenge Generator</h1>
+    <button class="header-btn" id="homeBtn">← Terug naar Home</button>
+    <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+</header>
+
+<main>
+
+    <p id="statusText">Bezig met controleren...</p>
+
+    <form id="challengeForm" style="display:none;">
+        <div class="form-group">
+            <label>Leeftijd</label>
+            <select id="leeftijd" required>
+                <option value="">-- Kies een optie --</option>
+                <option value="klein kind (3-6)">Klein kind (3-6 jaar)</option>
+                <option value="kind (6-10)">Kind (6-10 jaar)</option>
+                <option value="tiener (10-14)">Tiener (10-14 jaar)</option>
+                <option value="volwassene (14+)">Volwassene (14+ jaar)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Energie-niveau</label>
+            <select id="energie" required>
+                <option value="">-- Kies een optie --</option>
+                <option value="laag">Laag (rustig, ontspannen)</option>
+                <option value="gemiddeld">Gemiddeld (normaal)</option>
+                <option value="hoog">Hoog (energiek, actief)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Type activiteit</label>
+            <select id="type" required>
+                <option value="">-- Kies een optie --</option>
+                <option value="creatief">Creatief (tekenen, bouwen, etc.)</option>
+                <option value="spel">Spel (puzzel, race, strategie)</option>
+                <option value="leerzaam">Leerzaam (kennis, taal, math)</option>
+                <option value="fysiek">Fysiek (bewegen, sporten)</option>
+            </select>
+        </div>
+
+        <button type="submit">🚀 Genereer Challenge</button>
+    </form>
+
+    <div id="resultaat"></div>
+
+</main>
+
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="/JS/auth.js"></script>
+
+<script>
+// Wacht tot auth.js klaar is
+setTimeout(() => {
+    const accounts = msalInstance.getAllAccounts();
+    const statusText = document.getElementById("statusText");
+    const form = document.getElementById("challengeForm");
+    const logoutBtn = document.getElementById("logoutBtn");
+    
+    if (accounts.length === 0) {
+        window.location.href = "/home.html";
+        return;
+    }
+    
+    statusText.style.display = "none";
+    form.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+    logoutBtn.onclick = () => msalInstance.logoutRedirect();
+}, 1000);
+
+const homeBtn = document.getElementById("homeBtn");
+homeBtn.onclick = () => window.location.href = "/home.html";
+
+const form = document.getElementById("challengeForm");
+const resultaat = document.getElementById("resultaat");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
+
+    const leeftijd = document.getElementById("leeftijd").value;
+    const energie = document.getElementById("energie").value;
+    const activiteit_type = document.getElementById("type").value;
+
+    const payload = {
+        leeftijd: leeftijd,
+        energie: energie,
+        type: activiteit_type
+    };
+
+    try {
+        const resp = await fetch('https://sengfam1.azurewebsites.net/api/challenge_agent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const text = await resp.text();
+        console.log("Response status:", resp.status);
+        console.log("Response text:", text);
+        
+        if (!resp.ok) {
+            resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
+            return;
+        }
+        
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+            return;
+        }
+
+        resultaat.innerHTML = `
+            <div class="challenge-box">
+                <strong>🎯 Jouw Challenge:</strong><br><br>
+                ${data.challenge}
+            </div>
+            <button onclick="location.reload()">🔄 Volgende Challenge</button>
+        `;
+
+    } catch (err) {
+        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+        console.error("Error:", err);
+    }
+});
+</script>
+
+</body>
+</html>
