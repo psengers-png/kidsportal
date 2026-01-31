@@ -61,73 +61,89 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # 3. Prompt samenstellen
         # -----------------------------
         if modus == "prompt":
-            prompt = f"Een kleurplaat van {wie} die {activiteit} doet in {waar}"
-        else:
-            prompt = "Maak er een zwart-wit lijntekening/kleurplaat van deze foto"
+            prompt = (
+                f"Een klassieke zwart-witte kleurplaat van {wie} die {activiteit} doet in {waar}. "
+"Eenvoudige, rustige lijntekening in traditionele kleurboekstijl. "
+"Alleen dikke, duidelijke zwarte lijnen, witte achtergrond. "
+"Geen kleur, geen grijs, geen schaduwen, geen patronen. "
+"Grote vormen, weinig details, kindvriendelijk. "
+"Zoals een ouderwets kleurboek voor kinderen van 6 tot 10 jaar."
+     
+            )
+        elif modus == "foto":
+            # 1. Foto naar GPT-4 Vision sturen voor beschrijving
+            try:
+                from openai import OpenAI
+                import requests
+                # Gebruik de OpenAI Vision API (voorbeeld, vereist juiste endpoint en API key)
+                vision_client = OpenAI(api_key=api_key)
+                # Zet de afbeelding om naar base64 string (zonder data:image/png;base64, header)
+                if "," in foto_base64:
+                    _, encoded = foto_base64.split(",", 1)
+                else:
+                    encoded = foto_base64
+                # Maak een prompt voor de vision-analyse
+                vision_prompt = [
+                    {"type": "text", "text": "Beschrijf deze foto kort en duidelijk, zodat ik er een kleurplaat van kan maken voor kinderen van 6 tot 9 jaar."},
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{encoded}"}}
+                ]
+                # Probeer eerst gpt-4-vision, anders gpt-4o (OpenAI kan modelnamen wijzigen)
+                vision_model = "gpt-4-vision"
+                try:
+                    vision_response = vision_client.chat.completions.create(
+                        model=vision_model,
+                        messages=[{"role": "user", "content": vision_prompt}],
+                        max_tokens=100
+                    )
+                except Exception as e:
+                    # Fallback naar gpt-4o indien beschikbaar
+                    if "model_not_found" in str(e) or "404" in str(e):
+                        vision_model = "gpt-4o"
+                        vision_response = vision_client.chat.completions.create(
+                            model=vision_model,
+                            messages=[{"role": "user", "content": vision_prompt}],
+                            max_tokens=100
+                        )
+                    else:
+                        raise
+                beschrijving = vision_response.choices[0].message.content.strip()
+            except Exception as e:
+                return func.HttpResponse(
+                    json.dumps({"error": f"❌ Fout bij GPT-4 Vision analyse: {str(e)}"}),
+                    status_code=400,
+                    mimetype="application/json",
+                    headers=cors_headers
+                )
+            # 2. Gebruik deze beschrijving als prompt voor DALL·E
+            prompt = (
+             f"Een zwart-witte kleurplaat van: {beschrijving}. "
+"Eenvoudige lijntekening in outline-stijl, zoals in een kleurboek. "
+"Alleen dikke, duidelijke zwarte lijnen. "
+"Geen kleur, geen grijswaarden, geen schaduwen, geen texturen. "
+"Witte achtergrond. "
+"Gesloten vormen, weinig details, geen overlappende lijnen. "
+"Vectorstijl, line art, printbaar als werkblad. "
+"Geschikt om in te kleuren voor een kind van 6 tot 9 jaar."
+            )
 
         # -----------------------------
         # 4. Foto converteren (indien aanwezig)
         # -----------------------------
         image_file = None
-        if modus == "foto":
-            try:
-                # Base64 omzetten naar bytes
-                if "," in foto_base64:
-                    header, encoded = foto_base64.split(",", 1)
-                else:
-                    encoded = foto_base64
-                foto_bytes = base64.b64decode(encoded)
-
-                # Bestandstype detecteren
-                if "image/png" in foto_base64:
-                    fmt = "png"
-                elif "image/jpeg" in foto_base64 or "image/jpg" in foto_base64:
-                    fmt = "jpeg"
-                elif "image/webp" in foto_base64:
-                    fmt = "webp"
-                else:
-                    return func.HttpResponse(
-                        json.dumps({"error": "❌ Ongeldig afbeeldingstype, alleen PNG/JPG/WEBP ondersteund"}),
-                        status_code=400,
-                        mimetype="application/json",
-                        headers=cors_headers
-                    )
-
-                # Wrap in BytesIO voor OpenAI
-                image_file = BytesIO(foto_bytes)
-                image_file.name = f"upload.{fmt}"
-
-            except Exception as e:
-                return func.HttpResponse(
-                    json.dumps({"error": f"❌ Fout bij verwerken van foto: {str(e)}"}),
-                    status_code=400,
-                    mimetype="application/json",
-                    headers=cors_headers
-                )
 
         # -----------------------------
         # 5. OpenAI aanroepen
         # -----------------------------
+
         try:
-            if modus == "foto":
-                # Image-to-image (edit)
-                result = client.images.edit(
-                    image=image_file,
-                    prompt=prompt,
-                    model="dall-e-2",
-                    n=1,
-                    size="1024x1024",
-                    response_format="b64_json"
-                )
-            else:
-                # Prompt-based generation
-                result = client.images.generate(
-                    model="dall-e-2",
-                    prompt=prompt,
-                    n=1,
-                    size="1024x1024",
-                    response_format="b64_json"
-                )
+            # Zowel voor prompt als foto nu DALL·E met gegenereerde prompt
+            result = client.images.generate(
+                model="dall-e-2",
+                prompt=prompt,
+                n=1,
+                size="1024x1024",
+                response_format="b64_json"
+            )
 
             # Base64 ophalen
             image_base64_out = result.data[0].b64_json

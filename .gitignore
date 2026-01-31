@@ -1,14 +1,31 @@
+# Python/venv/pycache
 .venv/
 venv/
+__pycache__/
 *.pyc
-__pycache__/
 *.egg-info/
-.env
-local.settings.json
-__azurite_db_*
-__pycache__/
-__queuestorage__/
+.python_packages/
+
+# Node/npm
+node_modules/
+
+# Azure/Azurite/Emulator
 __blobstorage__/
-*.code-workspace
+__queuestorage__/
+__azurite_db_*
+
+# Worktrees/Backups/Artifacts
+kidsportal.worktrees/
+kidsportal.zip
+__init__ copy.py_archive
+__init__.py_archive
+
+# VSCode/IDE
 .vscode/
+.env
+.deployment
+
+# Static Web Apps/Local
+local.settings.json
+*.code-workspace
 .DS_Store
