@@ -45,7 +45,7 @@
         const stijl = form.stijl.value.trim();
         const doelgroep = form.doelgroep.value.trim();
         try {
-            const res = await fetch('https://sengfam1.azurewebsites.net/api/moppen_agent', {
+            const res = await fetch('https://sengfam1.azurewebsites.net/api/moppen_agent´, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ onderwerp, stijl, doelgroep })
