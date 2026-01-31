@@ -1,66 +1,224 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moppen Tapper</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
-        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
-        h1 { text-align: center; }
-        label { display: block; margin-top: 16px; }
-        input, select { width: 100%; padding: 8px; margin-top: 4px; border-radius: 4px; border: 1px solid #ccc; }
-        button { margin-top: 20px; width: 100%; padding: 12px; background: #0078d4; color: #fff; border: none; border-radius: 4px; font-size: 1.1em; cursor: pointer; }
-        button:disabled { background: #aaa; }
-        .resultaat { margin-top: 24px; background: #f0f0f0; border-radius: 4px; padding: 16px; min-height: 40px; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(0,0,0,0.3);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            flex: 1;
+        }
+        .header-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #f5576c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .header-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        main {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+        button {
+            padding: 12px 24px;
+            background: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        button:hover:not(:disabled) {
+            background: #f093fb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #statusText {
+            text-align: center;
+            color: #f5576c;
+            font-weight: 600;
+        }
+        .mop-box {
+            background: #f9f9f9;
+            border-left: 4px solid #f5576c;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            min-height: 80px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Moppen Tapper</h1>
-        <form id="mopForm">
+
+<header>
+    <h1>😂 Moppen Tapper</h1>
+    <button class="header-btn" id="homeBtn">← Terug naar Home</button>
+    <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+</header>
+
+<main>
+
+    <p id="statusText">Bezig met controleren...</p>
+
+    <form id="mopForm" style="display:none;">
+        <div class="form-group">
             <label for="onderwerp">Onderwerp</label>
             <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. dieren, school, voetbal">
-
+        </div>
+        <div class="form-group">
             <label for="stijl">Stijl</label>
             <input type="text" id="stijl" name="stijl" required placeholder="Bijv. flauw, droog, woordgrap">
-
+        </div>
+        <div class="form-group">
             <label for="doelgroep">Doelgroep</label>
             <input type="text" id="doelgroep" name="doelgroep" required placeholder="Bijv. kinderen, volwassenen, opa's">
+        </div>
+        <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
+    </form>
 
-            <button type="submit" id="genereerBtn">Tap een mop!</button>
-        </form>
-        <div class="resultaat" id="resultaat"></div>
-    </div>
-    <script>
-    const form = document.getElementById('mopForm');
-    const resultaat = document.getElementById('resultaat');
-    const btn = document.getElementById('genereerBtn');
+    <div id="resultaat"></div>
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        resultaat.textContent = 'Even wachten...';
-        btn.disabled = true;
-        const onderwerp = form.onderwerp.value.trim();
-        const stijl = form.stijl.value.trim();
-        const doelgroep = form.doelgroep.value.trim();
-        try {
-            const res = await fetch('https://sengfam1.azurewebsites.net/api/moppen_agent´, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ onderwerp, stijl, doelgroep })
-            });
-            const data = await res.json();
-            if (data.mop) {
-                resultaat.textContent = data.mop;
-            } else {
-                resultaat.textContent = data.error || 'Onbekende fout.';
-            }
-        } catch (err) {
-            resultaat.textContent = 'Fout: ' + err;
+</main>
+
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="/JS/auth.js"></script>
+
+<script>
+// Wacht tot auth.js klaar is
+setTimeout(() => {
+    const accounts = msalInstance.getAllAccounts();
+    const statusText = document.getElementById("statusText");
+    const form = document.getElementById("mopForm");
+    const logoutBtn = document.getElementById("logoutBtn");
+    
+    if (accounts.length === 0) {
+        window.location.href = "/home.html";
+        return;
+    }
+    statusText.style.display = "none";
+    form.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+    logoutBtn.onclick = () => msalInstance.logoutRedirect();
+}, 1000);
+
+const homeBtn = document.getElementById("homeBtn");
+homeBtn.onclick = () => window.location.href = "/home.html";
+
+const form = document.getElementById("mopForm");
+const resultaat = document.getElementById("resultaat");
+const btn = document.getElementById("genereerBtn");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Mop wordt getapt...</p>";
+    btn.disabled = true;
+    const onderwerp = form.onderwerp.value.trim();
+    const stijl = form.stijl.value.trim();
+    const doelgroep = form.doelgroep.value.trim();
+    try {
+        const res = await fetch('https://sengfam1.azurewebsites.net/api/moppen_agent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ onderwerp, stijl, doelgroep })
+        });
+        const text = await res.text();
+        console.log("Response status:", res.status);
+        console.log("Response text:", text);
+        if (!res.ok) {
+            resultaat.innerHTML = `<p style='color:red;'>Fout (${res.status}): ${text}</p>`;
+            btn.disabled = false;
+            return;
         }
-        btn.disabled = false;
-    });
-    </script>
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+            btn.disabled = false;
+            return;
+        }
+        if (data.mop) {
+            resultaat.innerHTML = `
+                <div class="mop-box">
+                    <strong>😂 Jouw Mop:</strong><br><br>
+                    ${data.mop}
+                </div>
+                <button onclick="location.reload()">🔄 Volgende Mop</button>
+            `;
+        } else {
+            resultaat.innerHTML = `<p style='color:red;'>${data.error || 'Onbekende fout.'}</p>`;
+        }
+    } catch (err) {
+        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+        console.error("Error:", err);
+    }
+    btn.disabled = false;
+});
+</script>
+
 </body>
 </html>
