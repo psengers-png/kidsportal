@@ -129,12 +129,24 @@
             <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. dieren, school, voetbal">
         </div>
         <div class="form-group">
+            <label for="onderwerp2">Onderwerp 2</label>
+            <input type="text" id="onderwerp2" name="onderwerp2" required placeholder="Bijv. eten, vakantie, sport">
+        </div>
+        <div class="form-group">
+            <label for="onderwerp3">Onderwerp 3</label>
+            <input type="text" id="onderwerp3" name="onderwerp3" required placeholder="Bijv. huis, school, werk">
+        </div>
+        <div class="form-group">
             <label for="stijl">Stijl</label>
             <input type="text" id="stijl" name="stijl" required placeholder="Bijv. flauw, droog, woordgrap">
         </div>
         <div class="form-group">
-            <label for="doelgroep">Doelgroep</label>
-            <input type="text" id="doelgroep" name="doelgroep" required placeholder="Bijv. kinderen, volwassenen, opa's">
+            <label for="onderwerp2">Onderwerp 2</label>
+            <input type="text" id="onderwerp2" name="onderwerp2" required placeholder="Bijv. eten, vakantie, sport">
+        </div>
+        <div class="form-group">
+            <label for="onderwerp3">Onderwerp 3</label>
+            <input type="text" id="onderwerp3" name="onderwerp3" required placeholder="Bijv. huis, school, werk">
         </div>
         <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
     </form>
@@ -177,13 +189,14 @@ form.addEventListener("submit", async (e) => {
     resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
     btn.disabled = true;
     const onderwerp = form.onderwerp.value.trim();
+    const onderwerp2 = form.onderwerp2.value.trim();
+    const onderwerp3 = form.onderwerp3.value.trim();
     const stijl = form.stijl.value.trim();
-    const doelgroep = form.doelgroep.value.trim();
     try {
         const res = await fetch('https://sengfam1.azurewebsites.net/api/moppen_agent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ onderwerp, stijl, doelgroep })
+            body: JSON.stringify({ onderwerp, onderwerp2, onderwerp3, stijl })
         });
         const text = await res.text();
         console.log("Response status:", res.status);
