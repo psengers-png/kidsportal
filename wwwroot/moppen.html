@@ -174,7 +174,7 @@ const btn = document.getElementById("genereerBtn");
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Mop wordt getapt...</p>";
+    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
     btn.disabled = true;
     const onderwerp = form.onderwerp.value.trim();
     const stijl = form.stijl.value.trim();
@@ -189,7 +189,7 @@ form.addEventListener("submit", async (e) => {
         console.log("Response status:", res.status);
         console.log("Response text:", text);
         if (!res.ok) {
-            resultaat.innerHTML = `<p style='color:red;'>Fout (${res.status}): ${text}</p>`;
+            resultaat.innerHTML = '<p style="color:red;">Fout (' + res.status + '): ' + text + '</p>';
             btn.disabled = false;
             return;
         }
@@ -197,23 +197,17 @@ form.addEventListener("submit", async (e) => {
         try {
             data = JSON.parse(text);
         } catch (e) {
-            resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+            resultaat.innerHTML = '<p style="color:red;">JSON parsing error: ' + text + '</p>';
             btn.disabled = false;
             return;
         }
         if (data.mop) {
-            resultaat.innerHTML = `
-                <div class="mop-box">
-                    <strong>😂 Jouw Mop:</strong><br><br>
-                    ${data.mop}
-                </div>
-                <button onclick="location.reload()">🔄 Volgende Mop</button>
-            `;
+            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Jouw Mop:</strong><br><br>' + data.mop + '</div><button onclick="location.reload()">🔄 Volgende Mop</button>';
         } else {
-            resultaat.innerHTML = `<p style='color:red;'>${data.error || 'Onbekende fout.'}</p>`;
+            resultaat.innerHTML = '<p style="color:red;">' + (data.error || 'Onbekende fout.') + '</p>';
         }
     } catch (err) {
-        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+        resultaat.innerHTML = '<p style="color:red;">Fout: ' + err + '</p>';
         console.error("Error:", err);
     }
     btn.disabled = false;
