@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moppen Tapper</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
+        h1 { text-align: center; }
+        label { display: block; margin-top: 16px; }
+        input, select { width: 100%; padding: 8px; margin-top: 4px; border-radius: 4px; border: 1px solid #ccc; }
+        button { margin-top: 20px; width: 100%; padding: 12px; background: #0078d4; color: #fff; border: none; border-radius: 4px; font-size: 1.1em; cursor: pointer; }
+        button:disabled { background: #aaa; }
+        .resultaat { margin-top: 24px; background: #f0f0f0; border-radius: 4px; padding: 16px; min-height: 40px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Moppen Tapper</h1>
+        <form id="mopForm">
+            <label for="onderwerp">Onderwerp</label>
+            <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. dieren, school, voetbal">
+
+            <label for="stijl">Stijl</label>
+            <input type="text" id="stijl" name="stijl" required placeholder="Bijv. flauw, droog, woordgrap">
+
+            <label for="doelgroep">Doelgroep</label>
+            <input type="text" id="doelgroep" name="doelgroep" required placeholder="Bijv. kinderen, volwassenen, opa's">
+
+            <button type="submit" id="genereerBtn">Tap een mop!</button>
+        </form>
+        <div class="resultaat" id="resultaat"></div>
+    </div>
+    <script>
+    const form = document.getElementById('mopForm');
+    const resultaat = document.getElementById('resultaat');
+    const btn = document.getElementById('genereerBtn');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        resultaat.textContent = 'Even wachten...';
+        btn.disabled = true;
+        const onderwerp = form.onderwerp.value.trim();
+        const stijl = form.stijl.value.trim();
+        const doelgroep = form.doelgroep.value.trim();
+        try {
+            const res = await fetch('/api/moppen_agent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ onderwerp, stijl, doelgroep })
+            });
+            const data = await res.json();
+            if (data.mop) {
+                resultaat.textContent = data.mop;
+            } else {
+                resultaat.textContent = data.error || 'Onbekende fout.';
+            }
+        } catch (err) {
+            resultaat.textContent = 'Fout: ' + err;
+        }
+        btn.disabled = false;
+    });
+    </script>
+</body>
+</html>

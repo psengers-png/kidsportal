@@ -5,51 +5,174 @@
     <title>Kleurplaat Generator</title>
 
     <style>
-        body { font-family: Arial; background:#f9f9f9; margin:0; padding:0; }
-        header { background:#4CAF50; color:white; padding:20px; text-align:center; }
-        main { max-width:600px; margin:30px auto; padding:20px; background:white; border-radius:10px; }
-        label { font-weight:bold; display:block; margin-bottom:5px; }
-        input[type="text"], input[type="file"] { width:100%; padding:8px; margin-bottom:15px; }
-        button { padding:10px 20px; background:#4CAF50; color:white; border:none; cursor:pointer; }
-        button:hover { background:#45a049; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; 
+            padding: 0;
+            min-height: 100vh;
+        }
+        header { 
+            background: rgba(0,0,0,0.3);
+            color: white; 
+            padding: 25px 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            flex: 1;
+        }
+        .header-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .header-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        main { 
+            max-width: 700px; 
+            margin: 30px auto; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+        label { 
+            font-weight: 600; 
+            display: block; 
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="file"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        input[type="text"]:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        input:disabled {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #667eea;
+            color: white; 
+            border: none; 
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        button:hover:not(:disabled) { 
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #resultaat {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #resultaat img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        #statusText {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+        }
     </style>
 </head>
 
 <body>
 
 <header>
-    <h1>Kleurplaat Generator</h1>
+    <h1>🎨 Kleurplaat Generator</h1>
+    <button class="header-btn" id="homeBtn">← Terug naar Home</button>
+    <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
 </header>
 
 <main>
 
     <p id="statusText">Bezig met controleren...</p>
-    <button id="logoutBtn" style="display:none;">Logout</button>
 
     <form id="kleurplaatForm" style="display:none;">
-        <label>Wie?</label>
-        <input id="wie" type="text">
+        <div class="form-section">
+            <div class="section-title">Optie 1: Beschrijving</div>
+            <label>Wie? (bijv. een aap, kat, prinses)</label>
+            <input id="wie" type="text">
 
-        <label>Waar?</label>
-        <input id="waar" type="text">
+            <label>Waar? (bijv. in de jungle, thuis, op het kasteel)</label>
+            <input id="waar" type="text">
 
-        <label>Welke activiteit?</label>
-        <input id="activiteit" type="text">
+            <label>Welke activiteit? (bijv. spelen, eten, vissen)</label>
+            <input id="activiteit" type="text">
+        </div>
 
-        <label>Upload foto (optioneel)</label>
-        <input id="foto" type="file">
+        <div class="form-section">
+            <div class="section-title">Optie 2: Foto Upload</div>
+            <label>Upload foto (optioneel)</label>
+            <input id="foto" type="file" accept="image/*">
+        </div>
 
-        <button type="submit">Genereer kleurplaat</button>
+        <button type="submit">✨ Genereer kleurplaat</button>
+        <button id="downloadBtn" style="display:none;">⬇️ Download</button>
     </form>
 
     <div id="resultaat"></div>
-
-    <button id="downloadBtn" style="display:none;">Download</button>
-
-    <!-- AGENT KNOP 🚀 -->
-    <button id="agentBtn" style="display:none; margin-top:20px;">
-        🤖 Open Kleurplaat Agent
-    </button>
 
 </main>
 
@@ -81,27 +204,45 @@ setTimeout(() => {
 }, 1000);
 
 async function initFormLogic() {
+    const wieInput = document.getElementById("wie");
+    const waarInput = document.getElementById("waar");
+    const activiteitInput = document.getElementById("activiteit");
     const fotoInput = document.getElementById("foto");
-    const agentBtn = document.getElementById("agentBtn");
     const form = document.getElementById("kleurplaatForm");
     const resultaat = document.getElementById("resultaat");
     const downloadBtn = document.getElementById("downloadBtn");
+    const homeBtn = document.getElementById("homeBtn");
 
-    fotoInput.addEventListener("change", () => {
-        const disabled = fotoInput.files.length > 0;
-        document.getElementById("wie").disabled = disabled;
-        document.getElementById("waar").disabled = disabled;
-        document.getElementById("activiteit").disabled = disabled;
-    });
+    // Terug naar home
+    homeBtn.onclick = () => window.location.href = "/home.html";
+
+    // Functie om velden in/uit te schakelen
+    function updateFieldStates() {
+        const hasText = wieInput.value.trim() || waarInput.value.trim() || activiteitInput.value.trim();
+        const hasPhoto = fotoInput.files.length > 0;
+
+        // Als foto is geupload, disable tekstvelden
+        wieInput.disabled = hasPhoto;
+        waarInput.disabled = hasPhoto;
+        activiteitInput.disabled = hasPhoto;
+
+        // Als tekst ingevuld, disable foto upload
+        fotoInput.disabled = hasText;
+    }
+
+    // Listeners voor real-time enable/disable
+    wieInput.addEventListener("input", updateFieldStates);
+    waarInput.addEventListener("input", updateFieldStates);
+    activiteitInput.addEventListener("input", updateFieldStates);
+    fotoInput.addEventListener("change", updateFieldStates);
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         resultaat.textContent = "Kleurplaat wordt aangemaakt...";
-        agentBtn.style.display = "none";
 
-        const wie = document.getElementById("wie").value;
-        const waar = document.getElementById("waar").value;
-        const activiteit = document.getElementById("activiteit").value;
+        const wie = wieInput.value;
+        const waar = waarInput.value;
+        const activiteit = activiteitInput.value;
 
         let foto_base64 = null;
         if (fotoInput.files.length > 0) {
@@ -143,7 +284,6 @@ async function initFormLogic() {
 
             const img = document.createElement('img');
             img.src = data.image_data_uri;
-            img.style.maxWidth = '100%';
             resultaat.innerHTML = '';
             resultaat.appendChild(img);
 

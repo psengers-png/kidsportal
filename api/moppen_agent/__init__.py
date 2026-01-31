@@ -1,29 +1,24 @@
-
 import os
 import json
 import azure.functions as func
 from openai import OpenAI
 
-# Haal API key op uit omgeving
 api_key = os.environ.get("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("OPENAI_API_KEY is not set in environment variables")
 client = OpenAI(api_key=api_key)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    # CORS headers
     cors_headers = {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type,Authorization",
     }
 
-    # Handle preflight OPTIONS
     if req.method == "OPTIONS":
         return func.HttpResponse(status_code=204, headers=cors_headers)
 
     try:
-        # JSON ophalen
         try:
             body = req.get_json()
         except ValueError:
@@ -34,47 +29,39 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 headers=cors_headers
             )
 
-        leeftijd = body.get("leeftijd")
-        energie = body.get("energie")
-        activiteit_type = body.get("type")
+        onderwerp = body.get("onderwerp")
+        stijl = body.get("stijl")
+        doelgroep = body.get("doelgroep")
 
-        if not (leeftijd and energie and activiteit_type):
+        if not onderwerp or not stijl or not doelgroep:
             return func.HttpResponse(
-                json.dumps({"error": "❌ Ontbrekende parameters: leeftijd, energie, type zijn verplicht"}),
+                json.dumps({"error": "❌ Ontbrekende parameters: onderwerp, stijl, doelgroep zijn verplicht"}),
                 status_code=400,
                 mimetype="application/json",
                 headers=cors_headers
             )
 
-        # Prompt samenstellen
         prompt = (
-            f"Genereer één leuke challenge voor iemand met deze kenmerken:\n"
-            f"- Leeftijd: {leeftijd}\n"
-            f"- Energie-niveau: {energie}\n"
-            f"- Type activiteit: {activiteit_type}\n"
-            f"De challenge moet kort, duidelijk en leuk zijn. Geef alleen de challenge-tekst, geen uitleg."
+            f"Vertel één grappige mop over het onderwerp '{onderwerp}', in de stijl van '{stijl}', "
+            f"en geschikt voor de doelgroep '{doelgroep}'. Geef alleen de mop, geen uitleg of inleiding."
         )
 
-        # OpenAI aanroepen (moderne client)
         try:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o",  # of gpt-4.1 voor hogere kwaliteit
                 messages=[
-                    {"role": "system", "content": "Je bent een creatieve assistent die leuke challenges bedenkt."},
+                    {"role": "system", "content": "Je bent een moppentapper die altijd een leuke mop weet te vertellen."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.8
+                temperature=0.9
             )
-
-            challenge = response.choices[0].message.content
-
+            mop = response.choices[0].message.content.strip()
             return func.HttpResponse(
-                json.dumps({"challenge": challenge}),
+                json.dumps({"mop": mop}),
                 status_code=200,
                 mimetype="application/json",
                 headers=cors_headers
             )
-
         except Exception as e:
             return func.HttpResponse(
                 json.dumps({"error": f"❌ OpenAI fout: {str(e)}"}),
@@ -82,7 +69,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 mimetype="application/json",
                 headers=cors_headers
             )
-
     except Exception as e:
         return func.HttpResponse(
             json.dumps({"error": f"❌ Interne serverfout: {str(e)}"}),

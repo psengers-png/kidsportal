@@ -64,7 +64,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             prompt = (
                 f"Een klassieke zwart-witte kleurplaat van {wie} die {activiteit} doet in {waar}. "
 "Eenvoudige, rustige lijntekening in traditionele kleurboekstijl. "
+<<<<<<< HEAD
 "Alleen dikke, duidelijke zwarte lijnen, witte achtergrond. "
+=======
+>>>>>>> ea4c950e1bfb93078502bb0603a0ff798e167d9f
 "Geen kleur, geen grijs, geen schaduwen, geen patronen. "
 "Grote vormen, weinig details, kindvriendelijk. "
 "Zoals een ouderwets kleurboek voor kinderen van 6 tot 10 jaar."
@@ -116,14 +119,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 )
             # 2. Gebruik deze beschrijving als prompt voor DALL·E
             prompt = (
-             f"Een zwart-witte kleurplaat van: {beschrijving}. "
-"Eenvoudige lijntekening in outline-stijl, zoals in een kleurboek. "
-"Alleen dikke, duidelijke zwarte lijnen. "
-"Geen kleur, geen grijswaarden, geen schaduwen, geen texturen. "
-"Witte achtergrond. "
-"Gesloten vormen, weinig details, geen overlappende lijnen. "
-"Vectorstijl, line art, printbaar als werkblad. "
-"Geschikt om in te kleuren voor een kind van 6 tot 9 jaar."
+                f"Een zwart-witte kleurplaat van: {beschrijving}. "
+                "Eenvoudige lijntekening in outline-stijl, zoals in een kleurboek. "
+                "Alleen dikke, duidelijke zwarte lijnen. "
+                "Geen kleur, geen grijswaarden, geen schaduwen, geen texturen. "
+                "Witte achtergrond. "
+                "Gesloten vormen, weinig details, geen overlappende lijnen. "
+                "Vectorstijl, line art, printbaar als werkblad. "
+                "Geschikt om in te kleuren voor een kind van 6 tot 9 jaar."
+            )
             )
 
         # -----------------------------
