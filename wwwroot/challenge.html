@@ -131,7 +131,7 @@
                 <option value="klein kind (3-6)">Klein kind (3-6 jaar)</option>
                 <option value="kind (6-10)">Kind (6-10 jaar)</option>
                 <option value="tiener (10-14)">Tiener (10-14 jaar)</option>
-                <option value="volwassene (14+)">Volwassene (14+ jaar)</option>
+              
             </select>
         </div>
 
@@ -235,8 +235,53 @@ form.addEventListener("submit", async (e) => {
                 <strong>🎯 Jouw Challenge:</strong><br><br>
                 ${data.challenge}
             </div>
-            <button onclick="location.reload()">🔄 Volgende Challenge</button>
+            <button id="nextChallengeBtn">🔄 Volgende Challenge</button>
         `;
+
+        // Voeg event listener toe aan de nieuwe knop
+        const nextBtn = document.getElementById("nextChallengeBtn");
+        if (nextBtn) {
+            nextBtn.onclick = async () => {
+                resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
+                // Hergebruik de laatst ingevulde waarden
+                const payload = {
+                    leeftijd: document.getElementById("leeftijd").value,
+                    energie: document.getElementById("energie").value,
+                    type: document.getElementById("type").value
+                };
+                try {
+                    const resp = await fetch('https://sengfam1.azurewebsites.net/api/challenge_agent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const text = await resp.text();
+                    if (!resp.ok) {
+                        resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
+                        return;
+                    }
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (e) {
+                        resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+                        return;
+                    }
+                    resultaat.innerHTML = `
+                        <div class="challenge-box">
+                            <strong>🎯 Jouw Challenge:</strong><br><br>
+                            ${data.challenge}
+                        </div>
+                        <button id="nextChallengeBtn">🔄 Volgende Challenge</button>
+                    `;
+                    // Herhaal event listener voor nieuwe knop
+                    const nextBtn = document.getElementById("nextChallengeBtn");
+                    if (nextBtn) nextBtn.onclick = arguments.callee;
+                } catch (err) {
+                    resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+                }
+            };
+        }
 
     } catch (err) {
         resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
