@@ -64,6 +64,42 @@
             font-weight: 600;
             color: #333;
         }
+        .tile-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        .tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 160px;
+            height: 160px;
+            background: #f3f3fa;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px #0001;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            transition: box-shadow 0.2s, background 0.2s;
+        }
+        .tile:hover {
+            background: #e0e0f7;
+            box-shadow: 0 6px 18px #667eea33;
+        }
+        .tile-icon {
+            font-size: 48px;
+            margin-bottom: 18px;
+        }
+        .tile-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -83,13 +119,21 @@
         <div id="optionsScreen" style="display:none;">
             <h2 id="welcomeText"></h2>
             <p>Kies een optie:</p>
-            <a href="kleurplaat.html">
-                <button>🎨 Kleurplaat Generator</button>
-            </a>
-            <a href="challenge.html">
-                <button>🎯 Challenge Generator</button>
-            </a>
-            <button id="logoutBtn">Logout</button>
+            <div class="tile-grid">
+                <a href="kleurplaat.html" class="tile">
+                    <div class="tile-icon">🎨</div>
+                    <div class="tile-title">Kleurplaat Generator</div>
+                </a>
+                <a href="challenge.html" class="tile">
+                    <div class="tile-icon">🎯</div>
+                    <div class="tile-title">Challenge Generator</div>
+                </a>
+                <a href="moppen.html" class="tile">
+                    <div class="tile-icon">😂</div>
+                    <div class="tile-title">Moppen Tapper</div>
+                </a>
+            </div>
+            <button id="logoutBtn" style="margin-top:32px;">Logout</button>
         </div>
     </div>
 
