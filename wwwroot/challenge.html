@@ -124,16 +124,7 @@
     <p id="statusText">Bezig met controleren...</p>
 
     <form id="challengeForm" style="display:none;">
-        <div class="form-group">
-            <label>Leeftijd</label>
-            <select id="leeftijd" required>
-                <option value="">-- Kies een optie --</option>
-                <option value="klein kind (3-6)">Klein kind (3-6 jaar)</option>
-                <option value="kind (6-10)">Kind (6-10 jaar)</option>
-                <option value="tiener (10-14)">Tiener (10-14 jaar)</option>
-              
-            </select>
-        </div>
+        <!-- Leeftijdsveld verwijderd. De categorie is altijd voor kinderen van 5-10 jaar. -->
 
         <div class="form-group">
             <label>Energie-niveau</label>
@@ -146,13 +137,15 @@
         </div>
 
         <div class="form-group">
-            <label>Type activiteit</label>
+            <label>Type activiteit (voor kinderen van 5-10 jaar)</label>
             <select id="type" required>
                 <option value="">-- Kies een optie --</option>
-                <option value="creatief">Creatief (tekenen, bouwen, etc.)</option>
-                <option value="spel">Spel (puzzel, race, strategie)</option>
-                <option value="leerzaam">Leerzaam (kennis, taal, math)</option>
-                <option value="fysiek">Fysiek (bewegen, sporten)</option>
+                <option value="knutselen">Knutselen</option>
+                <option value="kleuren">Kleuren</option>
+                <option value="puzzel">Puzzel</option>
+                <option value="kennis">Kennis</option>
+                <option value="buiten">Buiten</option>
+                <option value="natuur">Natuur</option>
             </select>
         </div>
 
@@ -192,16 +185,15 @@ homeBtn.onclick = () => window.location.href = "/home.html";
 const form = document.getElementById("challengeForm");
 const resultaat = document.getElementById("resultaat");
 
+
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
 
-    const leeftijd = document.getElementById("leeftijd").value;
     const energie = document.getElementById("energie").value;
     const activiteit_type = document.getElementById("type").value;
 
     const payload = {
-        leeftijd: leeftijd,
         energie: energie,
         type: activiteit_type
     };
@@ -276,11 +268,32 @@ form.addEventListener("submit", async (e) => {
                     `;
                     // Herhaal event listener voor nieuwe knop
                     const nextBtn = document.getElementById("nextChallengeBtn");
-                    if (nextBtn) nextBtn.onclick = arguments.callee;
+                    if (nextBtn) nextBtn.onclick = handleNextChallenge;
                 } catch (err) {
                     resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
                 }
             };
+
+            // Definieer de handler buiten de functie zodat hij hergebruikt kan worden
+            function handleNextChallenge(e) {
+                e.preventDefault();
+                // Roep de originele functie opnieuw aan
+                // Dit is de functie die de challenge ophaalt en de knop opnieuw tekent
+                // Je kunt hier de bestaande logica opnieuw uitvoeren
+                // Bijvoorbeeld:
+                // fetchChallenge();
+                // Of, als de logica in een andere functie zit, roep die aan
+                // Voorbeeld:
+                // mopForm.onsubmit();
+                // Maar meestal kun je gewoon de bestaande submit-handler opnieuw aanroepen
+                // Hier een voorbeeld:
+                if (typeof fetchChallenge === 'function') {
+                    fetchChallenge();
+                } else {
+                    // Fallback: reload de pagina
+                    window.location.reload();
+                }
+            }
         }
 
     } catch (err) {
