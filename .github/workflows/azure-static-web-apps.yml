@@ -1,5 +1,6 @@
 name: Azure Static Web Apps CI/CD
 
+# Trigger workflow detection
 on:
   push:
     branches:
