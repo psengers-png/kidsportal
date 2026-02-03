@@ -72,19 +72,30 @@ function updateUI() {
         };
     }
 
+        // Debugging: Log accounts and username
+        console.log("Accounts:", accounts);
+        if (accounts.length === 0 || !accounts[0].username) {
+            console.error("No user logged in or username is undefined.");
+            alert("Je moet ingelogd zijn om een abonnement te controleren.");
+            return;
+        }
+
+        const username = accounts[0].username;
+        console.log("Username:", username);
+
         // Upgrade knop event-listener koppelen (alleen als ingelogd)
         const upgradeBtn = document.getElementById("abonnementBtn");
         if (upgradeBtn) {
             upgradeBtn.onclick = async () => {
                 // Check subscription status before proceeding
                 try {
-                    const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription'?user=${accounts[0].username}`);
+                    const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${username}`);
                     if (response.ok) {
                         const data = await response.json();
                         if (data.hasSubscription) {
                             alert("Je hebt al een abonnement!");
                         } else {
-                            startStripeCheckout(accounts[0].username);
+                            startStripeCheckout(username);
                         }
                     } else {
                         alert("Fout bij het controleren van abonnement: " + response.status);
