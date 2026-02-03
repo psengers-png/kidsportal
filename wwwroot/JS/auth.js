@@ -99,15 +99,15 @@ function updateUI() {
         // Debugging: Log the entire account object
         console.log("Account object:", accounts[0]);
 
-        // Use preferred_username as a fallback if username is undefined
-        const username = accounts[0].username || accounts[0].preferred_username || "";
+        // Use localAccountId or homeAccountId as a fallback if username is empty
+        const username = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
         if (!username) {
             console.error("No user logged in or username is undefined.");
             alert("Je moet ingelogd zijn om een abonnement te controleren.");
             return;
         }
 
-        console.log("Username:", username);
+        console.log("Username (or fallback):", username);
 
         // Debugging: Log the username before making the API call
         console.log("Preparing to check subscription for user:", username);
@@ -142,11 +142,12 @@ function updateUI() {
         }
 }
 
-// Debugging: Verify upgrade button logic
+// Debugging: Verify upgrade button existence and event listener attachment
 const upgradeBtn = document.getElementById("abonnementBtn");
 if (upgradeBtn) {
     console.log("Upgrade button found. Adding click event listener.");
     upgradeBtn.onclick = async () => {
+        console.log("Upgrade button clicked.");
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length === 0 || !accounts[0].username) {
             console.error("No user logged in or username is undefined.");
@@ -154,7 +155,7 @@ if (upgradeBtn) {
             return;
         }
 
-        const username = accounts[0].username;
+        const username = accounts[0].username || accounts[0].preferred_username || "";
         console.log("Upgrade button clicked. Username:", username);
 
         try {
