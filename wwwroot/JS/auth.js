@@ -78,7 +78,7 @@ function updateUI() {
             upgradeBtn.onclick = async () => {
                 // Check subscription status before proceeding
                 try {
-                    const response = await fetch(`/api/checkSubscription?user=${accounts[0].username}`);
+                    const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription'?user=${accounts[0].username}`);
                     if (response.ok) {
                         const data = await response.json();
                         if (data.hasSubscription) {
