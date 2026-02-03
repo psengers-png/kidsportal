@@ -41,6 +41,20 @@ function updateUI() {
     const accounts = msalInstance.getAllAccounts();
     console.log("Accounts:", accounts);
 
+    // Debugging: Check if the user is logged in
+    console.log("Checking login status...");
+    console.log("Accounts found:", accounts);
+
+    if (accounts.length === 0) {
+        console.warn("No user logged in. Redirecting to login...");
+        alert("Je bent niet ingelogd. Log in om verder te gaan.");
+        msalInstance.loginRedirect();
+        return;
+    }
+
+    const username = accounts[0].username;
+    console.log("Logged in as:", username);
+
     // Niet ingelogd
     if (accounts.length === 0) {
         console.log("Gebruiker niet ingelogd");
@@ -82,6 +96,9 @@ function updateUI() {
 
         const username = accounts[0].username;
         console.log("Username:", username);
+
+        // Debugging: Log the username before making the API call
+        console.log("Preparing to check subscription for user:", username);
 
         // Upgrade knop event-listener koppelen (alleen als ingelogd)
         const upgradeBtn = document.getElementById("abonnementBtn");
