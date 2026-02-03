@@ -71,4 +71,12 @@ function updateUI() {
             msalInstance.logoutRedirect();
         };
     }
+
+        // Upgrade knop event-listener koppelen (alleen als ingelogd)
+        const upgradeBtn = document.getElementById("abonnementBtn");
+        if (upgradeBtn) {
+            upgradeBtn.onclick = () => {
+                startStripeCheckout(accounts[0].username);
+            };
+        }
 }
