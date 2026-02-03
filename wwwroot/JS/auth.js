@@ -96,15 +96,17 @@ function updateUI() {
         };
     }
 
-        // Debugging: Log accounts and username
-        console.log("Accounts:", accounts);
-        if (accounts.length === 0 || !accounts[0].username) {
+        // Debugging: Log the entire account object
+        console.log("Account object:", accounts[0]);
+
+        // Use preferred_username as a fallback if username is undefined
+        const username = accounts[0].username || accounts[0].preferred_username || "";
+        if (!username) {
             console.error("No user logged in or username is undefined.");
             alert("Je moet ingelogd zijn om een abonnement te controleren.");
             return;
         }
 
-        const username = accounts[0].username;
         console.log("Username:", username);
 
         // Debugging: Log the username before making the API call
