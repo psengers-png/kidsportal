@@ -29,18 +29,26 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         table_client = table_service.get_table_client(table_name="Kidsportal")
 
         # Query the table for the user
-        entity = table_client.get_entity(partition_key="subscriptions", row_key=user)
-        logging.info(f"User {user} found in storage.")
+        try:
+            entity = table_client.get_entity(partition_key="subscriptions", row_key=user)
+            logging.info(f"User {user} found in storage. Entity: {entity}")
 
-        # Check subscription status
-        has_subscription = entity.get("isActive", False)
+            # Check subscription status
+            has_subscription = entity.get("isActive", False)
 
-        # Return the subscription status
-        return func.HttpResponse(
-            body=f"{{\"hasSubscription\": {str(has_subscription).lower()}}}",
-            mimetype="application/json",
-            status_code=200
-        )
+            # Return the subscription status
+            return func.HttpResponse(
+                body=f"{{\"hasSubscription\": {str(has_subscription).lower()}}}",
+                mimetype="application/json",
+                status_code=200
+            )
+        except Exception as e:
+            logging.warning(f"User {user} not found or error retrieving entity: {e}")
+            return func.HttpResponse(
+                body="{\"error\": \"User not found or no subscription data available.\"}",
+                mimetype="application/json",
+                status_code=404
+            )
 
     except Exception as e:
         logging.error(f"Error accessing Azure Table Storage: {e}")
