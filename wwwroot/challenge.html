@@ -210,7 +210,20 @@ form.addEventListener("submit", async (e) => {
         console.log("Response text:", text);
         
         if (!resp.ok) {
-            resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
+            if(resp.status === 403 && text.includes('limiet')) {
+                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+                setTimeout(() => {
+                    if(window.msalInstance) {
+                        const accounts = window.msalInstance.getAllAccounts();
+                        const btn = document.getElementById('abonnementBtn');
+                        if(btn && accounts.length > 0) {
+                            btn.onclick = () => startStripeCheckout(accounts[0].username);
+                        }
+                    }
+                }, 100);
+            } else {
+                resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
+            }
             return;
         }
         
@@ -303,5 +316,7 @@ form.addEventListener("submit", async (e) => {
 });
 </script>
 
+
+<script src="/JS/abonnement.js"></script>
 </body>
 </html>
