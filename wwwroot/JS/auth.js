@@ -52,9 +52,6 @@ function updateUI() {
         return;
     }
 
-    const username = accounts[0].username;
-    console.log("Logged in as:", username);
-
     // Niet ingelogd
     if (accounts.length === 0) {
         console.log("Gebruiker niet ingelogd");
