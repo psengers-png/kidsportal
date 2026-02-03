@@ -30,7 +30,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         # Query the table for the user
         entity = table_client.get_entity(partition_key="subscriptions", row_key=user)
-        
+        logging.info(f"User {user} found in storage.")
+
         # Check subscription status
         has_subscription = entity.get("isActive", False)
 
