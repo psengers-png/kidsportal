@@ -75,8 +75,24 @@ function updateUI() {
         // Upgrade knop event-listener koppelen (alleen als ingelogd)
         const upgradeBtn = document.getElementById("abonnementBtn");
         if (upgradeBtn) {
-            upgradeBtn.onclick = () => {
-                startStripeCheckout(accounts[0].username);
+            upgradeBtn.onclick = async () => {
+                // Check subscription status before proceeding
+                try {
+                    const response = await fetch(`/api/checkSubscription?user=${accounts[0].username}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.hasSubscription) {
+                            alert("Je hebt al een abonnement!");
+                        } else {
+                            startStripeCheckout(accounts[0].username);
+                        }
+                    } else {
+                        alert("Fout bij het controleren van abonnement: " + response.status);
+                    }
+                } catch (error) {
+                    console.error("Error checking subscription status:", error);
+                    alert("Er ging iets mis bij het controleren van je abonnement.");
+                }
             };
         }
 }

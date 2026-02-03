@@ -178,6 +178,7 @@
 
 <!-- Scripts -->
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="/JS/abonnement.js"></script>
 <script src="/JS/auth.js"></script>
 
 <script>
@@ -270,7 +271,7 @@ async function initFormLogic() {
             console.log("Response text:", text);
             
             if (!resp.ok) {
-                                if(resp.status === 403 && text.includes('limiet')) {
+                                                if(resp.status === 403 && text.includes('limiet')) {
                                         resultaat.innerHTML = `<div style='color:#667eea; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis kleurplaten aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
                                         setTimeout(() => {
                                             if(window.msalInstance) {
@@ -320,7 +321,6 @@ async function initFormLogic() {
 
 initFormLogic();
 </script>
-<script src="/JS/abonnement.js"></script>
 
 </body>
 </html>
