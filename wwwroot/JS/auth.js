@@ -15,9 +15,13 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 // ---------------- REDIRECT HANDLING ---------------------
 msalInstance.initialize().then(() => {
+    console.log("MSAL initialized.");
     msalInstance.handleRedirectPromise()
         .then(response => {
             console.log("Redirect response:", response);
+            if (response) {
+                console.log("Redirect successful. Account added:", msalInstance.getAllAccounts());
+            }
             updateUI();
         })
         .catch(error => {
@@ -25,6 +29,15 @@ msalInstance.initialize().then(() => {
             updateUI();
         });
 });
+
+// Debugging: Log accounts on every page load
+console.log("Accounts on page load:", msalInstance.getAllAccounts());
+
+// Debugging: Ensure updateUI is called on every page load
+window.onload = () => {
+    console.log("Page loaded. Calling updateUI.");
+    updateUI();
+};
 
 // ---------------- UI LOGICA ---------------------
 function updateUI() {
@@ -125,6 +138,47 @@ function updateUI() {
                 }
             };
         }
+}
+
+// Debugging: Verify upgrade button logic
+const upgradeBtn = document.getElementById("abonnementBtn");
+if (upgradeBtn) {
+    console.log("Upgrade button found. Adding click event listener.");
+    upgradeBtn.onclick = async () => {
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length === 0 || !accounts[0].username) {
+            console.error("No user logged in or username is undefined.");
+            alert("Je moet ingelogd zijn om een abonnement te controleren.");
+            return;
+        }
+
+        const username = accounts[0].username;
+        console.log("Upgrade button clicked. Username:", username);
+
+        try {
+            console.log(`Calling API with username: ${username}`);
+            const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${username}`);
+            console.log("API Response Status:", response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("API Response Data:", data);
+
+                if (data.hasSubscription) {
+                    alert("Je hebt al een abonnement!");
+                } else {
+                    startStripeCheckout(username);
+                }
+            } else {
+                alert("Fout bij het controleren van abonnement: " + response.status);
+            }
+        } catch (error) {
+            console.error("Error checking subscription status:", error);
+            alert("Er ging iets mis bij het controleren van je abonnement.");
+        }
+    };
+} else {
+    console.error("Upgrade button not found on the page.");
 }
 
 // Fake change to trigger a push
