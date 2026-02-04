@@ -227,3 +227,5 @@ const existingUsers = [
 registerExistingUsers(existingUsers);
 
 // Fake change to trigger a push
+
+import { startStripeCheckout } from './abonnement.js';
