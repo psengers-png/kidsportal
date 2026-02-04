@@ -184,4 +184,46 @@ if (upgradeBtn) {
     console.error("Upgrade button not found on the page.");
 }
 
+// Voeg de URL van de createUser-functie toe
+const createUserUrl = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createUser";
+
+async function registerUser(userId, email, name) {
+    try {
+        const response = await fetch(createUserUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, email, name }),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log("User registration result:", result);
+        } else {
+            console.error("Failed to register user. Status:", response.status);
+        }
+    } catch (error) {
+        console.error("Error registering user:", error);
+    }
+}
+
+// Voeg een functie toe om bestaande gebruikers te registreren
+async function registerExistingUsers(users) {
+    for (const user of users) {
+        const { userId, email, name } = user;
+        console.log(`Registering user: ${userId}`);
+        await registerUser(userId, email, name);
+    }
+}
+
+// Voorbeeldgebruik: lijst met bestaande gebruikers
+const existingUsers = [
+    { userId: "c5f50565-94e5-46d4-9bbe-70483f2ffb6b", email: "user1@example.com", name: "User One" },
+    { userId: "d6f50565-94e5-46d4-9bbe-70483f2ffb6c", email: "user2@example.com", name: "User Two" }
+];
+
+// Roep de functie aan om bestaande gebruikers te registreren
+registerExistingUsers(existingUsers);
+
 // Fake change to trigger a push
