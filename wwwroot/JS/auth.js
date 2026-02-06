@@ -234,3 +234,19 @@ registerExistingUsers(existingUsers);
 import { startStripeCheckout } from './abonnement.js';
 
 export { msalInstance };
+
+// Voeg een functie toe om de status "Onbeperkt" te tonen na terugkomst van Stripe
+function updateSubscriptionStatus() {
+    const statusField = document.getElementById("subscriptionStatus");
+    if (statusField) {
+        statusField.textContent = "Onbeperkt";
+        statusField.style.color = "#22c55e"; // Groene kleur voor status
+    }
+}
+
+// Controleer of de gebruiker terugkomt van Stripe
+if (window.location.search.includes("stripeSuccess=true")) {
+    // Update de status en navigeer naar home.html
+    updateSubscriptionStatus();
+    window.location.href = "/home.html";
+}
