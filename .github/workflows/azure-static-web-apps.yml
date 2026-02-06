@@ -15,7 +15,8 @@ jobs:
 
       - name: Set environment variables
         run: echo "AZURE_FUNCTION_KEY=${{ secrets.AZURE_FUNCTION_KEY }}" >> $GITHUB_ENV
-
+        run: echo "FUNCTION_APP_KEY=${{ secrets.FUNCTION_APP_KEY }}" >> $GITHUB_ENV
+        
       - name: Build And Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
