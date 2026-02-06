@@ -205,7 +205,6 @@ setTimeout(() => {
     // Logout functie
     logoutBtn.onclick = () => msalInstance.logoutRedirect();
 }, 1000);
-</script>
 
 async function initFormLogic() {
     const wieInput = document.getElementById("wie");
@@ -268,29 +267,29 @@ async function initFormLogic() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            
+
             const text = await resp.text();
             console.log("Response status:", resp.status);
             console.log("Response text:", text);
-            
+
             if (!resp.ok) {
-                                                if(resp.status === 403 && text.includes('limiet')) {
-                                        resultaat.innerHTML = `<div style='color:#667eea; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis kleurplaten aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
-                                        setTimeout(() => {
-                                            if(window.msalInstance) {
-                                                const accounts = window.msalInstance.getAllAccounts();
-                                                const btn = document.getElementById('abonnementBtn');
-                                                if(btn && accounts.length > 0) {
-                                                    btn.onclick = () => startStripeCheckout(accounts[0].username);
-                                                }
-                                            }
-                                        }, 100);
-                                } else {
-                                        resultaat.textContent = `Fout (${resp.status}): ${text}`;
-                                }
-                                return;
+                if(resp.status === 403 && text.includes('limiet')) {
+                    resultaat.innerHTML = `<div style='color:#667eea; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis kleurplaten aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+                    setTimeout(() => {
+                        if(window.msalInstance) {
+                            const accounts = window.msalInstance.getAllAccounts();
+                            const btn = document.getElementById('abonnementBtn');
+                            if(btn && accounts.length > 0) {
+                                btn.onclick = () => startStripeCheckout(accounts[0].username);
+                            }
+                        }
+                    }, 100);
+                } else {
+                    resultaat.textContent = `Fout (${resp.status}): ${text}`;
+                }
+                return;
             }
-            
+
             let data;
             try {
                 data = JSON.parse(text);
@@ -320,7 +319,6 @@ async function initFormLogic() {
         }
     });
 }
-
 
 initFormLogic();
 </script>
