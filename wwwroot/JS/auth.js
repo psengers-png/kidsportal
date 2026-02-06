@@ -83,10 +83,11 @@ function updateUI() {
     }
 
     // Wel ingelogd
-    console.log("Gebruiker ingelogd als:", accounts[0].username);
+    let userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
+    console.log("Gebruiker ingelogd als:", userId);
     if (loginScreen) loginScreen.style.display = "none";
     if (optionsScreen) optionsScreen.style.display = "block";
-    if (welcomeText) welcomeText.textContent = `Welkom, ${accounts[0].username}!`;
+    if (welcomeText) welcomeText.textContent = `Welkom, ${userId}!`;
 
     // Logout knop event-listener koppelen
     if (logoutBtn) {
@@ -99,18 +100,20 @@ function updateUI() {
         // Debugging: Log the entire account object
         console.log("Account object:", accounts[0]);
 
-        // Use localAccountId or homeAccountId as a fallback if username is empty
-        const username = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
-        if (!username) {
-            console.error("No user logged in or username is undefined.");
+        // Use localAccountId or homeAccountId as a fallback if userId is empty
+        userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
+        console.log("Upgrade button clicked. User ID:", userId);
+
+        if (!userId) {
+            console.error("No user logged in or userId is undefined.");
             alert("Je moet ingelogd zijn om een abonnement te controleren.");
             return;
         }
 
-        console.log("Username (or fallback):", username);
+        console.log("User ID (or fallback):", userId);
 
-        // Debugging: Log the username before making the API call
-        console.log("Preparing to check subscription for user:", username);
+        // Debugging: Log the userId before making the API call
+        console.log("Preparing to check subscription for user:", userId);
 
         // Upgrade knop event-listener koppelen (alleen als ingelogd)
         const upgradeBtn = document.getElementById("abonnementBtn");
@@ -118,8 +121,8 @@ function updateUI() {
             upgradeBtn.onclick = async () => {
                 // Check subscription status before proceeding
                 try {
-                    console.log(`Calling API with username: ${username}`);
-                    const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${username}`);
+                    console.log(`Calling API with user ID: ${userId}`);
+                    const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${userId}`);
                     console.log("API Response Status:", response.status);
 
                     if (response.ok) {
@@ -129,7 +132,7 @@ function updateUI() {
                         if (data.hasSubscription) {
                             alert("Je hebt al een abonnement!");
                         } else {
-                            startStripeCheckout(username);
+                            startStripeCheckout(userId);
                         }
                     } else {
                         alert("Fout bij het controleren van abonnement: " + response.status);
