@@ -146,14 +146,16 @@
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 <script type="module" src="/JS/auth.js"></script>
 
-<script>
+<script type="module">
+import { msalInstance } from '/JS/auth.js';
+
 // Wacht tot auth.js klaar is
 setTimeout(() => {
     const accounts = msalInstance.getAllAccounts();
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("mopForm");
     const logoutBtn = document.getElementById("logoutBtn");
-    
+
     if (accounts.length === 0) {
         window.location.href = "/home.html";
         return;

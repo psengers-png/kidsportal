@@ -160,19 +160,21 @@
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 <script type="module" src="/JS/auth.js"></script>
 
-<script>
+<script type="module">
+import { msalInstance } from '/JS/auth.js';
+
 // Wacht tot auth.js klaar is
 setTimeout(() => {
     const accounts = msalInstance.getAllAccounts();
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("challengeForm");
     const logoutBtn = document.getElementById("logoutBtn");
-    
+
     if (accounts.length === 0) {
         window.location.href = "/home.html";
         return;
     }
-    
+
     statusText.style.display = "none";
     form.style.display = "block";
     logoutBtn.style.display = "inline-block";
@@ -184,7 +186,6 @@ homeBtn.onclick = () => window.location.href = "/home.html";
 
 const form = document.getElementById("challengeForm");
 const resultaat = document.getElementById("resultaat");
-
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
