@@ -159,11 +159,11 @@ if (upgradeBtn) {
         }
 
         const username = accounts[0].username || accounts[0].preferred_username || "";
-        console.log("Upgrade button clicked. Username:", username);
+        console.log("Upgrade button clicked. Username:", userId);
 
         try {
-            console.log(`Calling API with username: ${username}`);
-            const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${username}`);
+            console.log(`Calling API with username: ${userId}`);
+            const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${userId}`);
             console.log("API Response Status:", response.status);
 
             if (response.ok) {
