@@ -5,8 +5,8 @@ function startStripeCheckout(userId) {
     console.log("Starting Stripe checkout for user:", userId);
     console.log("User ID passed to Stripe checkout:", userId); // Debugging log
 
-    // Fetch the FUNCTION_APP_KEY from the backend
-    const functionAppKey = process.env.FUNCTION_APP_KEY || 'fallback_key'; // Securely fetch the key
+    // This placeholder will be replaced during the build process by the replace_placeholder.js script
+    const functionAppKey = "V_1qciJJLbiffg6AqPwQWAw3TS7Fiy1iHqeXykxdOkJSAzFuqMZJ8g=="; // Replace this placeholder with the actual key during deployment
 
     fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createCheckout', {
         method: 'POST',
