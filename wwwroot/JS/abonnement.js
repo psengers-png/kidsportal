@@ -6,7 +6,7 @@ function startStripeCheckout(userId) {
     console.log("User ID passed to Stripe checkout:", userId); // Debugging log
 
     // This placeholder will be replaced during the build process by the replace_placeholder.js script
-    const functionAppKey = "ed5_NVFzA_meBsUTpUWpKjrTFztt2y-4fHXBtWe1yys-AzFuLP1nlQ=="; // Replace this placeholder with the actual key during deployment
+    const functionAppKey = "xHxQtcLBynLbEZlkWbVM5Nbg6VFGxwIdJIT9K8vGg31SAzFumpa0Cw=="; // Replace this placeholder with the actual key during deployment
 
     fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createCheckout', {
         method: 'POST',
