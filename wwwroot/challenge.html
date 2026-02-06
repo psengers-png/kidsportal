@@ -163,7 +163,7 @@
 <script type="module">
 import { msalInstance } from '/JS/auth.js';
 
-// Wacht tot auth.js klaar is
+// Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
     const accounts = msalInstance.getAllAccounts();
     const statusText = document.getElementById("statusText");
@@ -171,13 +171,17 @@ setTimeout(() => {
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (accounts.length === 0) {
+        // Niet ingelogd, terug naar home
         window.location.href = "/home.html";
         return;
     }
 
+    // Wel ingelogd, toon form
     statusText.style.display = "none";
     form.style.display = "block";
     logoutBtn.style.display = "inline-block";
+
+    // Logout functie
     logoutBtn.onclick = () => msalInstance.logoutRedirect();
 }, 1000);
 
@@ -205,11 +209,11 @@ form.addEventListener("submit", async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        
+
         const text = await resp.text();
         console.log("Response status:", resp.status);
         console.log("Response text:", text);
-        
+
         if (!resp.ok) {
             if(resp.status === 403 && text.includes('limiet')) {
                 resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
@@ -227,7 +231,7 @@ form.addEventListener("submit", async (e) => {
             }
             return;
         }
-        
+
         let data;
         try {
             data = JSON.parse(text);
@@ -251,7 +255,6 @@ form.addEventListener("submit", async (e) => {
                 resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
                 // Hergebruik de laatst ingevulde waarden
                 const payload = {
-                    leeftijd: document.getElementById("leeftijd").value,
                     energie: document.getElementById("energie").value,
                     type: document.getElementById("type").value
                 };
@@ -287,27 +290,6 @@ form.addEventListener("submit", async (e) => {
                     resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
                 }
             };
-
-            // Definieer de handler buiten de functie zodat hij hergebruikt kan worden
-            function handleNextChallenge(e) {
-                e.preventDefault();
-                // Roep de originele functie opnieuw aan
-                // Dit is de functie die de challenge ophaalt en de knop opnieuw tekent
-                // Je kunt hier de bestaande logica opnieuw uitvoeren
-                // Bijvoorbeeld:
-                // fetchChallenge();
-                // Of, als de logica in een andere functie zit, roep die aan
-                // Voorbeeld:
-                // mopForm.onsubmit();
-                // Maar meestal kun je gewoon de bestaande submit-handler opnieuw aanroepen
-                // Hier een voorbeeld:
-                if (typeof fetchChallenge === 'function') {
-                    fetchChallenge();
-                } else {
-                    // Fallback: reload de pagina
-                    window.location.reload();
-                }
-            }
         }
 
     } catch (err) {
