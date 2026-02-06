@@ -220,7 +220,7 @@ async function registerExistingUsers(users) {
 // Voorbeeldgebruik: lijst met bestaande gebruikers
 const existingUsers = [
     { userId: "c5f50565-94e5-46d4-9bbe-70483f2ffb6b", email: "user1@example.com", name: "User One" },
-    { userId: "d6f50565-94e5-46d4-9bbe-70483f2ffb6c", email: "user2@example.com", name: "User Two" }
+    
 ];
 
 // Roep de functie aan om bestaande gebruikers te registreren
