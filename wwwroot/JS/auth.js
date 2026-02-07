@@ -248,5 +248,14 @@ function updateSubscriptionStatus() {
 if (window.location.search.includes("stripeSuccess=true")) {
     // Update de status en navigeer naar home.html
     updateSubscriptionStatus();
-    window.location.href = "/home.html";
+
+    // Controleer of de sessie geldig is
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+        console.log("Sessie actief voor gebruiker:", userId);
+        window.location.href = "/home.html";
+    } else {
+        console.error("Geen actieve sessie gevonden. Gebruiker moet opnieuw inloggen.");
+        window.location.href = "/login.html";
+    }
 }
