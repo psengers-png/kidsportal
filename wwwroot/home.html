@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>RainyDay Club - Login</title>
+    <title>RainyDay Club - Home</title>
 
     <style>
         * { box-sizing: border-box; }
@@ -12,57 +12,42 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .container {
-            background: white;
-            padding: 50px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 500px;
-            text-align: center;
-        }
-        h1 {
-            color: #667eea;
-            margin-top: 0;
-            font-size: 32px;
-        }
-        h2 {
-            color: #667eea;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        p {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-        button {
-            margin: 10px;
-            padding: 12px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            border: none;
-            background: #667eea;
+        header {
+            background: rgba(0,0,0,0.3);
             color: white;
-            font-weight: 600;
+            padding: 25px 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            flex: 1;
+        }
+        .header-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
             transition: all 0.3s;
         }
-        button:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .header-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
         }
-        a {
-            text-decoration: none;
-        }
-        #optionsScreen p {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
+        main {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
         }
         .tile-grid {
             display: flex;
@@ -105,45 +90,42 @@
 
 <body>
 
-    <!-- Container voor layout -->
-    <div class="container">
-        <h1>🎨 RainyDay Club</h1>
-        <p id="statusText">Log in om verder te gaan.</p>
+<header>
+    <h1>🎨 RainyDay Club</h1>
+    <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+    <button class="header-btn" id="abonnementBtn" style="background:#22c55e; color:white;">Upgrade naar onbeperkt</button>
+</header>
 
-        <!-- Login scherm -->
-        <div id="loginScreen">
-            <button id="loginBtn">🔐 Login</button>
-        </div>
+<main>
+    <p id="statusText">Log in om verder te gaan.</p>
 
-        <!-- Opties scherm (na login) -->
-        <div id="optionsScreen" style="display:none;">
-            <h2 id="welcomeText"></h2>
-            <p>Kies een optie:</p>
-            <div class="tile-grid">
-                <a href="kleurplaat.html" class="tile">
-                    <div class="tile-icon">🎨</div>
-                    <div class="tile-title">Kleurplaat Generator</div>
-                </a>
-                <a href="challenge.html" class="tile">
-                    <div class="tile-icon">🎯</div>
-                    <div class="tile-title">Challenge Generator</div>
-                </a>
-                <a href="moppen.html" class="tile">
-                    <div class="tile-icon">😂</div>
-                    <div class="tile-title">Moppen Tapper</div>
-                </a>
-            </div>
-            <button id="abonnementBtn" style="margin-top:32px; background:#22c55e;">Upgrade naar onbeperkt (€4/mnd)</button>
-            <button id="logoutBtn" style="margin-top:32px;">Logout</button>
+    <!-- Opties scherm (na login) -->
+    <div id="optionsScreen" style="display:none;">
+        <h2 id="welcomeText"></h2>
+        <p>Kies een optie:</p>
+        <div class="tile-grid">
+            <a href="kleurplaat.html" class="tile">
+                <div class="tile-icon">🎨</div>
+                <div class="tile-title">Kleurplaat Generator</div>
+            </a>
+            <a href="challenge.html" class="tile">
+                <div class="tile-icon">🎯</div>
+                <div class="tile-title">Challenge Generator</div>
+            </a>
+            <a href="moppen.html" class="tile">
+                <div class="tile-icon">😂</div>
+                <div class="tile-title">Moppen Tapper</div>
+            </a>
         </div>
     </div>
+</main>
 
-    <!-- Scripts -->
-    <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
-   <script type="module" src="/JS/abonnement.js"></script>
-    <script type="module" src="JS/auth.js"></script>
-    <!-- Voeg de Stripe.js-bibliotheek toe -->
-    <script src="https://js.stripe.com/v3/"></script>
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script type="module" src="/JS/abonnement.js"></script>
+<script type="module" src="JS/auth.js"></script>
+<!-- Voeg de Stripe.js-bibliotheek toe -->
+<script src="https://js.stripe.com/v3/"></script>
 
 </body>
 </html>
