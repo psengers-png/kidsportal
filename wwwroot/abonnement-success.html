@@ -73,5 +73,19 @@
         <p>Je abonnement is succesvol geactiveerd. Je kunt nu onbeperkt gebruik maken van alle functies van Kidsportal.</p>
         <a href="/index.html">Terug naar de startpagina</a>
     </main>
+    <script>
+        // Controleer of de gebruiker terugkomt van Stripe
+        if (window.location.search.includes("stripeSuccess=true")) {
+            const userId = localStorage.getItem("userId");
+            if (userId) {
+                console.log("Sessie actief voor gebruiker:", userId);
+                // Update de status in de UI
+                document.querySelector("main").innerHTML += '<p>Status: Onbeperkt</p>';
+            } else {
+                console.error("Geen actieve sessie gevonden. Gebruiker moet opnieuw inloggen.");
+                window.location.href = "/login.html";
+            }
+        }
+    </script>
 </body>
 </html>
