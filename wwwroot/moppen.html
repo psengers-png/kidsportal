@@ -113,7 +113,8 @@
 <body>
 
 <header>
-    <h1>😂 Moppen Tapper</h1>
+    <img src="images/Giggly.png" alt="Giggly" style="height: 50px; margin-right: 10px;">
+    <h1>Giggly: De Moppentapper</h1>
     <button class="header-btn" id="homeBtn">← Terug naar Home</button>
     <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
 </header>
@@ -186,7 +187,7 @@ form.addEventListener("submit", async (e) => {
     const onderwerp2 = form.onderwerp2.value.trim();
     const onderwerp3 = form.onderwerp3.value.trim();
     try {
-        const res = await fetch('https://sengfam1.azurewebsites.net/api/moppen_agent', {
+        const res = await fetch('https://sengfam1.azurewebsites.net/moppen_agent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ onderwerp, onderwerp2, onderwerp3 })
