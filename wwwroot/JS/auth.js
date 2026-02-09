@@ -192,17 +192,6 @@ const createUserUrl = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebs
 
 async function registerUser(userId, email, name) {
     try {
-        // Controleer of de gebruiker al bestaat voordat een nieuwe registratie wordt uitgevoerd
-        const existingUserResponse = await fetch(`${createUserUrl}?userId=${userId}`);
-        if (existingUserResponse.ok) {
-            const existingUser = await existingUserResponse.json();
-            if (existingUser) {
-                console.log(`Gebruiker met ID ${userId} bestaat al. Registratie overgeslagen.`);
-                return;
-            }
-        }
-
-        // Voer de registratie uit als de gebruiker niet bestaat
         const response = await fetch(createUserUrl, {
             method: "POST",
             headers: {
