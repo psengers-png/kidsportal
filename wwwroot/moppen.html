@@ -2,110 +2,122 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Moppen Tapper</title>
+    <title>Giggly – Moppentapper | RainyDay Club</title>
+
     <style>
         * { box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            margin: 0;
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%);
+            margin: 0; 
             padding: 0;
             min-height: 100vh;
         }
-        header {
-            background: rgba(0,0,0,0.3);
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
+
+        header { 
+            background: rgba(0,0,0,0.35);
+            color: white; 
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            backdrop-filter: blur(6px);
         }
+
+        header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header img {
+            height: 45px;
+        }
+
         header h1 {
             margin: 0;
-            flex: 1;
+            font-size: 22px;
         }
+
         .header-btn {
             padding: 8px 16px;
             background: white;
-            color: #f5576c;
+            color: #0ea5e9;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+            margin-left: 8px;
         }
+
         .header-btn:hover {
-            background: #f0f0f0;
             transform: scale(1.05);
         }
-        main {
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+        main { 
+            max-width: 700px; 
+            margin: 40px auto; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
         }
+
         .form-group {
             margin-bottom: 20px;
         }
-        label {
-            font-weight: 600;
-            display: block;
+
+        label { 
+            font-weight: 600; 
+            display: block; 
             margin-bottom: 8px;
             color: #333;
-            font-size: 14px;
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
+
+        input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
-            transition: border 0.3s;
         }
-        input[type="text"]:focus {
+
+        input:focus {
             outline: none;
-            border-color: #f5576c;
+            border-color: #0ea5e9;
         }
-        button {
-            padding: 12px 24px;
-            background: #f5576c;
-            color: white;
-            border: none;
-            border-radius: 8px;
+
+        button { 
+            padding: 12px 24px; 
+            background: #0ea5e9;
+            color: white; 
+            border: none; 
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s;
-            margin-right: 10px;
+            font-size: 15px;
+            transition: 0.3s;
         }
-        button:hover:not(:disabled) {
-            background: #f093fb;
+
+        button:hover:not(:disabled) { 
+            background: #38bdf8;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
         }
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
+
         #statusText {
             text-align: center;
-            color: #f5576c;
+            color: #0ea5e9;
             font-weight: 600;
         }
+
         .mop-box {
-            background: #f9f9f9;
-            border-left: 4px solid #f5576c;
+            background: #f0f9ff;
+            border-left: 5px solid #0ea5e9;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-top: 20px;
-            min-height: 80px;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333;
+            font-size: 17px;
         }
     </style>
 </head>
@@ -113,10 +125,15 @@
 <body>
 
 <header>
-    <img src="images/Giggly.png" alt="Giggly" style="height: 50px; margin-right: 10px;">
-    <h1>Giggly: De Moppentapper</h1>
-    <button class="header-btn" id="homeBtn">← Terug naar Home</button>
-    <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+    <div class="left">
+        <img src="Images/Logo Rainydayclub.png" alt="RainyDay Club">
+        <h1>Giggly – De Moppentapper</h1>
+    </div>
+    <div>
+        <button class="header-btn" id="homeBtn">🏠 Home</button>
+        <button class="header-btn" id="abonnementBtn" style="background:#22c55e; color:white;">Upgrade</button>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+    </div>
 </header>
 
 <main>
