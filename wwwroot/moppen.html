@@ -2,122 +2,111 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Giggly – Moppentapper | RainyDay Club</title>
+    <title>Moppen Tapper</title>
 
     <style>
         * { box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             margin: 0; 
             padding: 0;
             min-height: 100vh;
         }
-
         header { 
-            background: rgba(0,0,0,0.35);
+            background: rgba(0,0,0,0.3);
             color: white; 
-            padding: 15px 25px;
+            padding: 25px 20px;
+            text-align: center;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(6px);
         }
-
-        header .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        header img {
-            height: 45px;
-        }
-
         header h1 {
             margin: 0;
-            font-size: 22px;
+            flex: 1;
         }
-
         .header-btn {
             padding: 8px 16px;
             background: white;
-            color: #0ea5e9;
+            color: #f5576c;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
-            margin-left: 8px;
         }
-
         .header-btn:hover {
+            background: #f0f0f0;
             transform: scale(1.05);
         }
-
         main { 
             max-width: 700px; 
-            margin: 40px auto; 
+            margin: 30px auto; 
             padding: 30px; 
             background: white; 
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-
         .form-group {
             margin-bottom: 20px;
         }
-
         label { 
             font-weight: 600; 
             display: block; 
             margin-bottom: 8px;
             color: #333;
+            font-size: 14px;
         }
-
         input[type="text"] { 
             width: 100%; 
             padding: 12px; 
+            margin-bottom: 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
+            transition: border 0.3s;
         }
-
-        input:focus {
+        input[type="text"]:focus {
             outline: none;
-            border-color: #0ea5e9;
+            border-color: #f5576c;
         }
-
         button { 
             padding: 12px 24px; 
-            background: #0ea5e9;
+            background: #f5576c;
             color: white; 
             border: none; 
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 15px;
-            transition: 0.3s;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-right: 10px;
         }
-
         button:hover:not(:disabled) { 
-            background: #38bdf8;
+            background: #f093fb;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
         }
-
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
         #statusText {
             text-align: center;
-            color: #0ea5e9;
+            color: #f5576c;
             font-weight: 600;
         }
-
         .mop-box {
-            background: #f0f9ff;
-            border-left: 5px solid #0ea5e9;
+            background: #f9f9f9;
+            border-left: 4px solid #f5576c;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 8px;
             margin-top: 20px;
-            font-size: 17px;
+            min-height: 80px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
         }
     </style>
 </head>
