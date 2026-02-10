@@ -235,7 +235,7 @@
         const abonnementBtn = document.getElementById('abonnementBtn');
 
         try {
-          const response = await fetch('/api/getUserStatus', {
+          const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
             method: 'GET',
             headers: { 'user-id': userId },
           });
