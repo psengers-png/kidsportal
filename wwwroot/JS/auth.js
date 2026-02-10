@@ -143,7 +143,8 @@ if (upgradeBtn) {
                 if (data.hasSubscription) {
                     alert("Je hebt al een abonnement!");
                 } else {
-                    startStripeCheckout(userId);
+                    const sanitizedUserId = userId.split('.')[0];
+                    startStripeCheckout(sanitizedUserId);
                 }
             } else {
                 alert("Fout bij het controleren van abonnement: " + response.status);
