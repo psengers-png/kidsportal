@@ -235,9 +235,7 @@
         const abonnementBtn = document.getElementById('abonnementBtn');
 
         if (!userId) {
-          console.error('User ID not found in local storage. Redirecting to login.');
-          alert('Je bent niet ingelogd. Log opnieuw in om door te gaan.');
-          window.location.href = '/home.html';
+          console.error('User ID not found in local storage.');
           return;
         }
 
