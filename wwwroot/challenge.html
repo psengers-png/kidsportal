@@ -245,7 +245,10 @@ form.addEventListener("submit", async (e) => {
     try {
         const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': localStorage.getItem('userId') || ''
+            },
             body: JSON.stringify({
                 type: 'challenge',
                 payload: payload
@@ -303,7 +306,10 @@ form.addEventListener("submit", async (e) => {
                 try {
                     const resp = await fetch('https://sengfam1.azurewebsites.net/api/apiRequest', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'user-id': localStorage.getItem('userId') || ''
+                        },
                         body: JSON.stringify({
                             type: 'challenge',
                             payload: payload
