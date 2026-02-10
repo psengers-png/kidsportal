@@ -192,10 +192,14 @@ form.addEventListener("submit", async (e) => {
     const onderwerp = form.onderwerp1.value.trim();
     const onderwerp2 = form.onderwerp2.value.trim();
     const onderwerp3 = form.onderwerp3.value.trim();
+    console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
     try {
         const res = await fetch('/apiRequest', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': localStorage.getItem('userId') || ''
+            },
             body: JSON.stringify({
                 type: 'moppen_agent',
                 payload: { onderwerp, onderwerp2, onderwerp3 }
