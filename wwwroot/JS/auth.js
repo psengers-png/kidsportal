@@ -122,7 +122,12 @@ function updateUI() {
                 // Check subscription status before proceeding
                 try {
                     console.log(`Calling API with user ID: ${userId}`);
-                    const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${userId}`);
+                    const response = await fetch("https://sengfam1.azurewebsites.net/checkSubscription", {
+                        method: "GET",
+                        headers: {
+                            "user-id": userId
+                        }
+                    });
                     console.log("API Response Status:", response.status);
 
                     if (response.ok) {
@@ -163,7 +168,12 @@ if (upgradeBtn) {
 
         try {
             console.log(`Calling API with username: ${userId}`);
-            const response = await fetch(`https://sengfam1.azurewebsites.net/checkSubscription?user=${userId}`);
+            const response = await fetch("https://sengfam1.azurewebsites.net/checkSubscription", {
+                method: "GET",
+                headers: {
+                    "user-id": userId
+                }
+            });
             console.log("API Response Status:", response.status);
 
             if (response.ok) {
@@ -196,6 +206,7 @@ async function registerUser(userId, email, name) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "user-id": userId
             },
             body: JSON.stringify({ userId, email, name }),
         });
