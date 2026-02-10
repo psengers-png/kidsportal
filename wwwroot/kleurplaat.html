@@ -290,10 +290,15 @@ async function initFormLogic() {
         if (foto_base64) payload.foto_base64 = foto_base64;
 
         try {
-            const resp = await fetch('https://sengfam1.azurewebsites.net/kleurplaat_agent', {
+            const userId = localStorage.getItem('userId') || 'unknown-user';
+
+            const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                },
+                body: JSON.stringify({ type: 'kleurplaat', payload })
             });
 
             const text = await resp.text();
