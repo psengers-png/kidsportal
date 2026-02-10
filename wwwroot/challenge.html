@@ -243,10 +243,13 @@ form.addEventListener("submit", async (e) => {
     };
 
     try {
-        const resp = await fetch('https://sengfam1.azurewebsites.net/challenge_agent', {
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                type: 'challenge',
+                payload: payload
+            })
         });
 
         const text = await resp.text();
@@ -298,10 +301,13 @@ form.addEventListener("submit", async (e) => {
                     type: document.getElementById("type").value
                 };
                 try {
-                    const resp = await fetch('https://sengfam1.azurewebsites.net/challenge_agent', {
+                    const resp = await fetch('https://sengfam1.azurewebsites.net/api/apiRequest', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify({
+                            type: 'challenge',
+                            payload: payload
+                        })
                     });
                     const text = await resp.text();
                     if (!resp.ok) {
