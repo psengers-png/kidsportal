@@ -242,110 +242,60 @@ form.addEventListener("submit", async (e) => {
         type: activiteit_type
     };
 
-    try {
-        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'user-id': localStorage.getItem('userId') || ''
-            },
-            body: JSON.stringify({
-                type: 'challenge',
-                payload: payload
-            })
-        });
+    console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
+    const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'user-id': localStorage.getItem('userId') || ''
+        },
+        body: JSON.stringify({
+            type: 'challenge',
+            payload: payload
+        })
+    });
+    const text = await resp.text();
+    console.log("Response status:", resp.status);
+    console.log("Response text:", text);
 
-        const text = await resp.text();
-        console.log("Response status:", resp.status);
-        console.log("Response text:", text);
-
-        if (!resp.ok) {
-            if(resp.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
-                setTimeout(() => {
-                    if(window.msalInstance) {
-                        const accounts = window.msalInstance.getAllAccounts();
-                        const btn = document.getElementById('abonnementBtn');
-                        if(btn && accounts.length > 0) {
-                            btn.onclick = () => startStripeCheckout(accounts[0].username);
-                        }
+    if (!resp.ok) {
+        if(resp.status === 403 && text.includes('limiet')) {
+            resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+            setTimeout(() => {
+                if(window.msalInstance) {
+                    const accounts = window.msalInstance.getAllAccounts();
+                    const btn = document.getElementById('abonnementBtn');
+                    if(btn && accounts.length > 0) {
+                        btn.onclick = () => startStripeCheckout(accounts[0].username);
                     }
-                }, 100);
-            } else {
-                resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
-            }
-            return;
-        }
-
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
-            resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
-            return;
-        }
-
-        resultaat.innerHTML = `
-            <div class="challenge-box">
-                <strong>🎯 Jouw Challenge:</strong><br><br>
-                ${data.challenge}
-            </div>
-            <button id="nextChallengeBtn">🔄 Volgende Challenge</button>
-        `;
-
-        // Voeg event listener toe aan de nieuwe knop
-        const nextBtn = document.getElementById("nextChallengeBtn");
-        if (nextBtn) {
-            nextBtn.onclick = async () => {
-                resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
-                // Hergebruik de laatst ingevulde waarden
-                const payload = {
-                    energie: document.getElementById("energie").value,
-                    type: document.getElementById("type").value
-                };
-                try {
-                    const resp = await fetch('https://sengfam1.azurewebsites.net/api/apiRequest', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'user-id': localStorage.getItem('userId') || ''
-                        },
-                        body: JSON.stringify({
-                            type: 'challenge',
-                            payload: payload
-                        })
-                    });
-                    const text = await resp.text();
-                    if (!resp.ok) {
-                        resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
-                        return;
-                    }
-                    let data;
-                    try {
-                        data = JSON.parse(text);
-                    } catch (e) {
-                        resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
-                        return;
-                    }
-                    resultaat.innerHTML = `
-                        <div class="challenge-box">
-                            <strong>🎯 Jouw Challenge:</strong><br><br>
-                            ${data.challenge}
-                        </div>
-                        <button id="nextChallengeBtn">🔄 Volgende Challenge</button>
-                    `;
-                    // Herhaal event listener voor nieuwe knop
-                    const nextBtn = document.getElementById("nextChallengeBtn");
-                    if (nextBtn) nextBtn.onclick = handleNextChallenge;
-                } catch (err) {
-                    resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
                 }
-            };
+            }, 100);
+        } else {
+            resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
         }
+        return;
+    }
 
-    } catch (err) {
-        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
-        console.error("Error:", err);
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (e) {
+        resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+        return;
+    }
+
+    resultaat.innerHTML = `
+        <div class="challenge-box">
+            <strong>🎯 Jouw Challenge:</strong><br><br>
+            ${data.challenge}
+        </div>
+        <button id="nextChallengeBtn">🔄 Volgende Challenge</button>
+    `;
+
+    // Voeg event listener toe aan de nieuwe knop
+    const nextBtn = document.getElementById("nextChallengeBtn");
+    if (nextBtn) {
+        nextBtn.onclick = handleNextChallenge;
     }
 });
 </script>
