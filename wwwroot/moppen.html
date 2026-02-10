@@ -193,10 +193,13 @@ form.addEventListener("submit", async (e) => {
     const onderwerp2 = form.onderwerp2.value.trim();
     const onderwerp3 = form.onderwerp3.value.trim();
     try {
-        const res = await fetch('https://sengfam1.azurewebsites.net/moppen_agent', {
+        const res = await fetch('/apiRequest', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ onderwerp, onderwerp2, onderwerp3 })
+            body: JSON.stringify({
+                type: 'moppen_agent',
+                payload: { onderwerp, onderwerp2, onderwerp3 }
+            })
         });
         const text = await res.text();
         console.log("Response status:", res.status);
