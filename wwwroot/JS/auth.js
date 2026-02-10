@@ -244,7 +244,7 @@ async function startStripeCheckout(userId) {
         if (response.ok) {
             const { id } = JSON.parse(responseText);
             console.log("Stripe checkout session created successfully. Session ID:", id);
-            window.location.href = `https://checkout.stripe.com/pay/${id}`;
+            window.location.href = `https://checkout.stripe.com/c/pay/${id}`;
         } else {
             console.error("Failed to create checkout session. Status:", response.status);
             alert("Fout bij het aanmaken van een checkout sessie.");
