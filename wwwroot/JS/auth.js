@@ -224,14 +224,17 @@ registerExistingUsers(existingUsers);
 // Ensure startStripeCheckout remains defined and accessible for home.html
 async function startStripeCheckout(userId) {
     console.log("startStripeCheckout called with userId:", userId);
+    console.log("Preparing to send createCheckout API request...");
+
     try {
-        console.log("Preparing to send createCheckout API request...");
+        const functionKey = "jwV7NqKLnbpD0kagadk2tuBl4UIV_OCJtCSaHehV9smYAzFulku5Eg=="; // Hardcoded for now
         const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createCheckout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "user-id": userId
-            }
+                "Authorization": `Bearer ${functionKey}`
+            },
+            body: JSON.stringify({ userId })
         });
 
         console.log("createCheckout API Response Status:", response.status);
@@ -239,12 +242,12 @@ async function startStripeCheckout(userId) {
         console.log("createCheckout API Response Text:", responseText);
 
         if (response.ok) {
-            const data = JSON.parse(responseText);
-            console.log("Redirecting to Stripe checkout URL:", data.url);
-            window.location.href = data.url;
+            const { id } = JSON.parse(responseText);
+            console.log("Stripe checkout session created successfully. Session ID:", id);
+            window.location.href = `https://checkout.stripe.com/pay/${id}`;
         } else {
             console.error("Failed to create checkout session. Status:", response.status);
-            alert("Fout bij het starten van de checkout: " + response.status);
+            alert("Fout bij het aanmaken van een checkout sessie.");
         }
     } catch (error) {
         console.error("Error in startStripeCheckout:", error);
