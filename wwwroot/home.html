@@ -190,7 +190,7 @@
       <a class="card" href="kleurplaat.html">
         <img src="Images/Driply.png" alt="driply" style="height: 250px; margin-right: 0px;">
         <h3>Driply</h3>
-        <p>Verandert regenachtige gevoelens in kleurrijke kunst en tekeningen.</p>
+        <p>Verandert regenachtige gevoelens in kleurrijke creatieve kleurplaten.</p>
       </a>
 
       <a class="card" href="challenge.html">
@@ -228,6 +228,49 @@
 <script type="module" src="JS/auth.js"></script>
 <!-- Voeg de Stripe.js-bibliotheek toe -->
 <script src="https://js.stripe.com/v3/"></script>
+
+<script>
+      async function updateSubscriptionButton() {
+        const userId = localStorage.getItem('user-id');
+        const abonnementBtn = document.getElementById('abonnementBtn');
+
+        try {
+          const response = await fetch('/api/getUserStatus', {
+            method: 'GET',
+            headers: { 'user-id': userId },
+          });
+
+          const data = await response.json();
+
+          if (data.IsActive) {
+            abonnementBtn.textContent = 'Onbeperkte toegang';
+            abonnementBtn.style.background = '#ef4444'; // Red for cancel
+            abonnementBtn.onclick = async () => {
+              const cancelResponse = await fetch('/api/cancelSubscription', {
+                method: 'POST',
+                headers: { 'user-id': userId },
+              });
+              if (cancelResponse.ok) {
+                alert('Abonnement opgezegd.');
+                location.reload();
+              } else {
+                alert('Er is een fout opgetreden bij het opzeggen.');
+              }
+            };
+          } else {
+            abonnementBtn.textContent = 'Upgrade naar onbeperkt';
+            abonnementBtn.style.background = '#22c55e'; // Green for upgrade
+            abonnementBtn.onclick = () => {
+              window.location.href = '/upgrade';
+            };
+          }
+        } catch (error) {
+          console.error('Error fetching user status:', error);
+        }
+      }
+
+      updateSubscriptionButton();
+    </script>
 
 </body>
 </html>
