@@ -220,35 +220,7 @@ registerExistingUsers(existingUsers);
 
 // Fake change to trigger a push
 
-import { startStripeCheckout } from './abonnement.js';
-
-export { msalInstance };
-
-// Voeg een functie toe om de status "Onbeperkt" te tonen na terugkomst van Stripe
-function updateSubscriptionStatus() {
-    const statusField = document.getElementById("subscriptionStatus");
-    if (statusField) {
-        statusField.textContent = "Onbeperkt";
-        statusField.style.color = "#22c55e"; // Groene kleur voor status
-    }
-}
-
-// Controleer of de gebruiker terugkomt van Stripe
-if (window.location.search.includes("stripeSuccess=true")) {
-    // Update de status en navigeer naar home.html
-    updateSubscriptionStatus();
-
-    // Controleer of de sessie geldig is
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-        console.log("Sessie actief voor gebruiker:", userId);
-        window.location.href = "/home.html";
-    } else {
-        console.error("Geen actieve sessie gevonden. Gebruiker moet opnieuw inloggen.");
-        window.location.href = "/login.html";
-    }
-}
-
+// Ensure startStripeCheckout remains defined and accessible for home.html
 async function startStripeCheckout(userId) {
     console.log("startStripeCheckout called with userId:", userId);
     try {
@@ -275,5 +247,32 @@ async function startStripeCheckout(userId) {
     } catch (error) {
         console.error("Error in startStripeCheckout:", error);
         alert("Er ging iets mis bij het starten van de checkout.");
+    }
+}
+
+export { msalInstance };
+
+// Voeg een functie toe om de status "Onbeperkt" te tonen na terugkomst van Stripe
+function updateSubscriptionStatus() {
+    const statusField = document.getElementById("subscriptionStatus");
+    if (statusField) {
+        statusField.textContent = "Onbeperkt";
+        statusField.style.color = "#22c55e"; // Groene kleur voor status
+    }
+}
+
+// Controleer of de gebruiker terugkomt van Stripe
+if (window.location.search.includes("stripeSuccess=true")) {
+    // Update de status en navigeer naar home.html
+    updateSubscriptionStatus();
+
+    // Controleer of de sessie geldig is
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+        console.log("Sessie actief voor gebruiker:", userId);
+        window.location.href = "/home.html";
+    } else {
+        console.error("Geen actieve sessie gevonden. Gebruiker moet opnieuw inloggen.");
+        window.location.href = "/login.html";
     }
 }
