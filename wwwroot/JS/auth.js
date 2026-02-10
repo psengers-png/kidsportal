@@ -72,22 +72,25 @@ async function updateUI() {
 async function checkUserStatus(userId) {
     console.log("Checking subscription status for user:", userId);
 
+    console.log("Sending API request to getUserStatus with headers:", {
+        'user-id': userId
+    });
+
+    const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
+        method: 'GET',
+        headers: { 'user-id': userId },
+    });
+
+    console.log("API response status:", response.status);
+    const rawText = await response.text();
+    console.log("Raw response text:", rawText);
+
     try {
-        const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
-            method: 'GET',
-            headers: { 'user-id': userId },
-        });
-
-        if (!response.ok) {
-            console.error("Failed to fetch user status. Status:", response.status);
-            return null;
-        }
-
-        const data = await response.json();
-        console.log("checkUserStatus response:", data);
+        const data = JSON.parse(rawText);
+        console.log("Parsed JSON response:", data);
         return data;
     } catch (error) {
-        console.error("Error fetching user status:", error);
+        console.error("Error parsing JSON response:", error);
         return null;
     }
 }
