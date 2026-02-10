@@ -55,12 +55,14 @@ async function updateUI() {
     console.log("User ID saved to localStorage:", userId);
 
     const userStatus = await checkUserStatus(userId);
-    if (userStatus && userStatus.IsActive) {
+    if (userStatus && userStatus.isActive) { // Corrected property name
         console.log("User has unlimited access.");
         const abonnementBtn = document.getElementById("abonnementBtn");
         if (abonnementBtn) {
             abonnementBtn.textContent = "Onbeperkte toegang";
             abonnementBtn.style.background = "#ef4444"; // Red for cancel
+        } else {
+            console.error("Subscription button not found on the page.");
         }
     }
 }
