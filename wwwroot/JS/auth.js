@@ -99,6 +99,7 @@ if (upgradeBtn) {
     upgradeBtn.onclick = async () => {
         console.log("Upgrade button clicked.");
         const accounts = msalInstance.getAllAccounts();
+        console.log("Upgrade button clicked. Accounts:", accounts);
         if (accounts.length === 0 || !accounts[0].username) {
             console.error("No user logged in or username is undefined.");
             alert("Je moet ingelogd zijn om een abonnement te controleren.");
