@@ -227,7 +227,7 @@ async function startStripeCheckout(userId) {
     console.log("Preparing to send createCheckout API request...");
 
     try {
-        const functionKey = "jwV7NqKLnbpD0kagadk2tuBl4UIV_OCJtCSaHehV9smYAzFulku5Eg=="; // Hardcoded for now
+        const functionKey = "jwV7NqKLnbpD0kagadk2tuBl4UIV_OCJtCSaHehV9smYAzFulku5Eg=="; // Replace with a secure method
         const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createCheckout", {
             method: "POST",
             headers: {
@@ -242,9 +242,17 @@ async function startStripeCheckout(userId) {
         console.log("createCheckout API Response Text:", responseText);
 
         if (response.ok) {
-            const { id } = JSON.parse(responseText);
-            console.log("Stripe checkout session created successfully. Session ID:", id);
-            window.location.href = `https://checkout.stripe.com/c/pay/${id}`;
+            try {
+                const { id } = JSON.parse(responseText);
+                if (!id) {
+                    throw new Error("Missing session ID in API response.");
+                }
+                console.log("Stripe checkout session created successfully. Session ID:", id);
+                window.location.href = `https://checkout.stripe.com/c/pay/${id}`;
+            } catch (parseError) {
+                console.error("Error parsing API response JSON:", parseError);
+                alert("Fout bij het verwerken van de API-reactie.");
+            }
         } else {
             console.error("Failed to create checkout session. Status:", response.status);
             alert("Fout bij het aanmaken van een checkout sessie.");
