@@ -139,6 +139,18 @@ if (upgradeBtn) {
     console.error("Upgrade button not found on the page.");
 }
 
+// Ensure logout button has a proper event listener
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+    console.log("Logout button found. Adding click event listener.");
+    logoutBtn.onclick = () => {
+        console.log("Logout button clicked. Logging out user.");
+        msalInstance.logout();
+    };
+} else {
+    console.error("Logout button not found on the page.");
+}
+
 // Voeg de URL van de createUser-functie toe
 const createUserUrl = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createUser";
 
