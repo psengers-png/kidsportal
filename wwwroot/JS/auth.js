@@ -40,117 +40,52 @@ window.onload = () => {
 };
 
 // ---------------- UI LOGICA ---------------------
-function updateUI() {
+async function updateUI() {
     console.log("updateUI aangeroepen");
 
-    // HTML-elementen ophalen
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const statusText = document.getElementById("statusText");
-    const loginScreen = document.getElementById("loginScreen");
-    const optionsScreen = document.getElementById("optionsScreen");
-    const welcomeText = document.getElementById("welcomeText");
-
     const accounts = msalInstance.getAllAccounts();
-    console.log("Accounts:", accounts);
-
-    // Debugging: Check if the user is logged in
-    console.log("Checking login status...");
-    console.log("Accounts found:", accounts);
-
     if (accounts.length === 0) {
         console.warn("No user logged in. Redirecting to login...");
-        alert("Je bent niet ingelogd. Log in om verder te gaan.");
         msalInstance.loginRedirect();
         return;
     }
 
-    // Niet ingelogd
-    if (accounts.length === 0) {
-        console.log("Gebruiker niet ingelogd");
-        if (loginScreen) loginScreen.style.display = "block";
-        if (optionsScreen) optionsScreen.style.display = "none";
-        if (statusText) statusText.textContent = "Log in om verder te gaan.";
-
-        // Login knop event-listener koppelen
-        if (loginBtn) {
-            loginBtn.onclick = () => {
-                console.log("Login knop geklikt");
-                msalInstance.loginRedirect();
-            };
-        }
-        return;
-    }
-
-    // Wel ingelogd
-    let userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
-    console.log("Gebruiker ingelogd als:", userId);
+    const userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
     localStorage.setItem("userId", userId);
     console.log("User ID saved to localStorage:", userId);
 
-    if (loginScreen) loginScreen.style.display = "none";
-    if (optionsScreen) optionsScreen.style.display = "block";
-    if (welcomeText) welcomeText.textContent = `Welkom, ${userId}!`;
-
-    // Logout knop event-listener koppelen
-    if (logoutBtn) {
-        logoutBtn.onclick = () => {
-            console.log("Logout knop geklikt");
-            msalInstance.logoutRedirect();
-        };
+    const userStatus = await checkUserStatus(userId);
+    if (userStatus && userStatus.IsActive) {
+        console.log("User has unlimited access.");
+        const abonnementBtn = document.getElementById("abonnementBtn");
+        if (abonnementBtn) {
+            abonnementBtn.textContent = "Onbeperkte toegang";
+            abonnementBtn.style.background = "#ef4444"; // Red for cancel
+        }
     }
+}
 
-        // Debugging: Log the entire account object
-        console.log("Account object:", accounts[0]);
+async function checkUserStatus(userId) {
+    console.log("Checking subscription status for user:", userId);
 
-        // Use localAccountId or homeAccountId as a fallback if userId is empty
-        userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
-        console.log("Upgrade button clicked. User ID:", userId);
+    try {
+        const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
+            method: 'GET',
+            headers: { 'user-id': userId },
+        });
 
-        if (!userId) {
-            console.error("No user logged in or userId is undefined.");
-            alert("Je moet ingelogd zijn om een abonnement te controleren.");
-            return;
+        if (!response.ok) {
+            console.error("Failed to fetch user status. Status:", response.status);
+            return null;
         }
 
-        console.log("User ID (or fallback):", userId);
-
-        // Debugging: Log the userId before making the API call
-        console.log("Preparing to check subscription for user:", userId);
-
-        // Upgrade knop event-listener koppelen (alleen als ingelogd)
-        const upgradeBtn = document.getElementById("abonnementBtn");
-        if (upgradeBtn) {
-            upgradeBtn.onclick = async () => {
-                // Check subscription status before proceeding
-                try {
-                    console.log(`Calling API with user ID: ${userId}`);
-                    const response = await fetch("https://sengfam1.azurewebsites.net/checkSubscription", {
-                        method: "GET",
-                        headers: {
-                            "user-id": userId
-                        }
-                    });
-                    console.log("API Response Status:", response.status);
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log("API Response Data:", data);
-
-                        if (data.hasSubscription) {
-                            alert("Je hebt al een abonnement!");
-                        } else {
-                            startStripeCheckout(userId);
-                        }
-                    } else {
-                        alert("Fout bij het controleren van abonnement: " + response.status);
-                    }
-                } catch (error) {
-                    console.error("Error checking subscription status:", error);
-                    alert("Er ging iets mis bij het controleren van je abonnement.");
-                }
-            };
-        }
+        const data = await response.json();
+        console.log("User subscription status:", data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching user status:", error);
+        return null;
+    }
 }
 
 // Debugging: Verify upgrade button existence and event listener attachment
