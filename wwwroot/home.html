@@ -269,7 +269,9 @@
             abonnementBtn.textContent = 'Upgrade naar onbeperkt';
             abonnementBtn.style.background = '#22c55e'; // Green for upgrade
             abonnementBtn.onclick = () => {
-              window.location.href = '/upgrade';
+              console.log('Starting Stripe checkout for user:', userId);
+              const sanitizedUserId = userId.split('.')[0];
+              startStripeCheckout(sanitizedUserId);
             };
           }
         } catch (error) {
