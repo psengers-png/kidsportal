@@ -126,8 +126,7 @@ if (abonnementBtn) {
         console.log("Sanitized UserId:", sanitizedUserId);
 
         if (abonnementBtn.textContent === "Upgrade naar onbeperkt") {
-            console.log("Starting subscription process for user:", sanitizedUserId);
-            console.log("Calling startStripeCheckout...");
+            console.log("Preparing to call startStripeCheckout for user:", sanitizedUserId);
             startStripeCheckout(sanitizedUserId);
         } else if (abonnementBtn.textContent === "Onbeperkte toegang") {
             console.log("Cancelling subscription for user:", sanitizedUserId);
