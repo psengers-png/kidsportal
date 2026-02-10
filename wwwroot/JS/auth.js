@@ -104,58 +104,58 @@ async function checkUserStatus(userId) {
 // Debugging: Verify upgrade button existence and event listener attachment
 const upgradeBtn = document.getElementById("abonnementBtn");
 if (upgradeBtn) {
-    console.log("Upgrade button found. Adding click event listener.");
+    console.log("Upgrade button found. Adding dynamic click event listener.");
     upgradeBtn.onclick = async () => {
-        console.log("Upgrade button clicked.");
+        console.log("abonnementBtn clicked.");
         const accounts = msalInstance.getAllAccounts();
-        console.log("Upgrade button clicked. Accounts:", accounts);
         if (accounts.length === 0) {
-            console.error("Geen accounts gevonden. Gebruiker is niet ingelogd.");
-            alert("Je moet ingelogd zijn om een abonnement te controleren.");
+            console.error("No accounts found. User is not logged in.");
+            alert("Je moet ingelogd zijn om een abonnement te beheren.");
             return;
         }
 
         const account = accounts[0];
-        console.log("Eerste account:", account);
         const userId = account.homeAccountId || "";
         if (!userId) {
-            console.error("Geen geldige userId gevonden in account.");
-            alert("Je moet ingelogd zijn om een abonnement te controleren.");
+            console.error("No valid userId found in account.");
+            alert("Je moet ingelogd zijn om een abonnement te beheren.");
             return;
         }
 
-        console.log("UserId gevonden:", userId);
+        console.log("UserId found:", userId);
 
-        try {
-            console.log(`Calling API with userId: ${userId}`);
-            const response = await fetch("https://sengfam1.azurewebsites.net/checkSubscription", {
-                method: "GET",
-                headers: {
-                    "user-id": userId
-                }
-            });
-            console.log("API Response Status:", response.status);
+        if (upgradeBtn.textContent === "Upgrade naar onbeperkt") {
+            console.log("Starting subscription process for user:", userId);
+            const sanitizedUserId = userId.split('.')[0];
+            startStripeCheckout(sanitizedUserId);
+        } else if (upgradeBtn.textContent === "Onbeperkte toegang") {
+            console.log("Cancelling subscription for user:", userId);
+            try {
+                const response = await fetch("https://sengfam1.azurewebsites.net/cancelSubscription", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "user-id": userId
+                    }
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log("API Response Data:", data);
-
-                if (data.hasSubscription) {
-                    alert("Je hebt al een abonnement!");
+                if (response.ok) {
+                    console.log("Subscription cancelled successfully.");
+                    alert("Je abonnement is succesvol opgezegd.");
+                    upgradeBtn.textContent = "Upgrade naar onbeperkt";
+                    upgradeBtn.style.background = "#10b981"; // Green for upgrade
                 } else {
-                    const sanitizedUserId = userId.split('.')[0];
-                    startStripeCheckout(sanitizedUserId);
+                    console.error("Failed to cancel subscription. Status:", response.status);
+                    alert("Fout bij het opzeggen van je abonnement.");
                 }
-            } else {
-                alert("Fout bij het controleren van abonnement: " + response.status);
+            } catch (error) {
+                console.error("Error cancelling subscription:", error);
+                alert("Er ging iets mis bij het opzeggen van je abonnement.");
             }
-        } catch (error) {
-            console.error("Error checking subscription status:", error);
-            alert("Er ging iets mis bij het controleren van je abonnement.");
         }
     };
 } else {
-    console.error("Upgrade button not found on the page.");
+    console.error("abonnementBtn not found on the page.");
 }
 
 // Ensure logout button has a proper event listener
