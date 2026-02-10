@@ -148,7 +148,7 @@ if (abonnementBtn) {
                 if (response.ok) {
                     console.log("Subscription cancelled successfully.");
                     alert("Je abonnement is succesvol opgezegd.");
-                    abonnementBtn.textContent = "Upgrade naar onbeperkt";
+                    abonnementBtn.textContent = "Upgrade"
                     abonnementBtn.style.background = "#10b981"; // Green for upgrade
                 } else {
                     console.error("Failed to cancel subscription. Status:", response.status);
