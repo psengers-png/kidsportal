@@ -122,22 +122,21 @@ if (abonnementBtn) {
             return;
         }
 
-        console.log("UserId found:", userId);
+        const sanitizedUserId = userId.split('.')[0];
+        console.log("Sanitized UserId:", sanitizedUserId);
 
         if (abonnementBtn.textContent === "Upgrade naar onbeperkt") {
-            console.log("Starting subscription process for user:", userId);
-            const sanitizedUserId = userId.split('.')[0];
-            console.log("Sanitized UserId:", sanitizedUserId);
+            console.log("Starting subscription process for user:", sanitizedUserId);
             startStripeCheckout(sanitizedUserId);
         } else if (abonnementBtn.textContent === "Onbeperkte toegang") {
-            console.log("Cancelling subscription for user:", userId);
+            console.log("Cancelling subscription for user:", sanitizedUserId);
             try {
                 console.log("Sending cancelSubscription API request...");
                 const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription?code=xHxQtcLBynLbEZlkWbVM5Nbg6VFGxwIdJIT9K8vGg31SAzFumpa0Cw==", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "user-id": userId
+                        "user-id": sanitizedUserId
                     }
                 });
 
@@ -148,7 +147,7 @@ if (abonnementBtn) {
                 if (response.ok) {
                     console.log("Subscription cancelled successfully.");
                     alert("Je abonnement is succesvol opgezegd.");
-                    abonnementBtn.textContent = "Upgrade"
+                    abonnementBtn.textContent = "Upgrade naar onbeperkt";
                     abonnementBtn.style.background = "#10b981"; // Green for upgrade
                 } else {
                     console.error("Failed to cancel subscription. Status:", response.status);
