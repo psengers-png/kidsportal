@@ -225,7 +225,7 @@ registerExistingUsers(existingUsers);
 async function startStripeCheckout(userId) {
     console.log("startStripeCheckout called with userId:", userId);
     try {
-        console.log("Sending createCheckout API request...");
+        console.log("Preparing to send createCheckout API request...");
         const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createCheckout", {
             method: "POST",
             headers: {
@@ -250,6 +250,7 @@ async function startStripeCheckout(userId) {
         console.error("Error in startStripeCheckout:", error);
         alert("Er ging iets mis bij het starten van de checkout.");
     }
+    console.log("startStripeCheckout execution completed.");
 }
 
 export { msalInstance };
