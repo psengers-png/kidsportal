@@ -84,7 +84,8 @@ async function checkUserStatus(userId) {
         }
 
         const data = await response.json();
-        console.log("User subscription status:", data);
+        console.log("checkUserStatus response:", data);
+        console.log("Raw API response:", response);
         return data;
     } catch (error) {
         console.error("Error fetching user status:", error);
