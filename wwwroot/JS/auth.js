@@ -102,10 +102,10 @@ async function checkUserStatus(userId) {
 }
 
 // Debugging: Verify upgrade button existence and event listener attachment
-const upgradeBtn = document.getElementById("abonnementBtn");
-if (upgradeBtn) {
-    console.log("Upgrade button found. Adding dynamic click event listener.");
-    upgradeBtn.onclick = async () => {
+const abonnementBtn = document.getElementById("abonnementBtn");
+if (abonnementBtn) {
+    console.log("abonnementBtn found. Adding dynamic click event listener.");
+    abonnementBtn.onclick = async () => {
         console.log("abonnementBtn clicked.");
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length === 0) {
@@ -124,11 +124,12 @@ if (upgradeBtn) {
 
         console.log("UserId found:", userId);
 
-        if (upgradeBtn.textContent === "Upgrade naar onbeperkt") {
+        if (abonnementBtn.textContent === "Upgrade naar onbeperkt") {
             console.log("Starting subscription process for user:", userId);
             const sanitizedUserId = userId.split('.')[0];
+            console.log("Sanitized UserId:", sanitizedUserId);
             startStripeCheckout(sanitizedUserId);
-        } else if (upgradeBtn.textContent === "Onbeperkte toegang") {
+        } else if (abonnementBtn.textContent === "Onbeperkte toegang") {
             console.log("Cancelling subscription for user:", userId);
             try {
                 console.log("Sending cancelSubscription API request...");
@@ -147,8 +148,8 @@ if (upgradeBtn) {
                 if (response.ok) {
                     console.log("Subscription cancelled successfully.");
                     alert("Je abonnement is succesvol opgezegd.");
-                    upgradeBtn.textContent = "Upgrade naar onbeperkt";
-                    upgradeBtn.style.background = "#10b981"; // Green for upgrade
+                    abonnementBtn.textContent = "Upgrade naar onbeperkt";
+                    abonnementBtn.style.background = "#10b981"; // Green for upgrade
                 } else {
                     console.error("Failed to cancel subscription. Status:", response.status);
                     alert("Fout bij het opzeggen van je abonnement.");
