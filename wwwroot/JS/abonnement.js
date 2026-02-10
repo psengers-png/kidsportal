@@ -24,7 +24,6 @@ function startStripeCheckout(userId) {
         console.log("Stripe session data received:", data);
         if (!data.id) throw new Error('Stripe session not created');
 
-        // Fetch the public key dynamically
         const stripePublicKey = 'pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR'; // Replace with dynamic injection if possible
         const stripe = Stripe(stripePublicKey);
 
