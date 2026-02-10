@@ -194,7 +194,7 @@ form.addEventListener("submit", async (e) => {
     const onderwerp3 = form.onderwerp3.value.trim();
     console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
     try {
-        const res = await fetch('/apiRequest', {
+        const res = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
