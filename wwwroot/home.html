@@ -239,12 +239,14 @@
           return;
         }
 
-        try {
-          const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
-            method: 'GET',
-            headers: { 'user-id': userId },
-          });
+        console.log('Calling /getUserStatus API with userId:', userId);
+        const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
+          method: 'GET',
+          headers: { 'user-id': userId },
+        });
+        console.log('Response from /getUserStatus:', response);
 
+        try {
           const data = await response.json();
 
           if (data.IsActive) {
