@@ -88,6 +88,11 @@ async function checkUserStatus(userId) {
     try {
         const data = JSON.parse(rawText);
         console.log("Parsed JSON response:", data);
+        if (data.isActive) {
+            console.log("isActive is true. Updating UI.");
+        } else {
+            console.log("isActive is false or undefined.");
+        }
         return data;
     } catch (error) {
         console.error("Error parsing JSON response:", error);
