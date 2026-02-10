@@ -44,6 +44,7 @@ async function updateUI() {
     console.log("updateUI aangeroepen");
 
     const accounts = msalInstance.getAllAccounts();
+    console.log("Accounts gevonden door msalInstance:", accounts);
     if (accounts.length === 0) {
         console.warn("No user logged in. Redirecting to login...");
         msalInstance.loginRedirect();
@@ -108,17 +109,25 @@ if (upgradeBtn) {
         console.log("Upgrade button clicked.");
         const accounts = msalInstance.getAllAccounts();
         console.log("Upgrade button clicked. Accounts:", accounts);
-        if (accounts.length === 0 || !accounts[0].username) {
-            console.error("No user logged in or username is undefined.");
+        if (accounts.length === 0) {
+            console.error("Geen accounts gevonden. Gebruiker is niet ingelogd.");
             alert("Je moet ingelogd zijn om een abonnement te controleren.");
             return;
         }
 
-        const username = accounts[0].username || accounts[0].preferred_username || "";
-        console.log("Upgrade button clicked. Username:", userId);
+        const account = accounts[0];
+        console.log("Eerste account:", account);
+        const userId = account.homeAccountId || "";
+        if (!userId) {
+            console.error("Geen geldige userId gevonden in account.");
+            alert("Je moet ingelogd zijn om een abonnement te controleren.");
+            return;
+        }
+
+        console.log("UserId gevonden:", userId);
 
         try {
-            console.log(`Calling API with username: ${userId}`);
+            console.log(`Calling API with userId: ${userId}`);
             const response = await fetch("https://sengfam1.azurewebsites.net/checkSubscription", {
                 method: "GET",
                 headers: {
@@ -134,7 +143,7 @@ if (upgradeBtn) {
                 if (data.hasSubscription) {
                     alert("Je hebt al een abonnement!");
                 } else {
-                    startStripeCheckout(username);
+                    startStripeCheckout(userId);
                 }
             } else {
                 alert("Fout bij het controleren van abonnement: " + response.status);
