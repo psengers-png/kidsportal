@@ -125,10 +125,11 @@ if (abonnementBtn) {
         const sanitizedUserId = userId.split('.')[0];
         console.log("Sanitized UserId:", sanitizedUserId);
 
-        if (abonnementBtn.textContent === "Upgrade naar onbeperkt") {
+        console.log("Current abonnementBtn textContent:", abonnementBtn.textContent);
+        if (abonnementBtn.textContent.trim() === "Upgrade naar onbeperkt") {
             console.log("Preparing to call startStripeCheckout for user:", sanitizedUserId);
             startStripeCheckout(sanitizedUserId);
-        } else if (abonnementBtn.textContent === "Onbeperkte toegang") {
+        } else if (abonnementBtn.textContent.trim() === "Onbeperkte toegang") {
             console.log("Cancelling subscription for user:", sanitizedUserId);
             try {
                 console.log("Sending cancelSubscription API request...");
