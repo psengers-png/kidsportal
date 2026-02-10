@@ -224,6 +224,7 @@ registerExistingUsers(existingUsers);
 async function startStripeCheckout(userId) {
     console.log("startStripeCheckout called with userId:", userId);
     try {
+        console.log("Sending createCheckout API request...");
         const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createCheckout", {
             method: "POST",
             headers: {
