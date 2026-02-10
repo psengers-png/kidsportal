@@ -85,6 +85,9 @@ function updateUI() {
     // Wel ingelogd
     let userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
     console.log("Gebruiker ingelogd als:", userId);
+    localStorage.setItem("userId", userId);
+    console.log("User ID saved to localStorage:", userId);
+
     if (loginScreen) loginScreen.style.display = "none";
     if (optionsScreen) optionsScreen.style.display = "block";
     if (welcomeText) welcomeText.textContent = `Welkom, ${userId}!`;
