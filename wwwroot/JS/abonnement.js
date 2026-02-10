@@ -23,8 +23,10 @@ function startStripeCheckout(userId) {
         return res.json();
     })
     .then(data => {
+        console.log("Stripe session data received:", data); // Debugging log
         if (!data.id) throw new Error('Stripe session not created');
         const stripe = Stripe('pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR');
+        console.log("Redirecting to Stripe Checkout with session ID:", data.id); // Debugging log
         stripe.redirectToCheckout({ sessionId: data.id });
     })
     .catch(err => {
