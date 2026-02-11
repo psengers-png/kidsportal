@@ -254,7 +254,7 @@
             abonnementBtn.textContent = 'Onbeperkte toegang';
             abonnementBtn.style.background = '#ef4444'; // Red for cancel
             abonnementBtn.onclick = async () => {
-              const cancelResponse = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription', {
+              const cancelResponse = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription?code=REDACTED_FUNCTION_KEY==', {
                 method: 'POST',
                 headers: { 'user-id': userId },
               });
