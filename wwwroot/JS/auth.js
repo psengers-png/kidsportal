@@ -51,9 +51,17 @@ async function updateUI() {
         return;
     }
 
-    const userId = accounts[0].username || accounts[0].localAccountId || accounts[0].homeAccountId || "";
+    const account = accounts[0];
+    const userId = account.homeAccountId || account.localAccountId || account.username || "";
     localStorage.setItem("userId", userId);
+    localStorage.setItem("user-id", userId);
     console.log("User ID saved to localStorage:", userId);
+
+    const email = account.username || account.idTokenClaims?.email || account.idTokenClaims?.preferred_username || "";
+    const name = account.name || account.idTokenClaims?.name || email || "Unknown";
+    if (userId) {
+        await registerUser(userId, email, name);
+    }
 
     const userStatus = await checkUserStatus(userId);
     if (userStatus && userStatus.isActive) { // Corrected property name
