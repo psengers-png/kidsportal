@@ -217,12 +217,17 @@ form.addEventListener("submit", async (e) => {
                 setTimeout(() => {
                     const accounts = msalInstance.getAllAccounts();
                     const btn = document.getElementById('abonnementBtn');
-                    const storedUserId = localStorage.getItem('userId') || '';
-                    const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
+                    const storedUserId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+                    const accountUserId = accounts.length > 0 ? (accounts[0].homeAccountId || accounts[0].localAccountId || accounts[0].username || '') : '';
                     const userId = storedUserId || accountUserId;
                     if (btn && userId) {
                         const sanitizedUserId = userId.split('.')[0];
-                        btn.onclick = () => startStripeCheckout(sanitizedUserId);
+                        const checkout = window.startStripeCheckout || startStripeCheckout;
+                        if (checkout) {
+                            btn.onclick = () => checkout(sanitizedUserId);
+                        } else {
+                            console.error("startStripeCheckout is not available on this page.");
+                        }
                     }
                 }, 100);
             } else {
