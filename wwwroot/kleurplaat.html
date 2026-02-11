@@ -2,12 +2,9 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-        const statusText = document.getElementById("statusText");
-        const form = document.getElementById("kleurplaatForm");
-        const logoutBtn = document.getElementById("logoutBtn");
-        const storedUserId = localStorage.getItem('userId') || '';
-        const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
-        const userId = storedUserId || accountUserId;
+    <title>Driply – Rainy Day Club</title>
+
+    <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
 
         body {
@@ -216,9 +213,6 @@
 <script type="module">
 import { startStripeCheckout } from '/JS/abonnement.js';
 import { msalInstance } from '/JS/auth.js';
-import { startStripeCheckout } from '/JS/abonnement.js';
-import { startStripeCheckout } from '/JS/abonnement.js';
-import { startStripeCheckout } from '/JS/abonnement.js';
 
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
@@ -291,7 +285,7 @@ async function initFormLogic() {
                 reader.onload = () => res(reader.result);
                 reader.onerror = () => rej('read-error');
                 reader.readAsDataURL(file);
-                    const resp = await fetch('/apiRequest', {
+            });
         }
 
         const payload = { wie, waar, activiteit };
@@ -300,7 +294,7 @@ async function initFormLogic() {
         try {
             const userId = localStorage.getItem('userId') || 'unknown-user';
 
-            const resp = await fetch('/apiRequest', {
+            const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -314,7 +308,22 @@ async function initFormLogic() {
             console.log("Response text:", text);
 
             if (!resp.ok) {
-                resultaat.textContent = `Fout (${resp.status}): ${text}`;
+                if (resp.status === 403 && text.includes('limiet')) {
+                    resultaat.innerHTML = `<div style='color:#667eea; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis kleurplaten aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+                    setTimeout(() => {
+                        const accounts = msalInstance.getAllAccounts();
+                        const storedUserId = localStorage.getItem('userId') || '';
+                        const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
+                        const userId = storedUserId || accountUserId;
+                        const btn = document.getElementById('abonnementBtn');
+
+                        if (btn && userId) {
+                            btn.onclick = () => startStripeCheckout(userId);
+                        }
+                    }, 100);
+                } else {
+                    resultaat.textContent = `Fout (${resp.status}): ${text}`;
+                }
                 return;
             }
 
