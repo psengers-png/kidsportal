@@ -13,6 +13,13 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
+function normalizeUserId(rawUserId) {
+    if (!rawUserId) {
+        return "";
+    }
+    return rawUserId.split('.')[0];
+}
+
 // ---------------- REDIRECT HANDLING ---------------------
 msalInstance.initialize().then(() => {
     console.log("MSAL initialized.");
@@ -52,7 +59,8 @@ async function updateUI() {
     }
 
     const account = accounts[0];
-    const userId = account.homeAccountId || account.localAccountId || account.username || "";
+    const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+    const userId = normalizeUserId(rawUserId);
     localStorage.setItem("userId", userId);
     localStorage.setItem("user-id", userId);
     console.log("User ID saved to localStorage:", userId);
@@ -63,7 +71,11 @@ async function updateUI() {
         await registerUser(userId, email, name);
     }
 
-    const userStatus = await checkUserStatus(userId);
+    let userStatus = await checkUserStatus(userId);
+    if (userStatus && userStatus.error === "User not found" && userId) {
+        await registerUser(userId, email, name);
+        userStatus = await checkUserStatus(userId);
+    }
     if (userStatus && userStatus.isActive) { // Corrected property name
         console.log("User has unlimited access.");
         console.log("Attempting to update abonnementBtn. isActive:", userStatus.isActive);
@@ -123,29 +135,29 @@ if (abonnementBtn) {
         }
 
         const account = accounts[0];
-        const userId = account.homeAccountId || "";
+        const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+        const userId = normalizeUserId(rawUserId);
         if (!userId) {
             console.error("No valid userId found in account.");
             alert("Je moet ingelogd zijn om een abonnement te beheren.");
             return;
         }
 
-        const sanitizedUserId = userId.split('.')[0];
-        console.log("Sanitized UserId:", sanitizedUserId);
+        console.log("Sanitized UserId:", userId);
 
         console.log("Current abonnementBtn textContent:", abonnementBtn.textContent);
         if (abonnementBtn.textContent.trim() === "Upgrade naar onbeperkt") {
-            console.log("Preparing to call startStripeCheckout for user:", sanitizedUserId);
-            startStripeCheckout(sanitizedUserId);
+            console.log("Preparing to call startStripeCheckout for user:", userId);
+            startStripeCheckout(userId);
         } else if (abonnementBtn.textContent.trim() === "Onbeperkte toegang") {
-            console.log("Cancelling subscription for user:", sanitizedUserId);
+            console.log("Cancelling subscription for user:", userId);
             try {
                 console.log("Sending cancelSubscription API request...");
                 const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription?code=xHxQtcLBynLbEZlkWbVM5Nbg6VFGxwIdJIT9K8vGg31SAzFumpa0Cw==", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "user-id": sanitizedUserId
+                        "user-id": userId
                     }
                 });
 
