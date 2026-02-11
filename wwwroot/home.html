@@ -250,7 +250,7 @@
         try {
           const data = await response.json();
 
-          if (data.IsActive) {
+          if (data.isActive) {
             abonnementBtn.textContent = 'Onbeperkte toegang';
             abonnementBtn.style.background = '#ef4444'; // Red for cancel
             abonnementBtn.onclick = async () => {
