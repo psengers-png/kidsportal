@@ -201,6 +201,7 @@
 
 <script type="module">
 import { msalInstance } from '/JS/auth.js';
+import { startStripeCheckout } from '/JS/abonnement.js';
 
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
@@ -262,12 +263,14 @@ form.addEventListener("submit", async (e) => {
         if(resp.status === 403 && text.includes('limiet')) {
             resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
             setTimeout(() => {
-                if(window.msalInstance) {
-                    const accounts = window.msalInstance.getAllAccounts();
-                    const btn = document.getElementById('abonnementBtn');
-                    if(btn && accounts.length > 0) {
-                        btn.onclick = () => startStripeCheckout(accounts[0].username);
-                    }
+                const accounts = msalInstance.getAllAccounts();
+                const btn = document.getElementById('abonnementBtn');
+                const storedUserId = localStorage.getItem('userId') || '';
+                const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
+                const userId = storedUserId || accountUserId;
+                if (btn && userId) {
+                    const sanitizedUserId = userId.split('.')[0];
+                    btn.onclick = () => startStripeCheckout(sanitizedUserId);
                 }
             }, 100);
         } else {
@@ -301,6 +304,5 @@ form.addEventListener("submit", async (e) => {
 </script>
 
 
-<script src="/JS/abonnement.js"></script>
 </body>
 </html>

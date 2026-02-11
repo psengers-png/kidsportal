@@ -210,7 +210,9 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
+import { startStripeCheckout } from '/JS/abonnement.js';
 import { msalInstance } from '/JS/auth.js';
+import { startStripeCheckout } from '/JS/abonnement.js';
 
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
@@ -283,7 +285,7 @@ async function initFormLogic() {
                 reader.onload = () => res(reader.result);
                 reader.onerror = () => rej('read-error');
                 reader.readAsDataURL(file);
-            });
+                    const resp = await fetch('/apiRequest', {
         }
 
         const payload = { wie, waar, activiteit };
