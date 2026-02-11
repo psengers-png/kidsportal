@@ -247,8 +247,20 @@ async function startStripeCheckout(userId) {
                 if (!id) {
                     throw new Error("Missing session ID in API response.");
                 }
-                console.log("Stripe checkout session created successfully. Session ID:", id);
-                window.location.href = `https://checkout.stripe.com/c/pay/${id}`;
+
+                const stripePublicKey = "pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR";
+                const stripe = Stripe(stripePublicKey);
+
+                if (!stripe) {
+                    throw new Error("Failed to initialize Stripe. Check the publishable key.");
+                }
+
+                console.log("Redirecting to Stripe Checkout with session ID:", id);
+                const result = await stripe.redirectToCheckout({ sessionId: id });
+                if (result.error) {
+                    console.error("Stripe redirection error:", result.error.message);
+                    alert("Er ging iets mis bij het starten van de checkout.");
+                }
             } catch (parseError) {
                 console.error("Error parsing API response JSON:", parseError);
                 alert("Fout bij het verwerken van de API-reactie.");
