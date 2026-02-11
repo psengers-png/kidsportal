@@ -322,3 +322,6 @@ if (window.location.search.includes("stripeSuccess=true")) {
         window.location.href = "/login.html";
     }
 }
+
+// Expose for non-module scripts (e.g., inline handlers in home.html)
+window.startStripeCheckout = startStripeCheckout;
