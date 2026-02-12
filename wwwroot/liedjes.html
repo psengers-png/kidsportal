@@ -272,6 +272,70 @@ const lyricsBox = document.getElementById("lyrics");
 const downloadBtn = document.getElementById("downloadBtn");
 const btn = document.getElementById("genereerBtn");
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function renderResult(data) {
+    if (data.audio_url) {
+        audioPlayer.src = data.audio_url;
+        audioPlayer.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+        downloadBtn.onclick = () => {
+            const a = document.createElement("a");
+            a.href = data.audio_url;
+            a.download = "liedje.mp3";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+    }
+
+    if (data.lyrics) {
+        lyricsBox.textContent = data.lyrics;
+    } else {
+        lyricsBox.textContent = "Geen lyrics ontvangen.";
+    }
+}
+
+async function pollStatus(taskId) {
+    for (let attempt = 1; attempt <= 30; attempt += 1) {
+        lyricsBox.textContent = `Liedje wordt verwerkt... (${attempt}/30)`;
+
+        const userId = localStorage.getItem('userId') || 'unknown-user';
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({ type: 'liedjes_status', payload: { task_id: taskId } })
+        });
+
+        const text = await resp.text();
+        if (!resp.ok && resp.status !== 202) {
+            lyricsBox.textContent = `Fout (${resp.status}): ${text}`;
+            return null;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            lyricsBox.textContent = `JSON parsing error: ${text}`;
+            return null;
+        }
+
+        if (resp.status === 202 || data.status === 'pending') {
+            await sleep(4000);
+            continue;
+        }
+
+        return data;
+    }
+
+    lyricsBox.textContent = "Timeout: liedje nog niet klaar. Probeer later opnieuw.";
+    return null;
+}
+
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     btn.disabled = true;
@@ -331,25 +395,17 @@ form.addEventListener("submit", async (e) => {
             return;
         }
 
-        if (data.audio_url) {
-            audioPlayer.src = data.audio_url;
-            audioPlayer.style.display = "block";
-            downloadBtn.style.display = "inline-block";
-            downloadBtn.onclick = () => {
-                const a = document.createElement("a");
-                a.href = data.audio_url;
-                a.download = "liedje.mp3";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            };
+        if (data.task_id || resp.status === 202) {
+            const taskId = data.task_id || data.taskId;
+            const polled = await pollStatus(taskId);
+            if (polled) {
+                renderResult(polled);
+            }
+            btn.disabled = false;
+            return;
         }
 
-        if (data.lyrics) {
-            lyricsBox.textContent = data.lyrics;
-        } else {
-            lyricsBox.textContent = "Geen lyrics ontvangen.";
-        }
+        renderResult(data);
     } catch (err) {
         lyricsBox.textContent = "Fout: " + err;
     }
