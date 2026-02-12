@@ -55,10 +55,18 @@
             gap: 10px;
             margin-left: auto;
             flex-wrap: wrap;
+            justify-content: flex-end;
+            width: 100%;
         }
 
         .header-left img {
             height: 150px;
+        }
+
+        @media (max-width: 720px) {
+            .header-left img {
+                height: 100px;
+            }
         }
 
         .header-btn {
@@ -92,7 +100,7 @@
         }
 
         .agent-header img {
-            height: 120px;
+            height: 250px;
         }
 
         .agent-header h2 {
