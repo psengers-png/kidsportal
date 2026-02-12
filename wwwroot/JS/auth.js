@@ -201,6 +201,14 @@ if (logoutBtn) {
 const createUserUrl = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/createUser";
 
 async function registerUser(userId, email, name) {
+    if (!userId) {
+        console.error("registerUser called without userId");
+        return;
+    }
+
+    const safeEmail = (email || "").trim() || `${userId}@unknown.local`;
+    const safeName = (name || "").trim() || "Unknown";
+
     try {
         const response = await fetch(createUserUrl, {
             method: "POST",
@@ -208,14 +216,15 @@ async function registerUser(userId, email, name) {
                 "Content-Type": "application/json",
                 "user-id": userId
             },
-            body: JSON.stringify({ userId, email, name }),
+            body: JSON.stringify({ userId, email: safeEmail, name: safeName }),
         });
 
         if (response.ok) {
             const result = await response.json();
             console.log("User registration result:", result);
         } else {
-            console.error("Failed to register user. Status:", response.status);
+            const errorText = await response.text();
+            console.error("Failed to register user. Status:", response.status, "Body:", errorText);
         }
     } catch (error) {
         console.error("Error registering user:", error);
