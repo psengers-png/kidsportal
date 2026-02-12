@@ -35,6 +35,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
             padding: 15px 30px;
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(8px);
@@ -45,6 +47,18 @@
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .header-left img {
+            height: 150px;
         }
 
         .header-btn {
@@ -142,10 +156,10 @@
 
 <header>
     <div class="header-left">
-        <img src="Images/Questy_logo.png" alt="Questy" height="50">
+        <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
         <h1>Rainy Day Club</h1>
     </div>
-    <div>
+    <div class="header-right">
         <button class="header-btn" id="homeBtn">← Home</button>
         <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
     </div>
