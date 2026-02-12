@@ -180,7 +180,7 @@
     </div>
     <div class="header-right">
         <button class="header-btn" id="homeBtn">← Home</button>
-        <button class="header-btn" id="abonnementBtn" style="background:#22c55e; color:white; border:none;">Upgrade</button>
+        <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white; border:none;">Upgrade</button>
         <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
     </div>
 </header>
@@ -329,7 +329,7 @@ async function initFormLogic() {
 
             if (!resp.ok) {
                 if (resp.status === 403 && text.includes('limiet')) {
-                    resultaat.innerHTML = `<div style='color:#667eea; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis kleurplaten aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#22c55e; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+                    resultaat.innerHTML = `<div style='color:#667eea; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis kleurplaten aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
                     setTimeout(() => {
                         const accounts = msalInstance.getAllAccounts();
                         const storedUserId = localStorage.getItem('userId') || '';

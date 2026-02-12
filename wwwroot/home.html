@@ -164,7 +164,7 @@
     <h1> Rainy Day Club</h1>
   </div>
   <div class="header-right">
-    <button class="header-btn" id="abonnementBtn" style="background:#22c55e; color:white;">
+    <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white;">
       Upgrade naar onbeperkt
     </button>
     <button class="header-btn" id="logoutBtn">
@@ -252,7 +252,7 @@
 
           if (data.isActive) {
             abonnementBtn.textContent = 'Onbeperkte toegang';
-            abonnementBtn.style.background = '#ef4444'; // Red for cancel
+            abonnementBtn.style.background = '#22c55e'; // Green for unlimited
             abonnementBtn.onclick = async () => {
               const cancelResponse = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription?code=xHxQtcLBynLbEZlkWbVM5Nbg6VFGxwIdJIT9K8vGg31SAzFumpa0Cw==', {
                 method: 'POST',
@@ -267,7 +267,7 @@
             };
           } else {
             abonnementBtn.textContent = 'Upgrade naar onbeperkt';
-            abonnementBtn.style.background = '#22c55e'; // Green for upgrade
+            abonnementBtn.style.background = '#ef4444'; // Red for upgrade
             abonnementBtn.onclick = () => {
               console.log('Starting Stripe checkout for user:', userId);
               const sanitizedUserId = userId.split('.')[0];

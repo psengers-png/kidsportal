@@ -83,7 +83,7 @@ async function updateUI() {
         if (abonnementBtn) {
             console.log("abonnementBtn found. Updating text and style.");
             abonnementBtn.textContent = "Onbeperkte toegang";
-            abonnementBtn.style.background = "#ef4444"; // Red for cancel
+            abonnementBtn.style.background = "#22c55e"; // Green for unlimited
         } else {
             console.error("abonnementBtn not found on the page.");
         }
@@ -169,7 +169,7 @@ if (abonnementBtn) {
                     console.log("Subscription cancelled successfully.");
                     alert("Je abonnement is succesvol opgezegd.");
                     abonnementBtn.textContent = "Upgrade naar onbeperkt";
-                    abonnementBtn.style.background = "#10b981"; // Green for upgrade
+                    abonnementBtn.style.background = "#ef4444"; // Red for upgrade
                     window.location.href = "/abonnement-cancel.html";
                 } else {
                     console.error("Failed to cancel subscription. Status:", response.status);
