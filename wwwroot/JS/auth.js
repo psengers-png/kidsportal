@@ -170,6 +170,7 @@ if (abonnementBtn) {
                     alert("Je abonnement is succesvol opgezegd.");
                     abonnementBtn.textContent = "Upgrade naar onbeperkt";
                     abonnementBtn.style.background = "#10b981"; // Green for upgrade
+                    window.location.href = "/abonnement-cancel.html";
                 } else {
                     console.error("Failed to cancel subscription. Status:", response.status);
                     alert("Fout bij het opzeggen van je abonnement.");
