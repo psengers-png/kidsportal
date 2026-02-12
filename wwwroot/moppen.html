@@ -58,7 +58,7 @@
             color: #333;
             font-size: 14px;
         }
-        input[type="text"] { 
+        input[type="text"], select { 
             width: 100%; 
             padding: 12px; 
             margin-bottom: 15px;
@@ -67,7 +67,7 @@
             font-size: 14px;
             transition: border 0.3s;
         }
-        input[type="text"]:focus {
+        input[type="text"]:focus, select:focus {
             outline: none;
             border-color: #f5576c;
         }
@@ -131,16 +131,19 @@
 
     <form id="mopForm" style="display:none;">
         <div class="form-group">
-            <label for="onderwerp1">Onderwerp 1</label>
-            <input type="text" id="onderwerp1" name="onderwerp1" required placeholder="Bijv. dieren">
+            <label for="onderwerp">Onderwerp</label>
+            <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. dieren">
         </div>
         <div class="form-group">
-            <label for="onderwerp2">Onderwerp 2</label>
-            <input type="text" id="onderwerp2" name="onderwerp2" required placeholder="Bijv. school">
-        </div>
-        <div class="form-group">
-            <label for="onderwerp3">Onderwerp 3</label>
-            <input type="text" id="onderwerp3" name="onderwerp3" required placeholder="Bijv. voetbal">
+            <label for="mopType">Type mop</label>
+            <select id="mopType" name="mopType" required>
+                <option value="">Kies een type</option>
+                <option value="flauwe mop">Flauwe mop</option>
+                <option value="raadsel">Raadsel</option>
+                <option value="woordgrap">Woordgrap</option>
+                <option value="anti-mop">Anti-mop</option>
+                <option value="verhaalmop">Verhaalmop</option>
+            </select>
         </div>
         <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
     </form>
@@ -191,9 +194,8 @@ form.addEventListener("submit", async (e) => {
     e.preventDefault();
     resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
     btn.disabled = true;
-    const onderwerp = form.onderwerp1.value.trim();
-    const onderwerp2 = form.onderwerp2.value.trim();
-    const onderwerp3 = form.onderwerp3.value.trim();
+    const onderwerp = form.onderwerp.value.trim();
+    const mopType = form.mopType.value;
     console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
     try {
         const res = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
@@ -204,7 +206,7 @@ form.addEventListener("submit", async (e) => {
             },
             body: JSON.stringify({
                 type: 'moppen',
-                payload: { onderwerp, onderwerp2, onderwerp3 }
+                payload: { onderwerp, mop_type: mopType }
             })
         });
         const text = await res.text();
