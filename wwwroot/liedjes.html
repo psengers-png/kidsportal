@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Beatty - Rainy Day Club</title>
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+        }
+
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .header-left img {
+            height: 150px;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+
+        .header-btn:hover {
+            background: #e2e8f0;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .window {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .agent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .agent-header img {
+            height: 250px;
+        }
+
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #dbeafe;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+            margin-top: 6px;
+        }
+
+        input:disabled {
+            background: #f1f5f9;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        #statusText {
+            text-align: center;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        #resultaat {
+            margin-top: 30px;
+        }
+
+        #audioPlayer {
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #lyrics {
+            white-space: pre-wrap;
+            background: #f1f5f9;
+            border-left: 6px solid #3b82f6;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="rain"></div>
+
+<header>
+    <div class="header-left">
+        <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
+        <h1>Rainy Day Club</h1>
+    </div>
+    <div class="header-right">
+        <button class="header-btn" id="homeBtn">← Home</button>
+        <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white; border:none;">Upgrade</button>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+</header>
+
+<main>
+    <div class="window">
+        <div class="agent-header">
+            <img src="Images/Beatty.png" alt="Beatty">
+            <h2>Beatty - De Liedjesmaker</h2>
+            <p>Beatty maakt een nieuw liedje op basis van jouw onderwerp, stijl en stemming.</p>
+        </div>
+
+        <p id="statusText">Bezig met controleren...</p>
+
+        <form id="liedjesForm" style="display:none;">
+            <div class="form-section">
+                <div class="section-title">Beschrijving</div>
+                <label>Onderwerp (verplicht)</label>
+                <input id="onderwerp" type="text" placeholder="Bijv. een avontuur in het bos">
+
+                <label>Stijl/genre (optioneel)</label>
+                <input id="stijl" type="text" placeholder="Bijv. klassiek, pop, hiphop">
+
+                <label>Stemming (optioneel)</label>
+                <input id="stemming" type="text" placeholder="Bijv. vrolijk, rustig, spannend">
+            </div>
+
+            <button type="submit" id="genereerBtn">✨ Genereer liedje</button>
+            <button id="downloadBtn" style="display:none;">⬇️ Download</button>
+        </form>
+
+        <div id="resultaat">
+            <audio id="audioPlayer" controls></audio>
+            <div id="lyrics"></div>
+        </div>
+    </div>
+</main>
+
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module" src="/JS/abonnement.js"></script>
+<script type="module" src="/JS/auth.js"></script>
+
+<script type="module">
+import { startStripeCheckout } from '/JS/abonnement.js';
+import { msalInstance } from '/JS/auth.js';
+
+setTimeout(() => {
+    const accounts = msalInstance.getAllAccounts();
+    const statusText = document.getElementById("statusText");
+    const form = document.getElementById("liedjesForm");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (accounts.length === 0) {
+        window.location.href = "/home.html";
+        return;
+    }
+
+    statusText.style.display = "none";
+    form.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+
+    logoutBtn.onclick = () => msalInstance.logoutRedirect();
+}, 1000);
+
+const homeBtn = document.getElementById("homeBtn");
+homeBtn.onclick = () => window.location.href = "/home.html";
+
+const form = document.getElementById("liedjesForm");
+const audioPlayer = document.getElementById("audioPlayer");
+const lyricsBox = document.getElementById("lyrics");
+const downloadBtn = document.getElementById("downloadBtn");
+const btn = document.getElementById("genereerBtn");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    audioPlayer.style.display = "none";
+    lyricsBox.style.display = "block";
+    lyricsBox.textContent = "Liedje wordt aangemaakt...";
+
+    const onderwerp = document.getElementById("onderwerp").value.trim();
+    const stijl = document.getElementById("stijl").value.trim();
+    const stemming = document.getElementById("stemming").value.trim();
+
+    if (!onderwerp) {
+        lyricsBox.textContent = "Vul een onderwerp in.";
+        btn.disabled = false;
+        return;
+    }
+
+    try {
+        const userId = localStorage.getItem('userId') || 'unknown-user';
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({ type: 'liedjes', payload: { onderwerp, stijl, stemming } })
+        });
+
+        const text = await resp.text();
+        if (!resp.ok) {
+            if (resp.status === 403 && text.includes('limiet')) {
+                lyricsBox.innerHTML = "Je hebt het maximum aantal gratis liedjes aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button>";
+                setTimeout(() => {
+                    const accounts = msalInstance.getAllAccounts();
+                    const storedUserId = localStorage.getItem('userId') || '';
+                    const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
+                    const resolvedUserId = storedUserId || accountUserId;
+                    const upgradeBtn = document.getElementById('abonnementBtnInline');
+
+                    if (upgradeBtn && resolvedUserId) {
+                        upgradeBtn.onclick = () => startStripeCheckout(resolvedUserId);
+                    }
+                }, 100);
+            } else {
+                lyricsBox.textContent = `Fout (${resp.status}): ${text}`;
+            }
+            btn.disabled = false;
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            lyricsBox.textContent = `JSON parsing error: ${text}`;
+            btn.disabled = false;
+            return;
+        }
+
+        if (data.audio_url) {
+            audioPlayer.src = data.audio_url;
+            audioPlayer.style.display = "block";
+            downloadBtn.style.display = "inline-block";
+            downloadBtn.onclick = () => {
+                const a = document.createElement("a");
+                a.href = data.audio_url;
+                a.download = "liedje.mp3";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+        }
+
+        if (data.lyrics) {
+            lyricsBox.textContent = data.lyrics;
+        } else {
+            lyricsBox.textContent = "Geen lyrics ontvangen.";
+        }
+    } catch (err) {
+        lyricsBox.textContent = "Fout: " + err;
+    }
+
+    btn.disabled = false;
+});
+</script>
+
+</body>
+</html>
