@@ -64,10 +64,15 @@
         .header-btn {
             padding: 10px 18px;
             border-radius: 999px;
-            border: none;
+            border: 1px solid #94a3b8;
             cursor: pointer;
             font-weight: 600;
-            background: #e5e7eb;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+
+        .header-btn:hover {
+            background: #e2e8f0;
         }
 
         main {
@@ -161,6 +166,7 @@
     </div>
     <div class="header-right">
         <button class="header-btn" id="homeBtn">← Home</button>
+        <button class="header-btn" id="abonnementBtn" style="background:#22c55e; color:white; border:none;">Upgrade</button>
         <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
     </div>
 </header>
@@ -307,14 +313,7 @@ form.addEventListener("submit", async (e) => {
             <strong>🎯 Jouw Challenge:</strong><br><br>
             ${data.challenge}
         </div>
-        <button id="nextChallengeBtn">🔄 Volgende Challenge</button>
     `;
-
-    // Voeg event listener toe aan de nieuwe knop
-    const nextBtn = document.getElementById("nextChallengeBtn");
-    if (nextBtn) {
-        nextBtn.onclick = handleNextChallenge;
-    }
 });
 </script>
 

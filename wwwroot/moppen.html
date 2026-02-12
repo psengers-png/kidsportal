@@ -55,8 +55,6 @@
             gap: 10px;
             margin-left: auto;
             flex-wrap: wrap;
-            justify-content: flex-end;
-            width: 100%;
         }
 
         .header-left img {
@@ -72,10 +70,15 @@
         .header-btn {
             padding: 10px 18px;
             border-radius: 999px;
-            border: none;
+            border: 1px solid #94a3b8;
             cursor: pointer;
             font-weight: 600;
-            background: #e5e7eb;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+
+        .header-btn:hover {
+            background: #e2e8f0;
         }
 
         main {
@@ -310,7 +313,7 @@ form.addEventListener("submit", async (e) => {
             return;
         }
         if (data.mop) {
-            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Jouw Mop:</strong><br><br>' + data.mop + '</div><button onclick="location.reload()">🔄 Volgende Mop</button>';
+            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Jouw Mop:</strong><br><br>' + data.mop + '</div>';
         } else {
             resultaat.innerHTML = '<p style="color:red;">' + (data.error || 'Onbekende fout.') + '</p>';
         }
