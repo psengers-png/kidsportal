@@ -232,8 +232,7 @@ setTimeout(() => {
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (accounts.length === 0) {
-        // Niet ingelogd, terug naar home
-        window.location.href = "/home.html";
+        statusText.textContent = "Log in om challenges te gebruiken.";
         return;
     }
 
