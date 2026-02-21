@@ -12,6 +12,12 @@ const msalConfig = {
 };
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
+window.msalInstance = msalInstance;
+
+function isPublicPage() {
+    const path = (window.location.pathname || "").toLowerCase();
+    return path === "/" || path.endsWith("/home.html") || path.endsWith("/index.html");
+}
 
 function normalizeUserId(rawUserId) {
     if (!rawUserId) {
@@ -53,7 +59,15 @@ async function updateUI() {
     const accounts = msalInstance.getAllAccounts();
     console.log("Accounts gevonden door msalInstance:", accounts);
     if (accounts.length === 0) {
-        console.warn("No user logged in. Redirecting to login...");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("user-id");
+
+        if (isPublicPage()) {
+            console.log("No user logged in on public page. Skipping login redirect.");
+            return;
+        }
+
+        console.warn("No user logged in on protected page. Redirecting to login...");
         msalInstance.loginRedirect();
         return;
     }
