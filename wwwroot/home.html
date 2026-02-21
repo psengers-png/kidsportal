@@ -139,6 +139,49 @@
       transform: translateY(-6px);
     }
 
+    .feedback-section {
+      margin-top: 22px;
+    }
+
+    .feedback-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    #feedbackText {
+      width: 100%;
+      min-height: 100px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 1rem;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    #sendFeedbackBtn {
+      margin-top: 12px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #sendFeedbackBtn:hover {
+      background: #1d4ed8;
+    }
+
+    #feedbackStatus {
+      margin-top: 8px;
+      min-height: 20px;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+
     .emoji {
       font-size: 3rem;
       margin-bottom: 10px;
@@ -221,6 +264,12 @@
       Rainy Day Club is een magische wereld waar kinderen kunnen spelen met creatieve AI-agents.
       Teken, lach, ontdek en verzin — vooral als het weer grijs is.
     </p>
+    <div class="feedback-section" style="max-width:600px; margin:22px auto 0;">
+      <label for="feedbackText">Heb je feedback of een idee?</label>
+      <textarea id="feedbackText" maxlength="500" placeholder="Typ hier je feedback..."></textarea>
+      <button id="sendFeedbackBtn" type="button">📨 Verstuur feedback</button>
+      <div id="feedbackStatus"></div>
+    </div>
   </div>
 </section>
 
@@ -286,6 +335,26 @@
       }
 
       updateSubscriptionButton();
+
+      const feedbackBtn = document.getElementById('sendFeedbackBtn');
+      const feedbackText = document.getElementById('feedbackText');
+      const feedbackStatus = document.getElementById('feedbackStatus');
+
+      feedbackBtn?.addEventListener('click', () => {
+        const text = (feedbackText?.value || '').trim();
+
+        if (!text) {
+          feedbackStatus.textContent = 'Vul eerst feedback in.';
+          return;
+        }
+
+        const subject = encodeURIComponent('Feedback Rainy Day Club');
+        const body = encodeURIComponent(text);
+        window.location.href = `mailto:psengers@gmail.com?subject=${subject}&body=${body}`;
+
+        feedbackStatus.textContent = 'E-mailvenster geopend. Bedankt voor je feedback!';
+        feedbackText.value = '';
+      });
     </script>
 
 </body>
