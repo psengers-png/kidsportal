@@ -340,7 +340,7 @@
       const feedbackText = document.getElementById('feedbackText');
       const feedbackStatus = document.getElementById('feedbackStatus');
 
-      feedbackBtn?.addEventListener('click', () => {
+      feedbackBtn?.addEventListener('click', async () => {
         const text = (feedbackText?.value || '').trim();
 
         if (!text) {
@@ -348,12 +348,48 @@
           return;
         }
 
-        const subject = encodeURIComponent('Feedback Rainy Day Club');
-        const body = encodeURIComponent(text);
-        window.location.href = `mailto:psengers@gmail.com?subject=${subject}&body=${body}`;
+        const userId = localStorage.getItem('user-id') || 'onbekend';
+        const endpoints = ['/feedback_mail', 'https://sengfam1.azurewebsites.net/feedback_mail'];
 
-        feedbackStatus.textContent = 'E-mailvenster geopend. Bedankt voor je feedback!';
-        feedbackText.value = '';
+        feedbackBtn.disabled = true;
+        feedbackStatus.textContent = 'Feedback wordt verstuurd...';
+
+        let lastError = '';
+
+        for (const endpoint of endpoints) {
+          try {
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                message: text,
+                userId
+              })
+            });
+
+            if (response.ok) {
+              feedbackStatus.textContent = 'Bedankt! Je feedback is verzonden.';
+              feedbackText.value = '';
+              feedbackBtn.disabled = false;
+              return;
+            }
+
+            let errorText = '';
+            try {
+              const errorJson = await response.json();
+              errorText = errorJson.error || JSON.stringify(errorJson);
+            } catch {
+              errorText = await response.text();
+            }
+            lastError = `${endpoint}: ${errorText || response.status}`;
+          } catch (error) {
+            lastError = `${endpoint}: ${error.message}`;
+          }
+        }
+
+        feedbackStatus.textContent = 'Versturen mislukt. Probeer het later opnieuw.';
+        console.error('Feedback verzenden mislukt:', lastError);
+        feedbackBtn.disabled = false;
       });
     </script>
 
