@@ -135,34 +135,30 @@ function normalizeUserId(rawUserId) {
 }
 
 // ---------------- REDIRECT HANDLING ---------------------
-msalInstance.initialize().then(() => {
-    console.log("MSAL initialized.");
-    msalInstance.handleRedirectPromise()
-        .then(response => {
-            console.log("Redirect response:", response);
-            if (response) {
-                console.log("Redirect successful. Account added:", msalInstance.getAllAccounts());
-            }
-            updateUI();
-        })
-        .catch(error => {
-            console.error("Redirect error:", error);
-            updateUI();
-        });
-});
+const msalReadyPromise = msalInstance.initialize()
+    .then(async () => {
+        console.log("MSAL initialized.");
+        const response = await msalInstance.handleRedirectPromise();
+        console.log("Redirect response:", response);
+        if (response) {
+            console.log("Redirect successful. Account added:", msalInstance.getAllAccounts());
+        }
+        return response;
+    })
+    .catch(error => {
+        console.error("MSAL init/redirect error:", error);
+        return null;
+    });
 
-// Debugging: Log accounts on every page load
-console.log("Accounts on page load:", msalInstance.getAllAccounts());
-
-// Debugging: Ensure updateUI is called on every page load
-window.onload = () => {
+window.addEventListener("load", () => {
     console.log("Page loaded. Calling updateUI.");
     updateUI();
-};
+});
 
 // ---------------- UI LOGICA ---------------------
 async function updateUI() {
     console.log("updateUI aangeroepen");
+    await msalReadyPromise;
 
     const accounts = msalInstance.getAllAccounts();
     console.log("Accounts gevonden door msalInstance:", accounts);
@@ -305,18 +301,6 @@ if (abonnementBtn) {
     };
 } else {
     console.error("abonnementBtn not found on the page.");
-}
-
-// Ensure logout button has a proper event listener
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-    console.log("Logout button found. Adding click event listener.");
-    logoutBtn.onclick = () => {
-        console.log("Logout button clicked. Logging out user.");
-        msalInstance.logout();
-    };
-} else {
-    console.error("Logout button not found on the page.");
 }
 
 // Voeg de URL van de createUser-functie toe
