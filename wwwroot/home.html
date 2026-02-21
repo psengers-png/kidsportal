@@ -285,8 +285,37 @@
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
+      function updateHomeAuthUI() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        const abonnementBtn = document.getElementById('abonnementBtn');
+        const accounts = window.msalInstance?.getAllAccounts?.() || [];
+        const isLoggedIn = accounts.length > 0;
+
+        if (!logoutBtn || !abonnementBtn) {
+          return isLoggedIn;
+        }
+
+        if (isLoggedIn) {
+          logoutBtn.textContent = 'Uitloggen';
+          logoutBtn.onclick = () => window.msalInstance.logoutRedirect();
+          abonnementBtn.style.display = 'inline-block';
+        } else {
+          logoutBtn.textContent = 'Inloggen';
+          logoutBtn.onclick = () => window.msalInstance.loginRedirect();
+          abonnementBtn.style.display = 'none';
+        }
+
+        return isLoggedIn;
+      }
+
       async function updateSubscriptionButton() {
         console.log('updateSubscriptionButton function called.');
+        const isLoggedIn = updateHomeAuthUI();
+        if (!isLoggedIn) {
+          console.log('No logged-in user on home. Skipping subscription status fetch.');
+          return;
+        }
+
         const userId = localStorage.getItem('user-id');
         const abonnementBtn = document.getElementById('abonnementBtn');
 
