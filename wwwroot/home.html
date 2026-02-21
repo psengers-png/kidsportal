@@ -301,7 +301,10 @@
           abonnementBtn.style.display = 'inline-block';
         } else {
           logoutBtn.textContent = 'Inloggen';
-          logoutBtn.onclick = () => window.msalInstance.loginRedirect();
+          logoutBtn.onclick = () => {
+            alert('Je moet eerst inloggen om de functies te gebruiken. Je wordt nu doorgestuurd naar de inlogpagina.');
+            window.msalInstance.loginRedirect();
+          };
           abonnementBtn.style.display = 'none';
         }
 

@@ -13,6 +13,17 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 window.msalInstance = msalInstance;
+let loginRedirectStarted = false;
+
+function startLoginRedirectWithNotice(message) {
+    if (loginRedirectStarted) {
+        return;
+    }
+
+    loginRedirectStarted = true;
+    alert(message || "Je moet eerst inloggen om deze functie te gebruiken. Je wordt nu doorgestuurd naar de inlogpagina.");
+    msalInstance.loginRedirect();
+}
 
 function isPublicPage() {
     const path = (window.location.pathname || "").toLowerCase();
@@ -68,7 +79,7 @@ async function updateUI() {
         }
 
         console.warn("No user logged in on protected page. Redirecting to login...");
-        msalInstance.loginRedirect();
+        startLoginRedirectWithNotice("Je moet eerst inloggen om deze functie te gebruiken. Je wordt nu doorgestuurd naar de inlogpagina.");
         return;
     }
 
