@@ -112,6 +112,9 @@ async function startLoginRedirectWithNotice(message) {
     const confirmed = await showCenteredLoginNotice(message || "Je moet eerst inloggen om deze functie te gebruiken.");
     if (!confirmed) {
         loginRedirectStarted = false;
+        if (!isPublicPage()) {
+            window.location.href = "/home.html";
+        }
         return;
     }
     msalInstance.loginRedirect();
