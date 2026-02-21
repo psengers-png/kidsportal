@@ -252,7 +252,7 @@ setTimeout(() => {
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (accounts.length === 0) {
-        window.location.href = "/home.html";
+        statusText.textContent = "Log in om liedjes te maken.";
         return;
     }
 
