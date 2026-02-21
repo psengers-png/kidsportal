@@ -15,15 +15,109 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 window.msalInstance = msalInstance;
 let loginRedirectStarted = false;
 
-function startLoginRedirectWithNotice(message) {
+function showCenteredLoginNotice(message) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.inset = "0";
+        overlay.style.background = "rgba(0, 0, 0, 0.45)";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "99999";
+
+        const card = document.createElement("div");
+        card.style.width = "min(92vw, 460px)";
+        card.style.background = "#ffffff";
+        card.style.borderRadius = "16px";
+        card.style.padding = "22px 20px";
+        card.style.boxShadow = "0 16px 36px rgba(0, 0, 0, 0.22)";
+        card.style.textAlign = "center";
+        card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
+
+        const title = document.createElement("div");
+        title.textContent = "🔐 Inloggen nodig";
+        title.style.fontSize = "22px";
+        title.style.fontWeight = "700";
+        title.style.marginBottom = "8px";
+
+        const body = document.createElement("div");
+        body.textContent = message || "Je moet eerst inloggen om deze functie te gebruiken.";
+        body.style.fontSize = "16px";
+        body.style.lineHeight = "1.45";
+        body.style.color = "#334155";
+
+        const hint = document.createElement("div");
+        hint.textContent = "Klik op de knop hieronder om verder te gaan naar inloggen.";
+        hint.style.marginTop = "12px";
+        hint.style.fontSize = "14px";
+        hint.style.color = "#64748b";
+
+        const actions = document.createElement("div");
+        actions.style.marginTop = "16px";
+        actions.style.display = "flex";
+        actions.style.gap = "10px";
+        actions.style.justifyContent = "center";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.textContent = "Annuleren";
+        cancelButton.style.padding = "10px 18px";
+        cancelButton.style.border = "1px solid #cbd5e1";
+        cancelButton.style.borderRadius = "10px";
+        cancelButton.style.background = "#ffffff";
+        cancelButton.style.color = "#334155";
+        cancelButton.style.fontSize = "15px";
+        cancelButton.style.fontWeight = "600";
+        cancelButton.style.cursor = "pointer";
+
+        const loginButton = document.createElement("button");
+        loginButton.textContent = "Nu inloggen";
+        loginButton.style.padding = "10px 18px";
+        loginButton.style.border = "none";
+        loginButton.style.borderRadius = "10px";
+        loginButton.style.background = "#2563eb";
+        loginButton.style.color = "#ffffff";
+        loginButton.style.fontSize = "15px";
+        loginButton.style.fontWeight = "600";
+        loginButton.style.cursor = "pointer";
+
+        cancelButton.addEventListener("click", () => {
+            overlay.remove();
+            resolve(false);
+        });
+
+        loginButton.addEventListener("click", () => {
+            overlay.remove();
+            resolve(true);
+        });
+
+        actions.appendChild(cancelButton);
+        actions.appendChild(loginButton);
+
+        card.appendChild(title);
+        card.appendChild(body);
+        card.appendChild(hint);
+        card.appendChild(actions);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+    });
+}
+
+async function startLoginRedirectWithNotice(message) {
     if (loginRedirectStarted) {
         return;
     }
 
     loginRedirectStarted = true;
-    alert(message || "Je moet eerst inloggen om deze functie te gebruiken. Je wordt nu doorgestuurd naar de inlogpagina.");
+    const confirmed = await showCenteredLoginNotice(message || "Je moet eerst inloggen om deze functie te gebruiken.");
+    if (!confirmed) {
+        loginRedirectStarted = false;
+        return;
+    }
     msalInstance.loginRedirect();
 }
+
+window.startLoginRedirectWithNotice = startLoginRedirectWithNotice;
 
 function isPublicPage() {
     const path = (window.location.pathname || "").toLowerCase();

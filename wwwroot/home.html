@@ -302,7 +302,10 @@
         } else {
           logoutBtn.textContent = 'Inloggen';
           logoutBtn.onclick = () => {
-            alert('Je moet eerst inloggen om de functies te gebruiken. Je wordt nu doorgestuurd naar de inlogpagina.');
+            if (window.startLoginRedirectWithNotice) {
+              window.startLoginRedirectWithNotice('Je moet eerst inloggen om de functies te gebruiken.');
+              return;
+            }
             window.msalInstance.loginRedirect();
           };
           abonnementBtn.style.display = 'none';
