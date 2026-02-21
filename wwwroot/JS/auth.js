@@ -149,6 +149,7 @@ const msalReadyPromise = msalInstance.initialize()
         console.error("MSAL init/redirect error:", error);
         return null;
     });
+window.msalReadyPromise = msalReadyPromise;
 
 window.addEventListener("load", () => {
     console.log("Page loaded. Calling updateUI.");

@@ -316,6 +316,10 @@
 
       async function updateSubscriptionButton() {
         console.log('updateSubscriptionButton function called.');
+        if (window.msalReadyPromise) {
+          await window.msalReadyPromise;
+        }
+
         const isLoggedIn = updateHomeAuthUI();
         if (!isLoggedIn) {
           console.log('No logged-in user on home. Skipping subscription status fetch.');
