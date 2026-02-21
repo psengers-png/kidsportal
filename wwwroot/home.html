@@ -349,7 +349,7 @@
         }
 
         const userId = localStorage.getItem('user-id') || 'onbekend';
-        const endpoints = ['/feedback_mail', 'https://sengfam1.azurewebsites.net/feedback_mail'];
+        const endpoints = ['https://sengfam1.azurewebsites.net/feedback_mail', '/api/feedback_mail'];
 
         feedbackBtn.disabled = true;
         feedbackStatus.textContent = 'Feedback wordt verstuurd...';
