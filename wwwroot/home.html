@@ -314,11 +314,19 @@
         return isLoggedIn;
       }
 
+      async function waitForAuthReady() {
+        for (let i = 0; i < 100; i += 1) {
+          if (window.msalReadyPromise) {
+            await window.msalReadyPromise;
+            return;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        }
+      }
+
       async function updateSubscriptionButton() {
         console.log('updateSubscriptionButton function called.');
-        if (window.msalReadyPromise) {
-          await window.msalReadyPromise;
-        }
+        await waitForAuthReady();
 
         const isLoggedIn = updateHomeAuthUI();
         if (!isLoggedIn) {
@@ -373,7 +381,9 @@
         }
       }
 
-      updateSubscriptionButton();
+      window.addEventListener('load', () => {
+        updateSubscriptionButton();
+      });
 
       const feedbackBtn = document.getElementById('sendFeedbackBtn');
       const feedbackText = document.getElementById('feedbackText');
