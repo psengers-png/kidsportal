@@ -5,7 +5,7 @@ const msalConfig = {
     auth: {
         clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
         authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-        redirectUri: window.location.origin + "/home.html",
+        redirectUri: window.location.origin,
         knownAuthorities: ["kidsportal2.ciamlogin.com"]
     },
     cache: { cacheLocation: "localStorage" }
@@ -347,16 +347,7 @@ async function registerExistingUsers(users) {
     }
 }
 
-// Voorbeeldgebruik: lijst met bestaande gebruikers
-const existingUsers = [
-    { userId: "c5f50565-94e5-46d4-9bbe-70483f2ffb6b", email: "user1@example.com", name: "User One" },
-    
-];
-
-// Roep de functie aan om bestaande gebruikers te registreren
-registerExistingUsers(existingUsers);
-
-// Fake change to trigger a push
+// Voorbeeldgebruik verwijderd om onnodige API-calls tijdens pagina-load te voorkomen
 
 // Ensure startStripeCheckout remains defined and accessible for home.html
 async function startStripeCheckout(userId) {

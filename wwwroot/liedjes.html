@@ -276,12 +276,13 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function renderResult(data) {
     if (data.audio_url) {
-        audioPlayer.src = data.audio_url;
+        const proxyAudioUrl = `https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/audio_download?url=${encodeURIComponent(data.audio_url)}`;
+        audioPlayer.src = proxyAudioUrl;
         audioPlayer.style.display = "block";
         downloadBtn.style.display = "inline-block";
         downloadBtn.onclick = () => {
             const a = document.createElement("a");
-            a.href = data.audio_url;
+            a.href = proxyAudioUrl;
             a.download = "liedje.mp3";
             document.body.appendChild(a);
             a.click();
