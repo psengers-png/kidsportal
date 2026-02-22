@@ -1,0 +1,19 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "serve": "/home.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/api/*",
+      "serve": "/api/*",
+      "allowedRoles": []
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ]
+}
