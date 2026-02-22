@@ -2,6 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Driply – Rainy Day Club</title>
 
     <style>
@@ -165,6 +166,60 @@
             text-align: center;
             font-weight: 600;
             color: #2563eb;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 12px 14px;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .header-left img {
+                height: 95px;
+            }
+
+            .header-left h1 {
+                margin: 0;
+                font-size: 1.35rem;
+            }
+
+            .header-right {
+                width: 100%;
+                margin-left: 0;
+                justify-content: center;
+            }
+
+            .header-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            main {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .window {
+                border-radius: 20px;
+                padding: 20px 16px;
+            }
+
+            .agent-header img {
+                height: 165px;
+                max-width: 100%;
+                object-fit: contain;
+            }
+
+            .agent-header h2 {
+                font-size: 1.55rem;
+            }
         }
     </style>
 </head>

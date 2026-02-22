@@ -15,6 +15,10 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 window.msalInstance = msalInstance;
 let loginRedirectStarted = false;
 
+function resetLoginRedirectState() {
+    loginRedirectStarted = false;
+}
+
 function showCenteredLoginNotice(message) {
     return new Promise((resolve) => {
         const overlay = document.createElement("div");
@@ -111,13 +115,19 @@ async function startLoginRedirectWithNotice(message) {
     loginRedirectStarted = true;
     const confirmed = await showCenteredLoginNotice(message || "Je moet eerst inloggen om deze functie te gebruiken.");
     if (!confirmed) {
-        loginRedirectStarted = false;
+        resetLoginRedirectState();
         if (!isPublicPage()) {
             window.location.href = "/home.html";
         }
         return;
     }
-    msalInstance.loginRedirect();
+
+    try {
+        await msalInstance.loginRedirect();
+    } catch (error) {
+        console.error("Login redirect error:", error);
+        resetLoginRedirectState();
+    }
 }
 
 window.startLoginRedirectWithNotice = startLoginRedirectWithNotice;
@@ -143,13 +153,21 @@ const msalReadyPromise = msalInstance.initialize()
         if (response) {
             console.log("Redirect successful. Account added:", msalInstance.getAllAccounts());
         }
+        resetLoginRedirectState();
         return response;
     })
     .catch(error => {
         console.error("MSAL init/redirect error:", error);
+        resetLoginRedirectState();
         return null;
     });
 window.msalReadyPromise = msalReadyPromise;
+
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        resetLoginRedirectState();
+    }
+});
 
 window.addEventListener("load", () => {
     console.log("Page loaded. Calling updateUI.");
