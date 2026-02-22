@@ -4,9 +4,10 @@ const generateBtn = document.getElementById("generateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
 const kleurplaten = [
-    "images/kleurplaat1.png",
-    "images/kleurplaat2.png",
-    "images/kleurplaat3.png"
+    "Images/Driply.png",
+    "Images/Giggly.png",
+    "Images/Beatty.png",
+    "Images/Questy.png"
 ];
 
 let currentImage = "";
@@ -14,7 +15,7 @@ let currentImage = "";
 generateBtn.addEventListener("click", () => {
     const randomIndex = Math.floor(Math.random() * kleurplaten.length);
     currentImage = kleurplaten[randomIndex];
-    kleurplaatContainer.innerHTML = `${currentImage}`;
+    kleurplaatContainer.innerHTML = `<img src="${currentImage}" alt="Kleurplaat" />`;
     downloadBtn.style.display = "inline-block";
 });
 

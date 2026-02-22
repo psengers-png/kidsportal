@@ -9,11 +9,6 @@
       "route": "/api/*",
       "serve": "/api/*",
       "allowedRoles": []
-    },
-    {
-      "route": "/*",
-      "serve": "/index.html",
-      "statusCode": 200
     }
   ]
 }

@@ -47,7 +47,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         # Prompt samenstellen
         prompt = (
-            f"Genereer één leuke challenge voor een kind van 5-10 jaar met deze kenmerken:\n"
+            f"acteer als een creatieve assistent en genereer  leuke unieke challenges voor een kind van 5-10 jaar met deze kenmerken:\n"
             f"- Energie-niveau: {energie}\n"
             f"- Type activiteit (categorie): {activiteit_type} (keuze uit: Knutselen, Kleuren, Puzzel, Kennis, Buiten, Natuur)\n"
             f"De challenge moet kort, duidelijk en leuk zijn. Geef alleen de challenge-tekst, geen uitleg."
