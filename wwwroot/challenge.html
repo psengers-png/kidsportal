@@ -336,7 +336,7 @@ form.addEventListener("submit", async (e) => {
 
     if (!resp.ok) {
         if(resp.status === 403 && text.includes('limiet')) {
-            resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+            resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis challenges aangevraagd.<br>Upgrade naar onbeperkt vanaf €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button></div>`;
             setTimeout(() => {
                 const accounts = msalInstance.getAllAccounts();
                 const btn = document.getElementById('abonnementBtnInline');
@@ -345,7 +345,18 @@ form.addEventListener("submit", async (e) => {
                 const userId = storedUserId || accountUserId;
                 if (btn && userId) {
                     const sanitizedUserId = userId.split('.')[0];
-                    btn.onclick = () => startStripeCheckout(sanitizedUserId);
+                    btn.onclick = () => {
+                        const storedPreferred = (localStorage.getItem('preferredPlanType') || '').toLowerCase();
+                        const preferredPlanType = storedPreferred === 'enterprise' ? 'enterprise' : 'particulier';
+                        const preferredLabel = preferredPlanType === 'enterprise' ? 'Enterprise (€30/mnd)' : 'Particulier (€4/mnd)';
+                        const otherLabel = preferredPlanType === 'enterprise' ? 'Particulier (€4/mnd)' : 'Enterprise (€30/mnd)';
+                        const choosesPreferred = confirm(`Kies je abonnement:\n\nStandaard: ${preferredLabel}\n\nOK = ${preferredLabel}\nAnnuleren = ${otherLabel}`);
+                        const selectedPlanType = choosesPreferred
+                            ? preferredPlanType
+                            : (preferredPlanType === 'enterprise' ? 'particulier' : 'enterprise');
+                        localStorage.setItem('preferredPlanType', selectedPlanType);
+                        startStripeCheckout(sanitizedUserId, selectedPlanType);
+                    };
                 }
             }, 100);
         } else {

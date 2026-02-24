@@ -351,9 +351,13 @@
 
         try {
           const data = await response.json();
+          const statusPreferred = (data.preferredPlanType || '').toLowerCase();
+          const preferredPlanType = statusPreferred === 'enterprise' ? 'enterprise' : 'particulier';
+          localStorage.setItem('preferredPlanType', preferredPlanType);
 
           if (data.isActive) {
-            abonnementBtn.textContent = 'Abonnement beheren';
+            const activePlanLabel = (data.planType || '').toLowerCase() === 'enterprise' ? 'Enterprise' : 'Particulier';
+            abonnementBtn.textContent = `Abonnement beheren (${activePlanLabel})`;
             abonnementBtn.style.background = '#22c55e'; // Green for unlimited
             abonnementBtn.onclick = async () => {
               const shouldCancel = window.showSubscriptionManageModal
@@ -375,12 +379,21 @@
               }
             };
           } else {
-            abonnementBtn.textContent = 'Upgrade naar onbeperkt';
+            abonnementBtn.textContent = 'Kies abonnement';
             abonnementBtn.style.background = '#ef4444'; // Red for upgrade
             abonnementBtn.onclick = () => {
               console.log('Starting Stripe checkout for user:', userId);
               const sanitizedUserId = userId.split('.')[0];
-              startStripeCheckout(sanitizedUserId);
+
+              const preferredLabel = preferredPlanType === 'enterprise' ? 'Enterprise (€30/mnd)' : 'Particulier (€4/mnd)';
+              const otherLabel = preferredPlanType === 'enterprise' ? 'Particulier (€4/mnd)' : 'Enterprise (€30/mnd)';
+              const choosesPreferred = confirm(`Kies je abonnement:\n\nStandaard: ${preferredLabel}\n\nOK = ${preferredLabel}\nAnnuleren = ${otherLabel}`);
+              const selectedPlanType = choosesPreferred
+                ? preferredPlanType
+                : (preferredPlanType === 'enterprise' ? 'particulier' : 'enterprise');
+              localStorage.setItem('preferredPlanType', selectedPlanType);
+
+              startStripeCheckout(sanitizedUserId, selectedPlanType);
             };
           }
         } catch (error) {

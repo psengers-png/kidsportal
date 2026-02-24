@@ -200,6 +200,91 @@ function showSubscriptionManageModal() {
 }
 window.showSubscriptionManageModal = showSubscriptionManageModal;
 
+function showPlanTypeSelectionModal() {
+    return new Promise((resolve) => {
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.inset = "0";
+        overlay.style.background = "rgba(0, 0, 0, 0.45)";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "99999";
+
+        const card = document.createElement("div");
+        card.style.width = "min(92vw, 520px)";
+        card.style.background = "#ffffff";
+        card.style.borderRadius = "16px";
+        card.style.padding = "22px 20px";
+        card.style.boxShadow = "0 16px 36px rgba(0, 0, 0, 0.22)";
+        card.style.textAlign = "center";
+        card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
+
+        const title = document.createElement("div");
+        title.textContent = "Kies je accounttype";
+        title.style.fontSize = "22px";
+        title.style.fontWeight = "700";
+        title.style.marginBottom = "8px";
+
+        const body = document.createElement("div");
+        body.textContent = "Je kunt dit later altijd wijzigen bij abonnement kiezen.";
+        body.style.fontSize = "16px";
+        body.style.lineHeight = "1.45";
+        body.style.color = "#334155";
+
+        const actions = document.createElement("div");
+        actions.style.marginTop = "16px";
+        actions.style.display = "flex";
+        actions.style.gap = "10px";
+        actions.style.justifyContent = "center";
+        actions.style.flexWrap = "wrap";
+
+        const particulierButton = document.createElement("button");
+        particulierButton.textContent = "Particulier (€4/mnd)";
+        particulierButton.style.padding = "10px 18px";
+        particulierButton.style.border = "1px solid #cbd5e1";
+        particulierButton.style.borderRadius = "10px";
+        particulierButton.style.background = "#ffffff";
+        particulierButton.style.color = "#334155";
+        particulierButton.style.fontSize = "15px";
+        particulierButton.style.fontWeight = "600";
+        particulierButton.style.cursor = "pointer";
+
+        const enterpriseButton = document.createElement("button");
+        enterpriseButton.textContent = "Enterprise (€30/mnd)";
+        enterpriseButton.style.padding = "10px 18px";
+        enterpriseButton.style.border = "none";
+        enterpriseButton.style.borderRadius = "10px";
+        enterpriseButton.style.background = "#2563eb";
+        enterpriseButton.style.color = "#ffffff";
+        enterpriseButton.style.fontSize = "15px";
+        enterpriseButton.style.fontWeight = "600";
+        enterpriseButton.style.cursor = "pointer";
+
+        const closeWithSelection = (selectedPlanType) => {
+            overlay.remove();
+            resolve(selectedPlanType);
+        };
+
+        overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) {
+                closeWithSelection("particulier");
+            }
+        });
+
+        particulierButton.addEventListener("click", () => closeWithSelection("particulier"));
+        enterpriseButton.addEventListener("click", () => closeWithSelection("enterprise"));
+
+        actions.appendChild(particulierButton);
+        actions.appendChild(enterpriseButton);
+        card.appendChild(title);
+        card.appendChild(body);
+        card.appendChild(actions);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+    });
+}
+
 async function startLoginRedirectWithNotice(message) {
     if (loginRedirectStarted) {
         return;
@@ -251,6 +336,42 @@ function normalizeUserId(rawUserId) {
         return "";
     }
     return rawUserId.split('.')[0];
+}
+
+function getPreferredPlanTypeFromQuery() {
+    const params = new URLSearchParams(window.location.search || "");
+    const fromPlanType = (params.get("planType") || "").toLowerCase();
+    const fromAccountType = (params.get("accountType") || "").toLowerCase();
+    const candidate = fromPlanType || fromAccountType;
+    if (candidate === "enterprise") {
+        return "enterprise";
+    }
+    if (candidate === "particulier") {
+        return "particulier";
+    }
+    return null;
+}
+
+function normalizePreferredPlanType(value) {
+    const normalized = (value || "").toLowerCase();
+    if (normalized === "enterprise") {
+        return "enterprise";
+    }
+    if (normalized === "particulier") {
+        return "particulier";
+    }
+    return null;
+}
+
+async function ensurePreferredPlanTypeSelection() {
+    const existing = normalizePreferredPlanType(localStorage.getItem("preferredPlanType"));
+    if (existing) {
+        return existing;
+    }
+
+    const selected = await showPlanTypeSelectionModal();
+    localStorage.setItem("preferredPlanType", selected);
+    return selected;
 }
 
 // ---------------- REDIRECT HANDLING ---------------------
@@ -305,6 +426,11 @@ async function updateUI() {
     }
 
     const account = accounts[0];
+    const preferredFromQuery = normalizePreferredPlanType(getPreferredPlanTypeFromQuery());
+    if (preferredFromQuery) {
+        localStorage.setItem("preferredPlanType", preferredFromQuery);
+    }
+
     const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
     const userId = normalizeUserId(rawUserId);
     localStorage.setItem("userId", userId);
@@ -313,6 +439,7 @@ async function updateUI() {
 
     const email = account.username || account.idTokenClaims?.email || account.idTokenClaims?.preferred_username || "";
     const name = account.name || account.idTokenClaims?.name || email || "Unknown";
+    await ensurePreferredPlanTypeSelection();
     if (userId) {
         await registerUser(userId, email, name);
     }
@@ -444,6 +571,8 @@ async function registerUser(userId, email, name) {
 
     const safeEmail = (email || "").trim() || `${userId}@unknown.local`;
     const safeName = (name || "").trim() || "Unknown";
+    const storedPreferred = (localStorage.getItem("preferredPlanType") || "").toLowerCase();
+    const preferredPlanType = storedPreferred === "enterprise" ? "enterprise" : (storedPreferred === "particulier" ? "particulier" : null);
 
     try {
         const response = await fetch(createUserUrl, {
@@ -452,7 +581,7 @@ async function registerUser(userId, email, name) {
                 "Content-Type": "application/json",
                 "user-id": userId
             },
-            body: JSON.stringify({ userId, email: safeEmail, name: safeName }),
+            body: JSON.stringify({ userId, email: safeEmail, name: safeName, preferredPlanType }),
         });
 
         if (response.ok) {

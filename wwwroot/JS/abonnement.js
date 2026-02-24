@@ -1,8 +1,12 @@
 // abonnement.js
 // Handles Stripe integration for subscription upgrades
 
-function startStripeCheckout(userId) {
-    console.log("Starting Stripe checkout for user:", userId);
+function startStripeCheckout(userId, planType = 'particulier') {
+    const normalizedPlanType = (planType || 'particulier').toLowerCase() === 'enterprise'
+        ? 'enterprise'
+        : 'particulier';
+
+    console.log("Starting Stripe checkout for user:", userId, "planType:", normalizedPlanType);
 
     const functionAppKey = "jwV7NqKLnbpD0kagadk2tuBl4UIV_OCJtCSaHehV9smYAzFulku5Eg=="; // Replace with a secure method
 
@@ -12,7 +16,7 @@ function startStripeCheckout(userId) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${functionAppKey}`
         },
-        body: JSON.stringify({ userId })
+        body: JSON.stringify({ userId, planType: normalizedPlanType })
     })
     .then(res => {
         if (!res.ok) {
@@ -45,5 +49,7 @@ function startStripeCheckout(userId) {
         alert('Error with Stripe: ' + err.message);
     });
 }
+
+window.startStripeCheckout = startStripeCheckout;
 
 export { startStripeCheckout };
