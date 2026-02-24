@@ -690,10 +690,6 @@ async function updateUI() {
     const email = resolveAccountEmail(account);
     console.log("Resolved email from claims:", email || "(none)");
     const name = account.name || account.idTokenClaims?.name || email || "Unknown";
-    if (userId) {
-        await registerUser(userId, email, name);
-    }
-
     let userStatus = await checkUserStatus(userId);
     if (userStatus && userStatus.error === "User not found" && userId) {
         await registerUser(userId, email, name);

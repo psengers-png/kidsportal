@@ -317,12 +317,15 @@
             </div>
 
             <div class="info-text">
-                Voer je e-mailadres in. We sturen je een login code per e-mail.
+                Bestaande gebruikers loggen in met wachtwoord. Nieuwe gebruikers ontvangen een code per e-mail.
             </div>
 
             <div class="button-group">
+                <button class="btn-secondary" id="passwordLoginBtn" onclick="handlePasswordLogin()">
+                    Inloggen met wachtwoord
+                </button>
                 <button class="btn-primary" id="sendCodeBtn" onclick="handleSendCode()">
-                    Code versturen
+                    Nieuwe gebruiker: code sturen
                 </button>
             </div>
 
@@ -369,9 +372,32 @@
         © 2026 Rainy Day Club — Van binnen is het altijd zonnig 🌈
     </footer>
 
+    <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
     <script>
         const API_BASE = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net";
         let currentEmail = "";
+
+        const msalConfig = {
+            auth: {
+                clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
+                authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
+                redirectUri: window.location.origin + "/home.html",
+                knownAuthorities: ["kidsportal2.ciamlogin.com"]
+            },
+            cache: { cacheLocation: "localStorage" }
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        async function handlePasswordLogin() {
+            try {
+                await msalInstance.loginRedirect();
+            } catch (error) {
+                const emailError = document.getElementById("emailError");
+                emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
+                emailError.classList.add("show");
+            }
+        }
 
         async function handleSendCode() {
             const email = document.getElementById("emailInput").value.trim();
@@ -400,6 +426,9 @@
 
                 if (!response.ok) {
                     const error = await response.json();
+                    if (response.status === 409 && error.usePasswordLogin) {
+                        throw new Error("Dit e-mailadres heeft al een account. Gebruik 'Inloggen met wachtwoord'.");
+                    }
                     throw new Error(error.error || "Failed to send code");
                 }
 
