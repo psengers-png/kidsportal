@@ -6,6 +6,10 @@
       "statusCode": 200
     },
     {
+      "route": "/cancelSubscription",
+      "rewrite": "/api/cancelSubscription"
+    },
+    {
       "route": "/api/*",
       "serve": "/api/*",
       "allowedRoles": []

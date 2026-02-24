@@ -790,7 +790,7 @@ if (abonnementBtn) {
             console.log("Cancelling subscription for user:", userId);
             try {
                 console.log("Sending cancelSubscription API request...");
-                const response = await fetch("/cancelSubscription", {
+                const response = await fetch("/api/cancelSubscription", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

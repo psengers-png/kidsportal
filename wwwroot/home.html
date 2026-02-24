@@ -417,7 +417,7 @@
                 return;
               }
 
-              const cancelResponse = await fetch('/cancelSubscription', {
+              const cancelResponse = await fetch('/api/cancelSubscription', {
                 method: 'POST',
                 headers: { 'user-id': userId },
               });
