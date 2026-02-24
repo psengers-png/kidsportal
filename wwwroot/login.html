@@ -381,13 +381,29 @@
             auth: {
                 clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
                 authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-                redirectUri: window.location.origin + "/login.html",
+                redirectUri: window.location.origin + "/home.html",
                 knownAuthorities: ["kidsportal2.ciamlogin.com"]
             },
             cache: { cacheLocation: "localStorage" }
         };
 
         const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        function showLoggedOutMessageIfNeeded() {
+            const params = new URLSearchParams(window.location.search || "");
+            if (params.get("loggedOut") !== "1") {
+                return;
+            }
+
+            const emailSuccess = document.getElementById("emailSuccess");
+            if (emailSuccess) {
+                emailSuccess.textContent = "Je bent succesvol uitgelogd.";
+                emailSuccess.classList.add("show");
+            }
+
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
 
         function normalizeUserId(rawUserId) {
             if (!rawUserId) {
@@ -445,7 +461,7 @@
             try {
                 sessionStorage.setItem("ciamLoginInProgress", "1");
                 await msalInstance.loginRedirect({
-                    redirectUri: window.location.origin + "/login.html",
+                    redirectUri: window.location.origin + "/home.html",
                     loginHint: emailHint || undefined
                 });
             } catch (error) {
@@ -607,6 +623,7 @@
             }
         });
 
+        showLoggedOutMessageIfNeeded();
         bootstrapCiamLogin();
     </script>
 </body>

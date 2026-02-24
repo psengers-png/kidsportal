@@ -326,7 +326,7 @@
             if (window.msalInstance?.logoutRedirect) {
               try {
                 await window.msalInstance.logoutRedirect({
-                  postLogoutRedirectUri: window.location.origin + '/login.html'
+                  postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
                 });
                 return;
               } catch (error) {
@@ -334,7 +334,7 @@
               }
             }
 
-            window.location.href = '/login.html';
+            window.location.href = '/login.html?loggedOut=1';
           };
           abonnementBtn.style.display = 'inline-block';
         } else {
