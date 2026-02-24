@@ -352,8 +352,9 @@
         try {
           const data = await response.json();
           const statusPreferred = (data.preferredPlanType || '').toLowerCase();
-          const preferredPlanType = statusPreferred === 'enterprise' ? 'enterprise' : 'particulier';
-          localStorage.setItem('preferredPlanType', preferredPlanType);
+          if (statusPreferred === 'enterprise' || statusPreferred === 'particulier') {
+            localStorage.setItem('preferredPlanType', statusPreferred);
+          }
 
           if (data.isActive) {
             const activePlanLabel = (data.planType || '').toLowerCase() === 'enterprise' ? 'Enterprise' : 'Particulier';
@@ -381,16 +382,13 @@
           } else {
             abonnementBtn.textContent = 'Kies abonnement';
             abonnementBtn.style.background = '#ef4444'; // Red for upgrade
-            abonnementBtn.onclick = () => {
+            abonnementBtn.onclick = async () => {
               console.log('Starting Stripe checkout for user:', userId);
               const sanitizedUserId = userId.split('.')[0];
 
-              const preferredLabel = preferredPlanType === 'enterprise' ? 'Enterprise (€30/mnd)' : 'Particulier (€4/mnd)';
-              const otherLabel = preferredPlanType === 'enterprise' ? 'Particulier (€4/mnd)' : 'Enterprise (€30/mnd)';
-              const choosesPreferred = confirm(`Kies je abonnement:\n\nStandaard: ${preferredLabel}\n\nOK = ${preferredLabel}\nAnnuleren = ${otherLabel}`);
-              const selectedPlanType = choosesPreferred
-                ? preferredPlanType
-                : (preferredPlanType === 'enterprise' ? 'particulier' : 'enterprise');
+              const selectedPlanType = window.ensurePreferredPlanTypeSelection
+                ? await window.ensurePreferredPlanTypeSelection()
+                : 'particulier';
               localStorage.setItem('preferredPlanType', selectedPlanType);
 
               startStripeCheckout(sanitizedUserId, selectedPlanType);

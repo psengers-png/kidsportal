@@ -345,15 +345,10 @@ form.addEventListener("submit", async (e) => {
                 const userId = storedUserId || accountUserId;
                 if (btn && userId) {
                     const sanitizedUserId = userId.split('.')[0];
-                    btn.onclick = () => {
-                        const storedPreferred = (localStorage.getItem('preferredPlanType') || '').toLowerCase();
-                        const preferredPlanType = storedPreferred === 'enterprise' ? 'enterprise' : 'particulier';
-                        const preferredLabel = preferredPlanType === 'enterprise' ? 'Enterprise (€30/mnd)' : 'Particulier (€4/mnd)';
-                        const otherLabel = preferredPlanType === 'enterprise' ? 'Particulier (€4/mnd)' : 'Enterprise (€30/mnd)';
-                        const choosesPreferred = confirm(`Kies je abonnement:\n\nStandaard: ${preferredLabel}\n\nOK = ${preferredLabel}\nAnnuleren = ${otherLabel}`);
-                        const selectedPlanType = choosesPreferred
-                            ? preferredPlanType
-                            : (preferredPlanType === 'enterprise' ? 'particulier' : 'enterprise');
+                    btn.onclick = async () => {
+                        const selectedPlanType = window.ensurePreferredPlanTypeSelection
+                            ? await window.ensurePreferredPlanTypeSelection()
+                            : 'particulier';
                         localStorage.setItem('preferredPlanType', selectedPlanType);
                         startStripeCheckout(sanitizedUserId, selectedPlanType);
                     };

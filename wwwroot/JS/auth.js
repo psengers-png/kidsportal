@@ -284,6 +284,7 @@ function showPlanTypeSelectionModal() {
         document.body.appendChild(overlay);
     });
 }
+window.showPlanTypeSelectionModal = showPlanTypeSelectionModal;
 
 async function startLoginRedirectWithNotice(message) {
     if (loginRedirectStarted) {
@@ -373,18 +374,63 @@ function isLikelyEmail(value) {
 
 function resolveAccountEmail(account) {
     const claims = account?.idTokenClaims || {};
-    const candidates = [
+    const directCandidates = [
         claims.email,
         claims.preferred_username,
-        Array.isArray(claims.emails) ? claims.emails[0] : null,
-        claims.signInNames?.emailAddress,
+        claims.upn,
         claims.signInName,
+        claims.emailAddress,
+        claims.mail,
         account?.username
     ];
 
-    for (const candidate of candidates) {
+    if (Array.isArray(claims.emails)) {
+        directCandidates.push(...claims.emails);
+    }
+
+    if (Array.isArray(claims.signInNames)) {
+        for (const signInName of claims.signInNames) {
+            if (typeof signInName === "string") {
+                directCandidates.push(signInName);
+            } else if (signInName && typeof signInName === "object") {
+                directCandidates.push(signInName.emailAddress, signInName.value);
+            }
+        }
+    } else {
+        directCandidates.push(claims.signInNames?.emailAddress, claims.signInNames?.value);
+    }
+
+    for (const candidate of directCandidates) {
         if (isLikelyEmail(candidate)) {
             return candidate.trim();
+        }
+    }
+
+    const stack = [claims];
+    while (stack.length > 0) {
+        const current = stack.pop();
+        if (!current) {
+            continue;
+        }
+
+        if (typeof current === "string") {
+            if (isLikelyEmail(current)) {
+                return current.trim();
+            }
+            continue;
+        }
+
+        if (Array.isArray(current)) {
+            for (const item of current) {
+                stack.push(item);
+            }
+            continue;
+        }
+
+        if (typeof current === "object") {
+            for (const value of Object.values(current)) {
+                stack.push(value);
+            }
         }
     }
 
@@ -401,6 +447,7 @@ async function ensurePreferredPlanTypeSelection() {
     localStorage.setItem("preferredPlanType", selected);
     return selected;
 }
+window.ensurePreferredPlanTypeSelection = ensurePreferredPlanTypeSelection;
 
 // ---------------- REDIRECT HANDLING ---------------------
 const msalReadyPromise = msalInstance.initialize()
@@ -466,8 +513,8 @@ async function updateUI() {
     console.log("User ID saved to localStorage:", userId);
 
     const email = resolveAccountEmail(account);
+    console.log("Resolved email from claims:", email || "(none)");
     const name = account.name || account.idTokenClaims?.name || email || "Unknown";
-    await ensurePreferredPlanTypeSelection();
     if (userId) {
         await registerUser(userId, email, name);
     }
@@ -476,6 +523,10 @@ async function updateUI() {
     if (userStatus && userStatus.error === "User not found" && userId) {
         await registerUser(userId, email, name);
         userStatus = await checkUserStatus(userId);
+    }
+    const preferredFromStatus = normalizePreferredPlanType(userStatus?.preferredPlanType);
+    if (preferredFromStatus) {
+        localStorage.setItem("preferredPlanType", preferredFromStatus);
     }
     const abonnementBtn = document.getElementById("abonnementBtn");
     if (abonnementBtn) {
