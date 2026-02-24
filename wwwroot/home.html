@@ -417,7 +417,7 @@
                 return;
               }
 
-              const cancelResponse = await fetch('/api/cancelSubscription', {
+              const cancelResponse = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelsubscription', {
                 method: 'POST',
                 headers: { 'user-id': userId },
               });
