@@ -374,6 +374,8 @@ function isLikelyEmail(value) {
 
 function resolveAccountEmail(account) {
     const claims = account?.idTokenClaims || {};
+    console.log("Resolving email from account claims:", JSON.stringify(claims, null, 2));
+    
     const directCandidates = [
         claims.email,
         claims.preferred_username,
@@ -400,8 +402,11 @@ function resolveAccountEmail(account) {
         directCandidates.push(claims.signInNames?.emailAddress, claims.signInNames?.value);
     }
 
+    console.log("Direct candidates for email:", directCandidates);
+
     for (const candidate of directCandidates) {
         if (isLikelyEmail(candidate)) {
+            console.log("Found email in direct candidates:", candidate);
             return candidate.trim();
         }
     }
@@ -415,6 +420,7 @@ function resolveAccountEmail(account) {
 
         if (typeof current === "string") {
             if (isLikelyEmail(current)) {
+                console.log("Found email in recursive search:", current);
                 return current.trim();
             }
             continue;
@@ -434,6 +440,7 @@ function resolveAccountEmail(account) {
         }
     }
 
+    console.log("No email found in MSAL claims, returning empty string");
     return "";
 }
 
@@ -656,12 +663,38 @@ async function registerUser(userId, email, name) {
     const preferredPlanType = storedPreferred === "enterprise" ? "enterprise" : (storedPreferred === "particulier" ? "particulier" : null);
 
     try {
+        // Try to get access token to send with registration
+        let authorizationHeader = "";
+        try {
+            const accounts = msalInstance.getAllAccounts();
+            if (accounts.length > 0) {
+                const account = accounts[0];
+                const tokenRequest = {
+                    scopes: ["https://graph.microsoft.com/.default"],
+                    account: account,
+                    forceRefresh: false
+                };
+                const response = await msalInstance.acquireTokenSilent(tokenRequest);
+                authorizationHeader = `Bearer ${response.accessToken}`;
+                console.log("Access token acquired for createUser request");
+            }
+        } catch (tokenError) {
+            console.warn("Could not acquire token for createUser:", tokenError.message);
+            // Continue without token
+        }
+
+        const headers = {
+            "Content-Type": "application/json",
+            "user-id": userId
+        };
+        
+        if (authorizationHeader) {
+            headers["authorization"] = authorizationHeader;
+        }
+
         const response = await fetch(createUserUrl, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "user-id": userId
-            },
+            headers,
             body: JSON.stringify({ userId, email: safeEmail, name: safeName, preferredPlanType }),
         });
 
