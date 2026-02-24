@@ -472,7 +472,10 @@
                 sessionStorage.setItem("ciamLoginInProgress", "1");
                 await msalInstance.loginRedirect({
                     redirectUri: window.location.origin + "/home.html",
-                    loginHint: emailHint || undefined
+                    loginHint: emailHint || undefined,
+                    extraQueryParameters: emailHint
+                        ? { login_hint: emailHint }
+                        : undefined
                 });
             } catch (error) {
                 sessionStorage.removeItem("ciamLoginInProgress");
@@ -564,7 +567,8 @@
                 await msalInstance.loginRedirect({
                     redirectUri: window.location.origin + "/home.html",
                     loginHint: email,
-                    prompt: "create"
+                    prompt: "create",
+                    extraQueryParameters: { login_hint: email }
                 });
             } catch (error) {
                 emailError.textContent = "Account aanmaken is mislukt. Probeer opnieuw.";
