@@ -689,8 +689,12 @@ async function registerExistingUsers(users) {
 // Voorbeeldgebruik verwijderd om onnodige API-calls tijdens pagina-load te voorkomen
 
 // Ensure startStripeCheckout remains defined and accessible for home.html
-async function startStripeCheckout(userId) {
-    console.log("startStripeCheckout called with userId:", userId);
+async function startStripeCheckout(userId, planType = "particulier") {
+    const normalizedPlanType = (planType || "particulier").toLowerCase() === "enterprise"
+        ? "enterprise"
+        : "particulier";
+
+    console.log("startStripeCheckout called with userId:", userId, "planType:", normalizedPlanType);
     console.log("Preparing to send createCheckout API request...");
 
     try {
@@ -701,7 +705,7 @@ async function startStripeCheckout(userId) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${functionKey}`
             },
-            body: JSON.stringify({ userId })
+            body: JSON.stringify({ userId, planType: normalizedPlanType })
         });
 
         console.log("createCheckout API Response Status:", response.status);
