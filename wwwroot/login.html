@@ -317,15 +317,15 @@
             </div>
 
             <div class="info-text">
-                Bestaande gebruikers loggen in met wachtwoord. Nieuwe gebruikers ontvangen een code per e-mail.
+                Bestaande gebruikers: klik op wachtwoord-login. Nieuwe gebruikers: vraag een code aan.
             </div>
 
             <div class="button-group">
-                <button class="btn-secondary" id="passwordLoginBtn" onclick="handlePasswordLogin()">
-                    Inloggen met wachtwoord
+                <button class="btn-secondary" id="passwordLoginBtn" onclick="handlePasswordLogin((document.getElementById('emailInput')?.value || '').trim())">
+                    Bestaande gebruiker: wachtwoord
                 </button>
                 <button class="btn-primary" id="sendCodeBtn" onclick="handleSendCode()">
-                    Nieuwe gebruiker: code sturen
+                    Nieuwe gebruiker: code aanvragen
                 </button>
             </div>
 
@@ -500,9 +500,8 @@
                 if (!response.ok) {
                     const error = await response.json();
                     if (response.status === 409 && error.usePasswordLogin) {
-                        emailError.textContent = "Bestaand account gevonden. Je wordt doorgestuurd naar wachtwoord-login...";
+                        emailError.textContent = "Bestaand account gevonden. Log in met wachtwoord via de linker knop.";
                         emailError.classList.add("show");
-                        await handlePasswordLogin(email);
                         return;
                     }
                     throw new Error(error.error || "Failed to send code");
@@ -572,14 +571,6 @@
                 localStorage.setItem("userId", result.userId);
                 localStorage.setItem("user-id", result.userId);
                 localStorage.setItem("userEmail", result.email);
-
-                if (result.requiresCiamSignup) {
-                    const shouldContinue = confirm("Je account is aangemaakt. Voltooi nu je wachtwoord-instelling om voortaan met wachtwoord in te loggen.");
-                    if (shouldContinue) {
-                        await msalInstance.loginRedirect({ loginHint: result.email });
-                        return;
-                    }
-                }
 
                 // Redirect to home
                 window.location.href = "/home.html";

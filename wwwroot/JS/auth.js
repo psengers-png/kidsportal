@@ -872,7 +872,7 @@ async function registerUser(userId, email, name) {
         const response = await fetch(createUserUrl, {
             method: "POST",
             headers,
-            body: JSON.stringify({ userId, email: finalEmail, name: safeName, preferredPlanType }),
+            body: JSON.stringify({ userId, email: finalEmail, name: safeName, preferredPlanType, ciamLinked: true, loginMethod: "password" }),
         });
 
         if (response.ok) {
