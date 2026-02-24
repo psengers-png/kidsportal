@@ -6,28 +6,84 @@
     <title>Login - RainyDay Club</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
             min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+        }
+
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        @keyframes rain {
+            from { transform: translateY(0); }
+            to { transform: translateY(12px); }
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: #e5e7eb;
+            text-decoration: none;
+            color: #1f2d3d;
+            display: inline-block;
+        }
+
+        section {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
         }
 
         .login-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
-            width: 100%;
-            max-width: 420px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 30px;
             padding: 40px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            width: 100%;
         }
 
         .logo {
@@ -37,7 +93,7 @@
 
         .logo h1 {
             font-size: 28px;
-            color: #667eea;
+            color: #1f2d3d;
             margin-bottom: 8px;
         }
 
@@ -109,12 +165,12 @@
         }
 
         .btn-primary {
-            background: #667eea;
-            color: white;
+            background: #ffd966;
+            color: #1f2d3d;
         }
 
         .btn-primary:hover {
-            background: #5568d3;
+            background: #facc15;
         }
 
         .btn-primary:disabled {
@@ -166,7 +222,7 @@
             display: inline-block;
             width: 16px;
             height: 16px;
-            border: 2px solid #667eea;
+            border: 2px solid #1f2d3d;
             border-top: 2px solid transparent;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
@@ -184,7 +240,7 @@
         }
 
         .back-link a {
-            color: #667eea;
+            color: #1f2d3d;
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
@@ -213,11 +269,32 @@
 
         .code-digit:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2563eb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 40px 40px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
+    <div class="rain"></div>
+
+    <header>
+        <div class="header-left">
+            <h1>🌧️ Rainy Day Club</h1>
+        </div>
+        <div class="header-right">
+            <a class="header-btn" href="/home.html">Terug naar home</a>
+        </div>
+    </header>
+
+    <section>
     <div class="login-container">
         <div class="logo">
             <h1>🌧️ RainyDay Club</h1>
@@ -286,6 +363,11 @@
             </div>
         </div>
     </div>
+    </section>
+
+    <footer>
+        © 2026 Rainy Day Club — Van binnen is het altijd zonnig 🌈
+    </footer>
 
     <script>
         const API_BASE = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net";
@@ -310,7 +392,7 @@
                 sendBtn.disabled = true;
                 sendBtn.innerHTML = '<span class="loading"></span>Code versturen...';
 
-                const response = await fetch(`${API_BASE}/api/sendLoginCode`, {
+                const response = await fetch(`${API_BASE}/sendlogincode`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email })
@@ -368,7 +450,7 @@
                 verifyBtn.disabled = true;
                 verifyBtn.innerHTML = '<span class="loading"></span>Verifiëren...';
 
-                const response = await fetch(`${API_BASE}/api/verifyLoginCode`, {
+                const response = await fetch(`${API_BASE}/verifylogincode`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email: currentEmail, code })
