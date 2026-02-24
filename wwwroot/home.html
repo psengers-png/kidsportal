@@ -490,7 +490,7 @@
         }
 
         const userId = localStorage.getItem('user-id') || 'onbekend';
-        const endpoints = ['https://sengfam1.azurewebsites.net/feedback_mail', '/api/feedback_mail'];
+        const endpoints = ['https://sengfam1.azurewebsites.net/feedback_mail'];
 
         feedbackBtn.disabled = true;
         feedbackStatus.textContent = 'Feedback wordt verstuurd...';
@@ -501,7 +501,7 @@
           try {
             const response = await fetch(endpoint, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'text/plain' },
               body: JSON.stringify({
                 message: text,
                 userId
@@ -516,11 +516,12 @@
             }
 
             let errorText = '';
+            const rawBody = await response.text();
             try {
-              const errorJson = await response.json();
+              const errorJson = JSON.parse(rawBody || '{}');
               errorText = errorJson.error || JSON.stringify(errorJson);
             } catch {
-              errorText = await response.text();
+              errorText = rawBody;
             }
             lastError = `${endpoint}: ${errorText || response.status}`;
           } catch (error) {
