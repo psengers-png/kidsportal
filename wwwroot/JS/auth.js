@@ -659,13 +659,19 @@ async function updateUI() {
         localStorage.removeItem("requiresCiamSignup");
         console.log("User ID saved to localStorage:", userId);
 
-        const email = resolveAccountEmail(account);
+        const emailFromClaims = resolveAccountEmail(account);
+        const pendingSignupEmail = (localStorage.getItem("pendingSignupEmail") || "").trim();
+        const email = emailFromClaims || pendingSignupEmail;
         console.log("Resolved email from claims:", email || "(none)");
         const name = account.name || account.idTokenClaims?.name || email || "Unknown";
         userStatus = await checkUserStatus(userId);
         if (userStatus && userStatus.error === "User not found" && userId) {
             await registerUser(userId, email, name);
             userStatus = await checkUserStatus(userId);
+        }
+
+        if (email && pendingSignupEmail && email.toLowerCase() === pendingSignupEmail.toLowerCase()) {
+            localStorage.removeItem("pendingSignupEmail");
         }
     } else {
         const requiresCiamSignup = localStorage.getItem("requiresCiamSignup") === "1";

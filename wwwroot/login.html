@@ -317,15 +317,15 @@
             </div>
 
             <div class="info-text">
-                Bestaande gebruikers: klik op wachtwoord-login. Nieuwe gebruikers: vraag een code aan.
+                Bestaande gebruikers: log in met wachtwoord. Nieuwe gebruikers: vul e-mail in en maak direct je account aan.
             </div>
 
             <div class="button-group">
                 <button class="btn-secondary" id="passwordLoginBtn" onclick="handlePasswordLogin((document.getElementById('emailInput')?.value || '').trim())">
                     Bestaande gebruiker: wachtwoord
                 </button>
-                <button class="btn-primary" id="sendCodeBtn" onclick="handleSendCode()">
-                    Nieuwe gebruiker: code aanvragen
+                <button class="btn-primary" id="sendCodeBtn" onclick="handleNewUserSignup()">
+                    Nieuwe gebruiker: account aanmaken
                 </button>
             </div>
 
@@ -534,6 +534,41 @@
             } finally {
                 sendBtn.disabled = false;
                 sendBtn.innerHTML = "Code versturen";
+            }
+        }
+
+        async function handleNewUserSignup() {
+            const email = document.getElementById("emailInput").value.trim();
+            const emailError = document.getElementById("emailError");
+            const emailSuccess = document.getElementById("emailSuccess");
+            const createBtn = document.getElementById("sendCodeBtn");
+
+            emailError.classList.remove("show");
+            emailSuccess.classList.remove("show");
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.classList.add("show");
+                return;
+            }
+
+            try {
+                createBtn.disabled = true;
+                createBtn.innerHTML = '<span class="loading"></span>Account aanmaken...';
+
+                localStorage.setItem("pendingSignupEmail", email);
+                localStorage.setItem("requiresCiamSignup", "1");
+
+                await msalInstance.loginRedirect({
+                    redirectUri: window.location.origin + "/home.html",
+                    loginHint: email,
+                    prompt: "create"
+                });
+            } catch (error) {
+                emailError.textContent = "Account aanmaken is mislukt. Probeer opnieuw.";
+                emailError.classList.add("show");
+                createBtn.disabled = false;
+                createBtn.innerHTML = "Nieuwe gebruiker: account aanmaken";
             }
         }
 
