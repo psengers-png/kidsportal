@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - RainyDay Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f0f4f8;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-primary:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f4f8;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            padding: 12px;
+            background: #fef2f2;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #dc2626;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            color: #059669;
+            font-size: 14px;
+            padding: 12px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #059669;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .code-input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .code-digit {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .code-digit:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🌧️ RainyDay Club</h1>
+            <p>Login to your account</p>
+        </div>
+
+        <!-- Email Form -->
+        <div class="form-section active" id="emailForm">
+            <div class="error-message" id="emailError"></div>
+            <div class="success-message" id="emailSuccess"></div>
+
+            <div class="form-group">
+                <label for="emailInput">E-mailadres</label>
+                <input 
+                    type="email" 
+                    id="emailInput" 
+                    placeholder="jouw@email.com"
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="info-text">
+                Voer je e-mailadres in. We sturen je een login code per e-mail.
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" id="sendCodeBtn" onclick="handleSendCode()">
+                    Code versturen
+                </button>
+            </div>
+
+            <div class="back-link">
+                <a href="/">← Terug</a>
+            </div>
+        </div>
+
+        <!-- Code Verification Form -->
+        <div class="form-section" id="codeForm">
+            <div class="error-message" id="codeError"></div>
+
+            <div id="emailDisplay" style="text-align: center; margin-bottom: 16px;">
+                <p style="color: #666; font-size: 14px;">Code verzonden naar:<br><strong id="displayEmail"></strong></p>
+            </div>
+
+            <div class="form-group">
+                <label>Login Code (6 cijfers)</label>
+                <div class="code-input-group" id="codeInputGroup">
+                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
+                </div>
+            </div>
+
+            <div class="info-text">
+                We hebben je een 6-cijfer code naar je e-mail gestuurd. Voer deze in om in te loggen.
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="handleBackToEmail()">Terug</button>
+                <button class="btn-primary" id="verifyCodeBtn" onclick="handleVerifyCode()">
+                    Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net";
+        let currentEmail = "";
+
+        async function handleSendCode() {
+            const email = document.getElementById("emailInput").value.trim();
+            const emailError = document.getElementById("emailError");
+            const emailSuccess = document.getElementById("emailSuccess");
+            const sendBtn = document.getElementById("sendCodeBtn");
+
+            emailError.classList.remove("show");
+            emailSuccess.classList.remove("show");
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.classList.add("show");
+                return;
+            }
+
+            try {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<span class="loading"></span>Code versturen...';
+
+                const response = await fetch(`${API_BASE}/api/sendLoginCode`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || "Failed to send code");
+                }
+
+                currentEmail = email;
+                emailSuccess.textContent = "Code verzonden! Controleer je e-mail.";
+                emailSuccess.classList.add("show");
+
+                // Switch to code form
+                setTimeout(() => {
+                    document.getElementById("emailForm").classList.remove("active");
+                    document.getElementById("codeForm").classList.add("active");
+                    document.getElementById("displayEmail").textContent = email;
+                    document.querySelector(".code-digit").focus();
+                }, 500);
+
+            } catch (error) {
+                emailError.textContent = error.message || "Er is een fout opgetreden. Probeer het opnieuw.";
+                emailError.classList.add("show");
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = "Code versturen";
+            }
+        }
+
+        function handleBackToEmail() {
+            document.getElementById("codeForm").classList.remove("active");
+            document.getElementById("emailForm").classList.add("active");
+            document.getElementById("codeError").classList.remove("show");
+            document.querySelectorAll(".code-digit").forEach(input => input.value = "");
+            document.getElementById("emailInput").focus();
+        }
+
+        async function handleVerifyCode() {
+            const codeInputs = document.querySelectorAll(".code-digit");
+            const code = Array.from(codeInputs).map(input => input.value).join("");
+            const codeError = document.getElementById("codeError");
+            const verifyBtn = document.getElementById("verifyCodeBtn");
+
+            codeError.classList.remove("show");
+
+            if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+                codeError.textContent = "Voer alstublieft alle 6 cijfers van je code in.";
+                codeError.classList.add("show");
+                return;
+            }
+
+            try {
+                verifyBtn.disabled = true;
+                verifyBtn.innerHTML = '<span class="loading"></span>Verifiëren...';
+
+                const response = await fetch(`${API_BASE}/api/verifyLoginCode`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: currentEmail, code })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || "Verificatie mislukt");
+                }
+
+                const result = await response.json();
+                
+                // Save userId and email to localStorage
+                localStorage.setItem("userId", result.userId);
+                localStorage.setItem("user-id", result.userId);
+                localStorage.setItem("userEmail", result.email);
+
+                // Redirect to home
+                window.location.href = "/home.html";
+
+            } catch (error) {
+                codeError.textContent = error.message || "Verificatie mislukt. Probeer het opnieuw.";
+                codeError.classList.add("show");
+            } finally {
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = "Login";
+            }
+        }
+
+        // Auto-focus next code digit
+        document.querySelectorAll(".code-digit").forEach((input, index) => {
+            input.addEventListener("input", (e) => {
+                if (e.target.value && index < 5) {
+                    document.querySelectorAll(".code-digit")[index + 1].focus();
+                }
+            });
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && !input.value && index > 0) {
+                    document.querySelectorAll(".code-digit")[index - 1].focus();
+                }
+            });
+        });
+
+        // Enter key on email
+        document.getElementById("emailInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                handleSendCode();
+            }
+        });
+
+        // Auto-submit on 6th digit
+        const lastCodeInput = document.querySelectorAll(".code-digit")[5];
+        lastCodeInput.addEventListener("input", () => {
+            if (Array.from(document.querySelectorAll(".code-digit")).every(input => input.value)) {
+                handleVerifyCode();
+            }
+        });
+    </script>
+</body>
+</html>

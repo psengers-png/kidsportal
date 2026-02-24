@@ -636,6 +636,27 @@ window.addEventListener("load", () => {
 // ---------------- UI LOGICA ---------------------
 async function updateUI() {
     console.log("updateUI aangeroepen");
+
+    // Check for userId from passwordless email login first
+    let userId = localStorage.getItem("userId") || localStorage.getItem("user-id");
+    
+    if (userId) {
+        console.log("User ID found in localStorage:", userId);
+        // User is already logged in via email login
+        const userEmail = localStorage.getItem("userEmail") || "";
+        console.log("User email from localStorage:", userEmail);
+        
+        let userStatus = await checkUserStatus(userId);
+        const abonnementBtn = document.getElementById("abonnementBtn");
+        if (abonnementBtn) {
+            const isActive = Boolean(userStatus && userStatus.isActive);
+            applySubscriptionButtonState(abonnementBtn, isActive);
+            console.log("abonnementBtn state updated. isActive:", isActive);
+        }
+        return;
+    }
+
+    // Fallback to MSAL if email login not done
     await msalReadyPromise;
 
     const accounts = msalInstance.getAllAccounts();
@@ -650,7 +671,7 @@ async function updateUI() {
         }
 
         console.warn("No user logged in on protected page. Redirecting to login...");
-        startLoginRedirectWithNotice("Je moet eerst inloggen om deze functie te gebruiken. Je wordt nu doorgestuurd naar de inlogpagina.");
+        window.location.href = "/login.html";
         return;
     }
 
@@ -661,7 +682,7 @@ async function updateUI() {
     }
 
     const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
-    const userId = normalizeUserId(rawUserId);
+    userId = normalizeUserId(rawUserId);
     localStorage.setItem("userId", userId);
     localStorage.setItem("user-id", userId);
     console.log("User ID saved to localStorage:", userId);
