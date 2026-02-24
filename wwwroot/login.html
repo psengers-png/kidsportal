@@ -57,6 +57,32 @@
             font-size: 1.6rem;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            height: 72px;
+            width: auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 16px;
+            }
+
+            .header-logo {
+                height: 52px;
+            }
+
+            .header-left h1 {
+                font-size: 1.2rem;
+            }
+        }
+
         .header-btn {
             padding: 10px 18px;
             border-radius: 999px;
@@ -250,28 +276,6 @@
             text-decoration: underline;
         }
 
-        .code-input-group {
-            display: flex;
-            gap: 8px;
-            justify-content: space-between;
-        }
-
-        .code-digit {
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            text-align: center;
-            font-weight: 600;
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            transition: border-color 0.2s;
-        }
-
-        .code-digit:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-
         footer {
             text-align: center;
             padding: 20px 40px 40px;
@@ -287,7 +291,8 @@
 
     <header>
         <div class="header-left">
-            <h1>🌧️ Rainy Day Club</h1>
+            <img class="header-logo" src="Images/Logo Rainydayclub.png" alt="RainyDay Club Logo">
+            <h1>Rainy Day Club</h1>
         </div>
         <div class="header-right">
             <a class="header-btn" href="/home.html">Terug naar home</a>
@@ -297,8 +302,8 @@
     <section>
     <div class="login-container">
         <div class="logo">
-            <h1>🌧️ RainyDay Club</h1>
-            <p>Login to your account</p>
+            <h1>Inloggen</h1>
+            <p>Gebruik je e-mailadres om verder te gaan</p>
         </div>
 
         <!-- Email Form -->
@@ -317,15 +322,12 @@
             </div>
 
             <div class="info-text">
-                Bestaande gebruikers: log in met wachtwoord. Nieuwe gebruikers: vul e-mail in en maak direct je account aan.
+                Vul je e-mailadres in en ga verder. De vervolgstap is voor iedereen hetzelfde.
             </div>
 
             <div class="button-group">
-                <button class="btn-secondary" id="passwordLoginBtn" onclick="handlePasswordLogin((document.getElementById('emailInput')?.value || '').trim())">
-                    Bestaande gebruiker: wachtwoord
-                </button>
-                <button class="btn-primary" id="sendCodeBtn" onclick="handleNewUserSignup()">
-                    Nieuwe gebruiker: account aanmaken
+                <button class="btn-primary" id="continueBtn" onclick="handleContinueLogin()">
+                    Doorgaan
                 </button>
             </div>
 
@@ -334,37 +336,6 @@
             </div>
         </div>
 
-        <!-- Code Verification Form -->
-        <div class="form-section" id="codeForm">
-            <div class="error-message" id="codeError"></div>
-
-            <div id="emailDisplay" style="text-align: center; margin-bottom: 16px;">
-                <p style="color: #666; font-size: 14px;">Code verzonden naar:<br><strong id="displayEmail"></strong></p>
-            </div>
-
-            <div class="form-group">
-                <label>Login Code (6 cijfers)</label>
-                <div class="code-input-group" id="codeInputGroup">
-                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
-                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
-                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
-                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
-                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
-                    <input type="text" maxlength="1" class="code-digit" inputmode="numeric">
-                </div>
-            </div>
-
-            <div class="info-text">
-                We hebben je een 6-cijfer code naar je e-mail gestuurd. Voer deze in om in te loggen.
-            </div>
-
-            <div class="button-group">
-                <button class="btn-secondary" onclick="handleBackToEmail()">Terug</button>
-                <button class="btn-primary" id="verifyCodeBtn" onclick="handleVerifyCode()">
-                    Login
-                </button>
-            </div>
-        </div>
     </div>
     </section>
 
@@ -374,9 +345,6 @@
 
     <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
     <script>
-        const API_BASE = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net";
-        let currentEmail = "";
-
         const msalConfig = {
             auth: {
                 clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
@@ -467,214 +435,41 @@
             }
         }
 
-        async function handlePasswordLogin(emailHint = "") {
+        async function handleContinueLogin() {
+            const emailHint = (document.getElementById("emailInput")?.value || "").trim();
+            const emailError = document.getElementById("emailError");
+            const continueBtn = document.getElementById("continueBtn");
+
+            emailError.classList.remove("show");
+            if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
+                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.classList.add("show");
+                return;
+            }
+
             try {
+                continueBtn.disabled = true;
+                continueBtn.innerHTML = '<span class="loading"></span>Doorgaan...';
                 sessionStorage.setItem("ciamLoginInProgress", "1");
+                localStorage.setItem("pendingSignupEmail", emailHint);
                 await msalInstance.loginRedirect({
                     redirectUri: window.location.origin + "/home.html",
-                    loginHint: emailHint || undefined,
-                    extraQueryParameters: emailHint
-                        ? { login_hint: emailHint }
-                        : undefined
+                    loginHint: emailHint,
+                    extraQueryParameters: { login_hint: emailHint }
                 });
             } catch (error) {
                 sessionStorage.removeItem("ciamLoginInProgress");
-                const emailError = document.getElementById("emailError");
                 emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
                 emailError.classList.add("show");
+                continueBtn.disabled = false;
+                continueBtn.innerHTML = "Doorgaan";
             }
         }
-
-        async function handleSendCode() {
-            const email = document.getElementById("emailInput").value.trim();
-            const emailError = document.getElementById("emailError");
-            const emailSuccess = document.getElementById("emailSuccess");
-            const sendBtn = document.getElementById("sendCodeBtn");
-
-            emailError.classList.remove("show");
-            emailSuccess.classList.remove("show");
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
-                emailError.classList.add("show");
-                return;
-            }
-
-            try {
-                sendBtn.disabled = true;
-                sendBtn.innerHTML = '<span class="loading"></span>Code versturen...';
-
-                const response = await fetch(`${API_BASE}/sendlogincode`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email })
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    if (response.status === 409 && error.usePasswordLogin) {
-                        emailError.textContent = "Bestaand account gevonden. Log in met wachtwoord via de linker knop.";
-                        emailError.classList.add("show");
-                        return;
-                    }
-                    throw new Error(error.error || "Failed to send code");
-                }
-
-                currentEmail = email;
-                emailSuccess.textContent = "Code verzonden! Controleer je e-mail.";
-                emailSuccess.classList.add("show");
-
-                // Switch to code form
-                setTimeout(() => {
-                    document.getElementById("emailForm").classList.remove("active");
-                    document.getElementById("codeForm").classList.add("active");
-                    document.getElementById("displayEmail").textContent = email;
-                    document.querySelector(".code-digit").focus();
-                }, 500);
-
-            } catch (error) {
-                emailError.textContent = error.message || "Er is een fout opgetreden. Probeer het opnieuw.";
-                emailError.classList.add("show");
-            } finally {
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = "Code versturen";
-            }
-        }
-
-        async function handleNewUserSignup() {
-            const email = document.getElementById("emailInput").value.trim();
-            const emailError = document.getElementById("emailError");
-            const emailSuccess = document.getElementById("emailSuccess");
-            const createBtn = document.getElementById("sendCodeBtn");
-
-            emailError.classList.remove("show");
-            emailSuccess.classList.remove("show");
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
-                emailError.classList.add("show");
-                return;
-            }
-
-            try {
-                createBtn.disabled = true;
-                createBtn.innerHTML = '<span class="loading"></span>Account aanmaken...';
-
-                localStorage.setItem("pendingSignupEmail", email);
-                localStorage.setItem("requiresCiamSignup", "1");
-                sessionStorage.setItem("ciamLoginInProgress", "1");
-
-                await msalInstance.loginRedirect({
-                    redirectUri: window.location.origin + "/home.html",
-                    loginHint: email,
-                    prompt: "create",
-                    extraQueryParameters: { login_hint: email }
-                });
-            } catch (error) {
-                emailError.textContent = "Account aanmaken is mislukt. Probeer opnieuw.";
-                emailError.classList.add("show");
-                createBtn.disabled = false;
-                createBtn.innerHTML = "Nieuwe gebruiker: account aanmaken";
-            }
-        }
-
-        function handleBackToEmail() {
-            document.getElementById("codeForm").classList.remove("active");
-            document.getElementById("emailForm").classList.add("active");
-            document.getElementById("codeError").classList.remove("show");
-            document.querySelectorAll(".code-digit").forEach(input => input.value = "");
-            document.getElementById("emailInput").focus();
-        }
-
-        async function handleVerifyCode() {
-            const codeInputs = document.querySelectorAll(".code-digit");
-            const code = Array.from(codeInputs).map(input => input.value).join("");
-            const codeError = document.getElementById("codeError");
-            const verifyBtn = document.getElementById("verifyCodeBtn");
-
-            codeError.classList.remove("show");
-
-            if (code.length !== 6 || !/^\d{6}$/.test(code)) {
-                codeError.textContent = "Voer alstublieft alle 6 cijfers van je code in.";
-                codeError.classList.add("show");
-                return;
-            }
-
-            try {
-                verifyBtn.disabled = true;
-                verifyBtn.innerHTML = '<span class="loading"></span>Verifiëren...';
-
-                const response = await fetch(`${API_BASE}/verifylogincode`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: currentEmail, code })
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || "Verificatie mislukt");
-                }
-
-                const result = await response.json();
-                
-                // Save userId and email to localStorage
-                localStorage.setItem("userId", result.userId);
-                localStorage.setItem("user-id", result.userId);
-                localStorage.setItem("userEmail", result.email);
-
-                if (result.requiresCiamSignup) {
-                    localStorage.setItem("requiresCiamSignup", "1");
-                    codeError.textContent = "Account aangemaakt. Je wordt nu doorgestuurd om je wachtwoord in te stellen...";
-                    codeError.classList.add("show");
-                    await msalInstance.loginRedirect({
-                        redirectUri: window.location.origin + "/home.html",
-                        loginHint: result.email,
-                        prompt: "create"
-                    });
-                    return;
-                }
-
-                localStorage.removeItem("requiresCiamSignup");
-
-                // Redirect to home
-                window.location.href = "/home.html";
-
-            } catch (error) {
-                codeError.textContent = error.message || "Verificatie mislukt. Probeer het opnieuw.";
-                codeError.classList.add("show");
-            } finally {
-                verifyBtn.disabled = false;
-                verifyBtn.innerHTML = "Login";
-            }
-        }
-
-        // Auto-focus next code digit
-        document.querySelectorAll(".code-digit").forEach((input, index) => {
-            input.addEventListener("input", (e) => {
-                if (e.target.value && index < 5) {
-                    document.querySelectorAll(".code-digit")[index + 1].focus();
-                }
-            });
-
-            input.addEventListener("keydown", (e) => {
-                if (e.key === "Backspace" && !input.value && index > 0) {
-                    document.querySelectorAll(".code-digit")[index - 1].focus();
-                }
-            });
-        });
 
         // Enter key on email
         document.getElementById("emailInput").addEventListener("keypress", (e) => {
             if (e.key === "Enter") {
-                handleSendCode();
-            }
-        });
-
-        // Auto-submit on 6th digit
-        const lastCodeInput = document.querySelectorAll(".code-digit")[5];
-        lastCodeInput.addEventListener("input", () => {
-            if (Array.from(document.querySelectorAll(".code-digit")).every(input => input.value)) {
-                handleVerifyCode();
+                handleContinueLogin();
             }
         });
 
