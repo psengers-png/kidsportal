@@ -694,10 +694,49 @@ async function registerUser(userId, email, name) {
         return;
     }
 
-    const safeEmail = (email || "").trim() || `${userId}@unknown.local`;
+    let safeEmail = (email || "").trim();
     const safeName = (name || "").trim() || "Unknown";
     const storedPreferred = (localStorage.getItem("preferredPlanType") || "").toLowerCase();
     const preferredPlanType = storedPreferred === "enterprise" ? "enterprise" : (storedPreferred === "particulier" ? "particulier" : null);
+
+    // If no email from MSAL claims, try to fetch from Microsoft Graph
+    if (!safeEmail || safeEmail.includes("@unknown.local")) {
+        console.log("Email not found in claims, attempting to fetch from Microsoft Graph...");
+        try {
+            const accounts = msalInstance.getAllAccounts();
+            if (accounts.length > 0) {
+                const account = accounts[0];
+                const tokenRequest = {
+                    scopes: ["https://graph.microsoft.com/.default"],
+                    account: account,
+                    forceRefresh: false
+                };
+                const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+                
+                // Fetch user profile from Microsoft Graph
+                const graphResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
+                    headers: { Authorization: `Bearer ${tokenResponse.accessToken}` }
+                });
+
+                if (graphResponse.ok) {
+                    const userProfile = await graphResponse.json();
+                    console.log("Microsoft Graph profile:", userProfile);
+                    
+                    // Try various email fields
+                    const graphEmail = userProfile.userPrincipalName || userProfile.mail || userProfile.mailNickname;
+                    if (graphEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(graphEmail)) {
+                        safeEmail = graphEmail.trim();
+                        console.log("Email fetched from Microsoft Graph:", safeEmail);
+                    }
+                }
+            }
+        } catch (graphError) {
+            console.warn("Could not fetch email from Microsoft Graph:", graphError.message);
+        }
+    }
+
+    // Fallback: if still no email, use placeholder
+    const finalEmail = safeEmail || `${userId}@unknown.local`;
 
     try {
         // Try to get access token to send with registration
@@ -732,7 +771,7 @@ async function registerUser(userId, email, name) {
         const response = await fetch(createUserUrl, {
             method: "POST",
             headers,
-            body: JSON.stringify({ userId, email: safeEmail, name: safeName, preferredPlanType }),
+            body: JSON.stringify({ userId, email: finalEmail, name: safeName, preferredPlanType }),
         });
 
         if (response.ok) {
