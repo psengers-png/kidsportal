@@ -417,7 +417,7 @@
                 return;
               }
 
-              const cancelResponse = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription?code=REDACTED_FUNCTION_KEY==', {
+              const cancelResponse = await fetch('/cancelSubscription', {
                 method: 'POST',
                 headers: { 'user-id': userId },
               });
