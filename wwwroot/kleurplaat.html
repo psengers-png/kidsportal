@@ -291,12 +291,12 @@ import { msalInstance } from '/JS/auth.js';
 
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
-    const accounts = msalInstance.getAllAccounts();
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("kleurplaatForm");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    if (accounts.length === 0) {
+    if (!userId) {
         statusText.textContent = "Log in om kleurplaten te maken.";
         return;
     }
@@ -307,7 +307,21 @@ setTimeout(() => {
     logoutBtn.style.display = "inline-block";
 
     // Logout functie
-    logoutBtn.onclick = () => msalInstance.logoutRedirect();
+    logoutBtn.onclick = async () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('ciamLoginInProgress');
+        if (window.msalInstance?.logoutRedirect) {
+            try {
+                await window.msalInstance.logoutRedirect({
+                    postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
+                });
+                return;
+            } catch (error) {}
+        }
+        window.location.href = '/login.html?loggedOut=1';
+    };
 }, 1000);
 
 async function initFormLogic() {

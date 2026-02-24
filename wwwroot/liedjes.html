@@ -301,12 +301,12 @@ import { startStripeCheckout } from '/JS/abonnement.js';
 import { msalInstance } from '/JS/auth.js';
 
 setTimeout(() => {
-    const accounts = msalInstance.getAllAccounts();
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("liedjesForm");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    if (accounts.length === 0) {
+    if (!userId) {
         statusText.textContent = "Log in om liedjes te maken.";
         return;
     }
@@ -315,7 +315,21 @@ setTimeout(() => {
     form.style.display = "block";
     logoutBtn.style.display = "inline-block";
 
-    logoutBtn.onclick = () => msalInstance.logoutRedirect();
+    logoutBtn.onclick = async () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('ciamLoginInProgress');
+        if (window.msalInstance?.logoutRedirect) {
+            try {
+                await window.msalInstance.logoutRedirect({
+                    postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
+                });
+                return;
+            } catch (error) {}
+        }
+        window.location.href = '/login.html?loggedOut=1';
+    };
 }, 1000);
 
 const homeBtn = document.getElementById("homeBtn");

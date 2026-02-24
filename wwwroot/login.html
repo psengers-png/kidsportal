@@ -572,6 +572,18 @@
                 localStorage.setItem("user-id", result.userId);
                 localStorage.setItem("userEmail", result.email);
 
+                if (result.requiresCiamSignup) {
+                    const shouldContinue = confirm("Je account is aangemaakt. Stel nu je wachtwoord in om je Entra ID account te activeren.");
+                    if (shouldContinue) {
+                        await msalInstance.loginRedirect({
+                            redirectUri: window.location.origin + "/home.html",
+                            loginHint: result.email,
+                            prompt: "create"
+                        });
+                        return;
+                    }
+                }
+
                 // Redirect to home
                 window.location.href = "/home.html";
 
