@@ -140,7 +140,7 @@ function showSubscriptionManageModal() {
         body.style.color = "#334155";
 
         const hint = document.createElement("div");
-        hint.textContent = "Na opzeggen blijft je toegang actief tot het einde van je huidige factuurperiode.";
+        hint.textContent = "Je behoudt volledige toegang tot het einde van je huidige factuurperiode. Het abonnement stopt daarna automatisch.";
         hint.style.marginTop = "12px";
         hint.style.fontSize = "14px";
         hint.style.color = "#64748b";

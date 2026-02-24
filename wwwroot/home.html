@@ -383,7 +383,7 @@
             abonnementBtn.onclick = async () => {
               const shouldCancel = window.showSubscriptionManageModal
                 ? await window.showSubscriptionManageModal()
-                : confirm('Wil je je abonnement opzeggen? Je behoudt toegang tot het einde van je huidige factuurperiode.');
+                : confirm('Wil je je abonnement opzeggen?\n\nJe behoudt volledige toegang tot het einde van je huidige factuurperiode. Daarna stopt je abonnement automatisch.');
               if (!shouldCancel) {
                 return;
               }
@@ -393,7 +393,7 @@
                 headers: { 'user-id': userId },
               });
               if (cancelResponse.ok) {
-                alert('Abonnement opgezegd.');
+                alert('Abonnement opgezegd.\n\nJe behoudt toegang tot het einde van je huidige factuurperiode.');
                 location.reload();
               } else {
                 alert('Er is een fout opgetreden bij het opzeggen.');
