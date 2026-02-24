@@ -363,6 +363,34 @@ function normalizePreferredPlanType(value) {
     return null;
 }
 
+function isLikelyEmail(value) {
+    if (!value || typeof value !== "string") {
+        return false;
+    }
+    const trimmed = value.trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
+
+function resolveAccountEmail(account) {
+    const claims = account?.idTokenClaims || {};
+    const candidates = [
+        claims.email,
+        claims.preferred_username,
+        Array.isArray(claims.emails) ? claims.emails[0] : null,
+        claims.signInNames?.emailAddress,
+        claims.signInName,
+        account?.username
+    ];
+
+    for (const candidate of candidates) {
+        if (isLikelyEmail(candidate)) {
+            return candidate.trim();
+        }
+    }
+
+    return "";
+}
+
 async function ensurePreferredPlanTypeSelection() {
     const existing = normalizePreferredPlanType(localStorage.getItem("preferredPlanType"));
     if (existing) {
@@ -437,7 +465,7 @@ async function updateUI() {
     localStorage.setItem("user-id", userId);
     console.log("User ID saved to localStorage:", userId);
 
-    const email = account.username || account.idTokenClaims?.email || account.idTokenClaims?.preferred_username || "";
+    const email = resolveAccountEmail(account);
     const name = account.name || account.idTokenClaims?.name || email || "Unknown";
     await ensurePreferredPlanTypeSelection();
     if (userId) {
