@@ -347,7 +347,7 @@ form.addEventListener("submit", async (e) => {
                     const sanitizedUserId = userId.split('.')[0];
                     btn.onclick = async () => {
                         const selectedPlanType = window.ensurePreferredPlanTypeSelection
-                            ? await window.ensurePreferredPlanTypeSelection()
+                            ? await window.ensurePreferredPlanTypeSelection(true)
                             : 'particulier';
                         localStorage.setItem('preferredPlanType', selectedPlanType);
                         startStripeCheckout(sanitizedUserId, selectedPlanType);

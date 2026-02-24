@@ -437,9 +437,9 @@ function resolveAccountEmail(account) {
     return "";
 }
 
-async function ensurePreferredPlanTypeSelection() {
+async function ensurePreferredPlanTypeSelection(forcePrompt = false) {
     const existing = normalizePreferredPlanType(localStorage.getItem("preferredPlanType"));
-    if (existing) {
+    if (existing && !forcePrompt) {
         return existing;
     }
 
@@ -597,7 +597,9 @@ if (abonnementBtn) {
         const buttonLabel = abonnementBtn.textContent.trim();
         if (buttonLabel === "Upgrade naar onbeperkt" || buttonLabel === "Upgrade") {
             console.log("Preparing to call startStripeCheckout for user:", userId);
-            startStripeCheckout(userId);
+            const selectedPlanType = await ensurePreferredPlanTypeSelection(true);
+            localStorage.setItem("preferredPlanType", selectedPlanType);
+            startStripeCheckout(userId, selectedPlanType);
         } else if (buttonLabel === "Abonnement beheren" || buttonLabel === "Onbeperkte toegang") {
             const shouldCancel = await showSubscriptionManageModal();
             if (!shouldCancel) {

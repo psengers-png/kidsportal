@@ -387,7 +387,7 @@
               const sanitizedUserId = userId.split('.')[0];
 
               const selectedPlanType = window.ensurePreferredPlanTypeSelection
-                ? await window.ensurePreferredPlanTypeSelection()
+                ? await window.ensurePreferredPlanTypeSelection(true)
                 : 'particulier';
               localStorage.setItem('preferredPlanType', selectedPlanType);
 
