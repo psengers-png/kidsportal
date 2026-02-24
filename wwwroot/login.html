@@ -381,7 +381,7 @@
             auth: {
                 clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
                 authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-                redirectUri: window.location.origin + "/home.html",
+                redirectUri: window.location.origin + "/login.html",
                 knownAuthorities: ["kidsportal2.ciamlogin.com"]
             },
             cache: { cacheLocation: "localStorage" }
@@ -389,9 +389,50 @@
 
         const msalInstance = new msal.PublicClientApplication(msalConfig);
 
+        function normalizeUserId(rawUserId) {
+            if (!rawUserId) {
+                return "";
+            }
+            return rawUserId.split('.')[0];
+        }
+
+        async function bootstrapCiamLogin() {
+            try {
+                await msalInstance.initialize();
+                await msalInstance.handleRedirectPromise();
+
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length > 0) {
+                    const account = accounts[0];
+                    const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+                    const userId = normalizeUserId(rawUserId);
+                    const email = account.username || "";
+
+                    if (userId) {
+                        localStorage.setItem("userId", userId);
+                        localStorage.setItem("user-id", userId);
+                    }
+                    if (email) {
+                        localStorage.setItem("userEmail", email);
+                    }
+
+                    window.location.href = "/home.html";
+                    return;
+                }
+            } catch (error) {
+                const emailError = document.getElementById("emailError");
+                if (emailError) {
+                    emailError.textContent = "CIAM login kon niet worden afgerond. Probeer opnieuw.";
+                    emailError.classList.add("show");
+                }
+            }
+        }
+
         async function handlePasswordLogin() {
             try {
-                await msalInstance.loginRedirect();
+                await msalInstance.loginRedirect({
+                    redirectUri: window.location.origin + "/login.html"
+                });
             } catch (error) {
                 const emailError = document.getElementById("emailError");
                 emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
@@ -497,6 +538,14 @@
                 localStorage.setItem("user-id", result.userId);
                 localStorage.setItem("userEmail", result.email);
 
+                if (result.requiresCiamSignup) {
+                    const shouldContinue = confirm("Je account is aangemaakt. Voltooi nu je wachtwoord-instelling om voortaan met wachtwoord in te loggen.");
+                    if (shouldContinue) {
+                        await msalInstance.loginRedirect({ loginHint: result.email });
+                        return;
+                    }
+                }
+
                 // Redirect to home
                 window.location.href = "/home.html";
 
@@ -538,6 +587,8 @@
                 handleVerifyCode();
             }
         });
+
+        bootstrapCiamLogin();
     </script>
 </body>
 </html>
