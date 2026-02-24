@@ -718,10 +718,18 @@ async function checkUserStatus(userId) {
         'user-id': userId
     });
 
-    const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus', {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const response = await fetch(`https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus?t=${Date.now()}`, {
         method: 'GET',
-        headers: { 'user-id': userId },
+        headers: {
+            'user-id': userId,
+            'Cache-Control': 'no-cache'
+        },
+        cache: 'no-store',
+        signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     console.log("API response status:", response.status);
     const rawText = await response.text();
