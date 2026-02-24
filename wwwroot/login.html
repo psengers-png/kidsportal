@@ -392,6 +392,15 @@
         function showLoggedOutMessageIfNeeded() {
             const params = new URLSearchParams(window.location.search || "");
             if (params.get("loggedOut") !== "1") {
+                if (params.get("ciamRequired") === "1") {
+                    const emailError = document.getElementById("emailError");
+                    if (emailError) {
+                        emailError.textContent = "Rond eerst je Entra ID account-aanmaak af via wachtwoord-login.";
+                        emailError.classList.add("show");
+                    }
+                    const cleanUrlCiam = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrlCiam);
+                }
                 return;
             }
 
@@ -573,16 +582,18 @@
                 localStorage.setItem("userEmail", result.email);
 
                 if (result.requiresCiamSignup) {
-                    const shouldContinue = confirm("Je account is aangemaakt. Stel nu je wachtwoord in om je Entra ID account te activeren.");
-                    if (shouldContinue) {
-                        await msalInstance.loginRedirect({
-                            redirectUri: window.location.origin + "/home.html",
-                            loginHint: result.email,
-                            prompt: "create"
-                        });
-                        return;
-                    }
+                    localStorage.setItem("requiresCiamSignup", "1");
+                    codeError.textContent = "Account aangemaakt. Je wordt nu doorgestuurd om je wachtwoord in te stellen...";
+                    codeError.classList.add("show");
+                    await msalInstance.loginRedirect({
+                        redirectUri: window.location.origin + "/home.html",
+                        loginHint: result.email,
+                        prompt: "create"
+                    });
+                    return;
                 }
+
+                localStorage.removeItem("requiresCiamSignup");
 
                 // Redirect to home
                 window.location.href = "/home.html";

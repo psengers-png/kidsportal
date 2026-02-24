@@ -637,64 +637,60 @@ window.addEventListener("load", () => {
 async function updateUI() {
     console.log("updateUI aangeroepen");
 
-    // Check for userId from passwordless email login first
-    let userId = localStorage.getItem("userId") || localStorage.getItem("user-id");
-    
-    if (userId) {
-        console.log("User ID found in localStorage:", userId);
-        // User is already logged in via email login
-        const userEmail = localStorage.getItem("userEmail") || "";
-        console.log("User email from localStorage:", userEmail);
-        
-        let userStatus = await checkUserStatus(userId);
-        const abonnementBtn = document.getElementById("abonnementBtn");
-        if (abonnementBtn) {
-            const isActive = Boolean(userStatus && userStatus.isActive);
-            applySubscriptionButtonState(abonnementBtn, isActive);
-            console.log("abonnementBtn state updated. isActive:", isActive);
-        }
-        return;
-    }
-
-    // Fallback to MSAL if email login not done
+    // Always initialize MSAL first so CIAM-authenticated accounts take precedence
     await msalReadyPromise;
 
     const accounts = msalInstance.getAllAccounts();
     console.log("Accounts gevonden door msalInstance:", accounts);
-    if (accounts.length === 0) {
-        localStorage.removeItem("userId");
-        localStorage.removeItem("user-id");
+    let userId = "";
+    let userStatus = null;
 
-        if (isPublicPage()) {
-            console.log("No user logged in on public page. Skipping login redirect.");
+    if (accounts.length > 0) {
+        const account = accounts[0];
+        const preferredFromQuery = normalizePreferredPlanType(getPreferredPlanTypeFromQuery());
+        if (preferredFromQuery) {
+            localStorage.setItem("preferredPlanType", preferredFromQuery);
+        }
+
+        const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+        userId = normalizeUserId(rawUserId);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("user-id", userId);
+        localStorage.removeItem("requiresCiamSignup");
+        console.log("User ID saved to localStorage:", userId);
+
+        const email = resolveAccountEmail(account);
+        console.log("Resolved email from claims:", email || "(none)");
+        const name = account.name || account.idTokenClaims?.name || email || "Unknown";
+        userStatus = await checkUserStatus(userId);
+        if (userStatus && userStatus.error === "User not found" && userId) {
+            await registerUser(userId, email, name);
+            userStatus = await checkUserStatus(userId);
+        }
+    } else {
+        const requiresCiamSignup = localStorage.getItem("requiresCiamSignup") === "1";
+        if (requiresCiamSignup) {
+            console.warn("CIAM signup not completed yet. Redirecting to login.");
+            window.location.href = "/login.html?ciamRequired=1";
             return;
         }
 
-        console.warn("No user logged in on protected page. Redirecting to login...");
-        window.location.href = "/login.html";
-        return;
-    }
+        userId = localStorage.getItem("userId") || localStorage.getItem("user-id") || "";
+        if (!userId) {
+            if (isPublicPage()) {
+                console.log("No user logged in on public page. Skipping login redirect.");
+                return;
+            }
 
-    const account = accounts[0];
-    const preferredFromQuery = normalizePreferredPlanType(getPreferredPlanTypeFromQuery());
-    if (preferredFromQuery) {
-        localStorage.setItem("preferredPlanType", preferredFromQuery);
-    }
+            console.warn("No user logged in on protected page. Redirecting to login...");
+            window.location.href = "/login.html";
+            return;
+        }
 
-    const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
-    userId = normalizeUserId(rawUserId);
-    localStorage.setItem("userId", userId);
-    localStorage.setItem("user-id", userId);
-    console.log("User ID saved to localStorage:", userId);
-
-    const email = resolveAccountEmail(account);
-    console.log("Resolved email from claims:", email || "(none)");
-    const name = account.name || account.idTokenClaims?.name || email || "Unknown";
-    let userStatus = await checkUserStatus(userId);
-    if (userStatus && userStatus.error === "User not found" && userId) {
-        await registerUser(userId, email, name);
+        console.log("Using local session userId:", userId);
         userStatus = await checkUserStatus(userId);
     }
+
     const preferredFromStatus = normalizePreferredPlanType(userStatus?.preferredPlanType);
     if (preferredFromStatus) {
         localStorage.setItem("preferredPlanType", preferredFromStatus);
