@@ -317,10 +317,23 @@
 
         if (isLoggedIn) {
           logoutBtn.textContent = 'Uitloggen';
-          logoutBtn.onclick = () => {
+          logoutBtn.onclick = async () => {
             localStorage.removeItem('userId');
             localStorage.removeItem('user-id');
             localStorage.removeItem('userEmail');
+            sessionStorage.removeItem('ciamLoginInProgress');
+
+            if (window.msalInstance?.logoutRedirect) {
+              try {
+                await window.msalInstance.logoutRedirect({
+                  postLogoutRedirectUri: window.location.origin + '/login.html'
+                });
+                return;
+              } catch (error) {
+                console.warn('MSAL logout failed, falling back to local logout:', error);
+              }
+            }
+
             window.location.href = '/login.html';
           };
           abonnementBtn.style.display = 'inline-block';

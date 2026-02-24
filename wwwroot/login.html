@@ -401,6 +401,16 @@
                 await msalInstance.initialize();
                 await msalInstance.handleRedirectPromise();
 
+                const loginInProgress = sessionStorage.getItem("ciamLoginInProgress") === "1";
+                const hasAuthResponse = window.location.hash.includes("id_token")
+                    || window.location.hash.includes("code=")
+                    || window.location.search.includes("code=")
+                    || window.location.search.includes("state=");
+
+                if (!loginInProgress && !hasAuthResponse) {
+                    return;
+                }
+
                 const accounts = msalInstance.getAllAccounts();
                 if (accounts.length > 0) {
                     const account = accounts[0];
@@ -416,10 +426,13 @@
                         localStorage.setItem("userEmail", email);
                     }
 
+                    sessionStorage.removeItem("ciamLoginInProgress");
+
                     window.location.href = "/home.html";
                     return;
                 }
             } catch (error) {
+                sessionStorage.removeItem("ciamLoginInProgress");
                 const emailError = document.getElementById("emailError");
                 if (emailError) {
                     emailError.textContent = "CIAM login kon niet worden afgerond. Probeer opnieuw.";
@@ -428,12 +441,15 @@
             }
         }
 
-        async function handlePasswordLogin() {
+        async function handlePasswordLogin(emailHint = "") {
             try {
+                sessionStorage.setItem("ciamLoginInProgress", "1");
                 await msalInstance.loginRedirect({
-                    redirectUri: window.location.origin + "/login.html"
+                    redirectUri: window.location.origin + "/login.html",
+                    loginHint: emailHint || undefined
                 });
             } catch (error) {
+                sessionStorage.removeItem("ciamLoginInProgress");
                 const emailError = document.getElementById("emailError");
                 emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
                 emailError.classList.add("show");
@@ -468,7 +484,10 @@
                 if (!response.ok) {
                     const error = await response.json();
                     if (response.status === 409 && error.usePasswordLogin) {
-                        throw new Error("Dit e-mailadres heeft al een account. Gebruik 'Inloggen met wachtwoord'.");
+                        emailError.textContent = "Bestaand account gevonden. Je wordt doorgestuurd naar wachtwoord-login...";
+                        emailError.classList.add("show");
+                        await handlePasswordLogin(email);
+                        return;
                     }
                     throw new Error(error.error || "Failed to send code");
                 }
