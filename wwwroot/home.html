@@ -308,8 +308,8 @@
       function updateHomeAuthUI() {
         const logoutBtn = document.getElementById('logoutBtn');
         const abonnementBtn = document.getElementById('abonnementBtn');
-        const accounts = window.msalInstance?.getAllAccounts?.() || [];
-        const isLoggedIn = accounts.length > 0;
+        const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
+        const isLoggedIn = Boolean(userId);
 
         if (!logoutBtn || !abonnementBtn) {
           return isLoggedIn;
@@ -317,16 +317,17 @@
 
         if (isLoggedIn) {
           logoutBtn.textContent = 'Uitloggen';
-          logoutBtn.onclick = () => window.msalInstance.logoutRedirect();
+          logoutBtn.onclick = () => {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('user-id');
+            localStorage.removeItem('userEmail');
+            window.location.href = '/login.html';
+          };
           abonnementBtn.style.display = 'inline-block';
         } else {
           logoutBtn.textContent = 'Inloggen';
           logoutBtn.onclick = () => {
-            if (window.startLoginRedirectWithNotice) {
-              window.startLoginRedirectWithNotice('Je moet eerst inloggen om de functies te gebruiken.');
-              return;
-            }
-            window.msalInstance.loginRedirect();
+            window.location.href = '/login.html';
           };
           abonnementBtn.style.display = 'none';
         }

@@ -412,7 +412,7 @@ async function startLoginRedirectWithNotice(message) {
     }
 
     try {
-        await msalInstance.loginRedirect();
+        window.location.href = "/login.html";
     } catch (error) {
         console.error("Login redirect error:", error);
         resetLoginRedirectState();
