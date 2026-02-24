@@ -128,7 +128,7 @@ function showSubscriptionManageModal() {
         card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
         const title = document.createElement("div");
-        title.textContent = "Abonnement beheren";
+        title.textContent = "Account beheren";
         title.style.fontSize = "22px";
         title.style.fontWeight = "700";
         title.style.marginBottom = "8px";
@@ -427,7 +427,7 @@ function applySubscriptionButtonState(abonnementBtn, isActive) {
     }
 
     if (isActive) {
-        abonnementBtn.textContent = "Abonnement beheren";
+        abonnementBtn.textContent = "Account beheren";
         abonnementBtn.style.background = "#22c55e";
         abonnementBtn.style.color = "#ffffff";
     } else {
@@ -435,6 +435,15 @@ function applySubscriptionButtonState(abonnementBtn, isActive) {
         abonnementBtn.style.background = "#ef4444";
         abonnementBtn.style.color = "#ffffff";
     }
+}
+
+function hasPilotAccess(userStatus) {
+    if (!userStatus) {
+        return false;
+    }
+    const planType = (userStatus.planType || "").toString().toLowerCase();
+    const planStatus = (userStatus.planStatus || "").toString().toLowerCase();
+    return planType === "pilot" || planStatus === "active-pilot";
 }
 
 function isPublicPage() {
@@ -705,6 +714,11 @@ async function updateUI() {
     if (abonnementBtn) {
         const isActive = Boolean(userStatus && userStatus.isActive);
         applySubscriptionButtonState(abonnementBtn, isActive);
+        if (hasPilotAccess(userStatus)) {
+            abonnementBtn.textContent = "Pilot toegang";
+            abonnementBtn.style.background = "#22c55e";
+            abonnementBtn.style.color = "#ffffff";
+        }
         console.log("abonnementBtn state updated. isActive:", isActive);
     } else {
         console.error("abonnementBtn not found on the page.");
@@ -774,6 +788,12 @@ if (abonnementBtn) {
 
         console.log("Sanitized UserId:", userId);
 
+        const latestStatus = await checkUserStatus(userId);
+        if (hasPilotAccess(latestStatus)) {
+            alert("Pilot toegang is actief. Opzeggen is niet nodig.");
+            return;
+        }
+
         console.log("Current abonnementBtn textContent:", abonnementBtn.textContent);
         const buttonLabel = abonnementBtn.textContent.trim();
         if (buttonLabel === "Upgrade naar onbeperkt" || buttonLabel === "Upgrade") {
@@ -781,7 +801,7 @@ if (abonnementBtn) {
             const selectedPlanType = await ensurePreferredPlanTypeSelection(true);
             localStorage.setItem("preferredPlanType", selectedPlanType);
             startStripeCheckout(userId, selectedPlanType);
-        } else if (buttonLabel === "Abonnement beheren" || buttonLabel === "Onbeperkte toegang") {
+        } else if (buttonLabel === "Account beheren" || buttonLabel === "Abonnement beheren" || buttonLabel === "Onbeperkte toegang") {
             const shouldCancel = await showSubscriptionManageModal();
             if (!shouldCancel) {
                 return;

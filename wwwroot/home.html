@@ -397,14 +397,23 @@
 
         try {
           const data = await response.json();
+          const planType = (data.planType || '').toLowerCase();
+          const planStatus = (data.planStatus || '').toLowerCase();
+          const isPilotAccess = planType === 'pilot' || planStatus === 'active-pilot';
           const statusPreferred = (data.preferredPlanType || '').toLowerCase();
           if (statusPreferred === 'enterprise' || statusPreferred === 'particulier') {
             localStorage.setItem('preferredPlanType', statusPreferred);
           }
 
-          if (data.isActive) {
-            const activePlanLabel = (data.planType || '').toLowerCase() === 'enterprise' ? 'Enterprise' : 'Particulier';
-            abonnementBtn.textContent = `Abonnement beheren (${activePlanLabel})`;
+          if (isPilotAccess) {
+            abonnementBtn.textContent = 'Pilot toegang';
+            abonnementBtn.style.background = '#22c55e';
+            abonnementBtn.disabled = false;
+            abonnementBtn.onclick = () => {
+              alert('Pilot toegang is actief. Opzeggen is niet nodig.');
+            };
+          } else if (data.isActive) {
+            abonnementBtn.textContent = 'Account beheren';
             abonnementBtn.style.background = '#22c55e'; // Green for unlimited
             abonnementBtn.disabled = false;
             abonnementBtn.onclick = async () => {
