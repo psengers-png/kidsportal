@@ -286,6 +286,116 @@ function showPlanTypeSelectionModal() {
 }
 window.showPlanTypeSelectionModal = showPlanTypeSelectionModal;
 
+function showEmailInputModal() {
+    return new Promise((resolve) => {
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.inset = "0";
+        overlay.style.background = "rgba(0, 0, 0, 0.45)";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "99999";
+
+        const card = document.createElement("div");
+        card.style.width = "min(92vw, 460px)";
+        card.style.background = "#ffffff";
+        card.style.borderRadius = "16px";
+        card.style.padding = "22px 20px";
+        card.style.boxShadow = "0 16px 36px rgba(0, 0, 0, 0.22)";
+        card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
+
+        const title = document.createElement("div");
+        title.textContent = "Wat is je e-mailadres?";
+        title.style.fontSize = "22px";
+        title.style.fontWeight = "700";
+        title.style.marginBottom = "12px";
+        title.style.textAlign = "center";
+
+        const body = document.createElement("div");
+        body.textContent = "We hebben je e-mailadres nodig om je account aan te maken.";
+        body.style.fontSize = "15px";
+        body.style.color = "#666";
+        body.style.marginBottom = "16px";
+        body.style.textAlign = "center";
+
+        const input = document.createElement("input");
+        input.type = "email";
+        input.placeholder = "jouw@email.com";
+        input.style.width = "100%";
+        input.style.padding = "10px 12px";
+        input.style.fontSize = "15px";
+        input.style.border = "1px solid #cbd5e1";
+        input.style.borderRadius = "8px";
+        input.style.boxSizing = "border-box";
+        input.style.marginBottom = "16px";
+        input.focus();
+
+        const actions = document.createElement("div");
+        actions.style.display = "flex";
+        actions.style.gap = "10px";
+        actions.style.justifyContent = "center";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.textContent = "Annuleren";
+        cancelButton.style.padding = "10px 18px";
+        cancelButton.style.border = "1px solid #cbd5e1";
+        cancelButton.style.borderRadius = "8px";
+        cancelButton.style.background = "#ffffff";
+        cancelButton.style.color = "#334155";
+        cancelButton.style.fontSize = "15px";
+        cancelButton.style.fontWeight = "600";
+        cancelButton.style.cursor = "pointer";
+
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Doorgaan";
+        submitButton.style.padding = "10px 18px";
+        submitButton.style.border = "none";
+        submitButton.style.borderRadius = "8px";
+        submitButton.style.background = "#2563eb";
+        submitButton.style.color = "#ffffff";
+        submitButton.style.fontSize = "15px";
+        submitButton.style.fontWeight = "600";
+        submitButton.style.cursor = "pointer";
+
+        const closeWithResult = (email) => {
+            overlay.remove();
+            resolve(email);
+        };
+
+        overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) {
+                closeWithResult("");
+            }
+        });
+
+        cancelButton.addEventListener("click", () => closeWithResult(""));
+        submitButton.addEventListener("click", () => {
+            if (input.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+                closeWithResult(input.value.trim());
+            } else {
+                alert("Voer alstublieft een geldig e-mailadres in.");
+            }
+        });
+
+        input.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                submitButton.click();
+            }
+        });
+
+        actions.appendChild(cancelButton);
+        actions.appendChild(submitButton);
+        card.appendChild(title);
+        card.appendChild(body);
+        card.appendChild(input);
+        card.appendChild(actions);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+    });
+}
+window.showEmailInputModal = showEmailInputModal;
+
 async function startLoginRedirectWithNotice(message) {
     if (loginRedirectStarted) {
         return;
@@ -699,44 +809,18 @@ async function registerUser(userId, email, name) {
     const storedPreferred = (localStorage.getItem("preferredPlanType") || "").toLowerCase();
     const preferredPlanType = storedPreferred === "enterprise" ? "enterprise" : (storedPreferred === "particulier" ? "particulier" : null);
 
-    // If no email from MSAL claims, try to fetch from Microsoft Graph
+    // If no email from MSAL claims, ask user directly
     if (!safeEmail || safeEmail.includes("@unknown.local")) {
-        console.log("Email not found in claims, attempting to fetch from Microsoft Graph...");
-        try {
-            const accounts = msalInstance.getAllAccounts();
-            if (accounts.length > 0) {
-                const account = accounts[0];
-                const tokenRequest = {
-                    scopes: ["https://graph.microsoft.com/.default"],
-                    account: account,
-                    forceRefresh: false
-                };
-                const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
-                
-                // Fetch user profile from Microsoft Graph
-                const graphResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
-                    headers: { Authorization: `Bearer ${tokenResponse.accessToken}` }
-                });
-
-                if (graphResponse.ok) {
-                    const userProfile = await graphResponse.json();
-                    console.log("Microsoft Graph profile:", userProfile);
-                    
-                    // Try various email fields
-                    const graphEmail = userProfile.userPrincipalName || userProfile.mail || userProfile.mailNickname;
-                    if (graphEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(graphEmail)) {
-                        safeEmail = graphEmail.trim();
-                        console.log("Email fetched from Microsoft Graph:", safeEmail);
-                    }
-                }
-            }
-        } catch (graphError) {
-            console.warn("Could not fetch email from Microsoft Graph:", graphError.message);
+        console.log("Email not found in claims, asking user to enter email address...");
+        safeEmail = await showEmailInputModal();
+        
+        if (!safeEmail) {
+            console.log("User cancelled email input modal");
+            return;
         }
     }
 
-    // Fallback: if still no email, use placeholder
-    const finalEmail = safeEmail || `${userId}@unknown.local`;
+    const finalEmail = safeEmail;
 
     try {
         // Try to get access token to send with registration
