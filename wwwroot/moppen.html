@@ -227,8 +227,8 @@
     </div>
     <div class="header-right">
         <button class="header-btn" id="homeBtn">🏠 Home</button>
-        <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white;">Upgrade</button>
-        <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+        <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white;">Upgrade naar onbeperkt</button>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Uitloggen</button>
     </div>
 </header>
 
@@ -328,11 +328,11 @@ form.addEventListener("submit", async (e) => {
         console.log("Response text:", text);
         if (!res.ok) {
             if(res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis moppen aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtn' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
+                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis moppen aangevraagd.<br>Upgrade naar onbeperkt voor €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
                 // Stripe knop activeren
                 setTimeout(() => {
                     const accounts = msalInstance.getAllAccounts();
-                    const btn = document.getElementById('abonnementBtn');
+                    const btn = document.getElementById('abonnementBtnInline');
                     const storedUserId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
                     const accountUserId = accounts.length > 0 ? (accounts[0].homeAccountId || accounts[0].localAccountId || accounts[0].username || '') : '';
                     const userId = storedUserId || accountUserId;

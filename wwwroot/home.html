@@ -353,9 +353,16 @@
           const data = await response.json();
 
           if (data.isActive) {
-            abonnementBtn.textContent = 'Onbeperkte toegang';
+            abonnementBtn.textContent = 'Abonnement beheren';
             abonnementBtn.style.background = '#22c55e'; // Green for unlimited
             abonnementBtn.onclick = async () => {
+              const shouldCancel = window.showSubscriptionManageModal
+                ? await window.showSubscriptionManageModal()
+                : confirm('Wil je je abonnement opzeggen? Je behoudt toegang tot het einde van je huidige factuurperiode.');
+              if (!shouldCancel) {
+                return;
+              }
+
               const cancelResponse = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelSubscription?code=REDACTED_FUNCTION_KEY==', {
                 method: 'POST',
                 headers: { 'user-id': userId },

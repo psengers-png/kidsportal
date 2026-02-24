@@ -107,6 +107,99 @@ function showCenteredLoginNotice(message) {
     });
 }
 
+function showSubscriptionManageModal() {
+    return new Promise((resolve) => {
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.inset = "0";
+        overlay.style.background = "rgba(0, 0, 0, 0.45)";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "99999";
+
+        const card = document.createElement("div");
+        card.style.width = "min(92vw, 460px)";
+        card.style.background = "#ffffff";
+        card.style.borderRadius = "16px";
+        card.style.padding = "22px 20px";
+        card.style.boxShadow = "0 16px 36px rgba(0, 0, 0, 0.22)";
+        card.style.textAlign = "center";
+        card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
+
+        const title = document.createElement("div");
+        title.textContent = "Abonnement beheren";
+        title.style.fontSize = "22px";
+        title.style.fontWeight = "700";
+        title.style.marginBottom = "8px";
+
+        const body = document.createElement("div");
+        body.textContent = "Je hebt onbeperkte toegang. Wil je je abonnement opzeggen?";
+        body.style.fontSize = "16px";
+        body.style.lineHeight = "1.45";
+        body.style.color = "#334155";
+
+        const hint = document.createElement("div");
+        hint.textContent = "Na opzeggen blijft je toegang actief tot het einde van je huidige factuurperiode.";
+        hint.style.marginTop = "12px";
+        hint.style.fontSize = "14px";
+        hint.style.color = "#64748b";
+
+        const actions = document.createElement("div");
+        actions.style.marginTop = "16px";
+        actions.style.display = "flex";
+        actions.style.gap = "10px";
+        actions.style.justifyContent = "center";
+
+        const backButton = document.createElement("button");
+        backButton.textContent = "Terug";
+        backButton.style.padding = "10px 18px";
+        backButton.style.border = "1px solid #cbd5e1";
+        backButton.style.borderRadius = "10px";
+        backButton.style.background = "#ffffff";
+        backButton.style.color = "#334155";
+        backButton.style.fontSize = "15px";
+        backButton.style.fontWeight = "600";
+        backButton.style.cursor = "pointer";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.textContent = "Abonnement opzeggen";
+        cancelButton.style.padding = "10px 18px";
+        cancelButton.style.border = "none";
+        cancelButton.style.borderRadius = "10px";
+        cancelButton.style.background = "#dc2626";
+        cancelButton.style.color = "#ffffff";
+        cancelButton.style.fontSize = "15px";
+        cancelButton.style.fontWeight = "600";
+        cancelButton.style.cursor = "pointer";
+
+        const closeWithResult = (value) => {
+            overlay.remove();
+            resolve(value);
+        };
+
+        overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) {
+                closeWithResult(false);
+            }
+        });
+
+        backButton.addEventListener("click", () => closeWithResult(false));
+        cancelButton.addEventListener("click", () => closeWithResult(true));
+
+        actions.appendChild(backButton);
+        actions.appendChild(cancelButton);
+
+        card.appendChild(title);
+        card.appendChild(body);
+        card.appendChild(hint);
+        card.appendChild(actions);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+    });
+}
+window.showSubscriptionManageModal = showSubscriptionManageModal;
+
 async function startLoginRedirectWithNotice(message) {
     if (loginRedirectStarted) {
         return;
@@ -131,6 +224,22 @@ async function startLoginRedirectWithNotice(message) {
 }
 
 window.startLoginRedirectWithNotice = startLoginRedirectWithNotice;
+
+function applySubscriptionButtonState(abonnementBtn, isActive) {
+    if (!abonnementBtn) {
+        return;
+    }
+
+    if (isActive) {
+        abonnementBtn.textContent = "Abonnement beheren";
+        abonnementBtn.style.background = "#22c55e";
+        abonnementBtn.style.color = "#ffffff";
+    } else {
+        abonnementBtn.textContent = "Upgrade naar onbeperkt";
+        abonnementBtn.style.background = "#ef4444";
+        abonnementBtn.style.color = "#ffffff";
+    }
+}
 
 function isPublicPage() {
     const path = (window.location.pathname || "").toLowerCase();
@@ -213,17 +322,13 @@ async function updateUI() {
         await registerUser(userId, email, name);
         userStatus = await checkUserStatus(userId);
     }
-    if (userStatus && userStatus.isActive) { // Corrected property name
-        console.log("User has unlimited access.");
-        console.log("Attempting to update abonnementBtn. isActive:", userStatus.isActive);
-        const abonnementBtn = document.getElementById("abonnementBtn");
-        if (abonnementBtn) {
-            console.log("abonnementBtn found. Updating text and style.");
-            abonnementBtn.textContent = "Onbeperkte toegang";
-            abonnementBtn.style.background = "#22c55e"; // Green for unlimited
-        } else {
-            console.error("abonnementBtn not found on the page.");
-        }
+    const abonnementBtn = document.getElementById("abonnementBtn");
+    if (abonnementBtn) {
+        const isActive = Boolean(userStatus && userStatus.isActive);
+        applySubscriptionButtonState(abonnementBtn, isActive);
+        console.log("abonnementBtn state updated. isActive:", isActive);
+    } else {
+        console.error("abonnementBtn not found on the page.");
     }
 }
 
@@ -283,10 +388,16 @@ if (abonnementBtn) {
         console.log("Sanitized UserId:", userId);
 
         console.log("Current abonnementBtn textContent:", abonnementBtn.textContent);
-        if (abonnementBtn.textContent.trim() === "Upgrade naar onbeperkt") {
+        const buttonLabel = abonnementBtn.textContent.trim();
+        if (buttonLabel === "Upgrade naar onbeperkt" || buttonLabel === "Upgrade") {
             console.log("Preparing to call startStripeCheckout for user:", userId);
             startStripeCheckout(userId);
-        } else if (abonnementBtn.textContent.trim() === "Onbeperkte toegang") {
+        } else if (buttonLabel === "Abonnement beheren" || buttonLabel === "Onbeperkte toegang") {
+            const shouldCancel = await showSubscriptionManageModal();
+            if (!shouldCancel) {
+                return;
+            }
+
             console.log("Cancelling subscription for user:", userId);
             try {
                 console.log("Sending cancelSubscription API request...");

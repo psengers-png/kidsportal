@@ -1,0 +1,205 @@
+:root {
+  --rdc-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --rdc-bg-start: #6ec1e4;
+  --rdc-bg-end: #b3e5fc;
+  --rdc-primary: #2563eb;
+  --rdc-primary-strong: #1d4ed8;
+  --rdc-accent: #ffd966;
+  --rdc-accent-strong: #facc15;
+  --rdc-surface: rgba(255, 255, 255, 0.92);
+  --rdc-surface-solid: #ffffff;
+  --rdc-text: #1f2d3d;
+  --rdc-text-muted: #4b5563;
+  --rdc-border: #d1d5db;
+  --rdc-radius-xl: 24px;
+  --rdc-radius-lg: 16px;
+  --rdc-radius-md: 12px;
+  --rdc-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --rdc-shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.rdc-page {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--rdc-font);
+  color: var(--rdc-text);
+  background: linear-gradient(180deg, var(--rdc-bg-start), var(--rdc-bg-end));
+}
+
+.rdc-container {
+  width: min(1080px, 92%);
+  margin: 0 auto;
+}
+
+.rdc-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: 0 0 var(--rdc-radius-xl) var(--rdc-radius-xl);
+  background: var(--rdc-surface);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--rdc-shadow-soft);
+}
+
+.rdc-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rdc-brand img {
+  height: 56px;
+  width: auto;
+}
+
+.rdc-brand-title {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.1vw, 1.5rem);
+  font-weight: 800;
+}
+
+.rdc-hero {
+  text-align: center;
+  padding: 64px 12px 28px;
+}
+
+.rdc-hero h1,
+.rdc-hero h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+}
+
+.rdc-hero p {
+  margin: 0;
+  color: var(--rdc-text-muted);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+
+.rdc-panel {
+  padding: clamp(18px, 2.5vw, 36px);
+  border-radius: var(--rdc-radius-xl);
+  background: var(--rdc-surface);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--rdc-shadow-strong);
+}
+
+.rdc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.rdc-card {
+  background: var(--rdc-surface-solid);
+  border-radius: var(--rdc-radius-lg);
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--rdc-shadow-soft);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rdc-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 34px rgba(37, 99, 235, 0.2);
+}
+
+.rdc-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.rdc-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+}
+
+.rdc-btn-primary {
+  color: #fff;
+  background: var(--rdc-primary);
+}
+
+.rdc-btn-primary:hover {
+  background: var(--rdc-primary-strong);
+}
+
+.rdc-btn-accent {
+  color: var(--rdc-text);
+  background: var(--rdc-accent);
+}
+
+.rdc-btn-accent:hover {
+  background: var(--rdc-accent-strong);
+}
+
+.rdc-btn-danger {
+  color: #fff;
+  background: #ef4444;
+}
+
+.rdc-input,
+.rdc-textarea,
+.rdc-select {
+  width: 100%;
+  border: 1px solid var(--rdc-border);
+  border-radius: var(--rdc-radius-md);
+  padding: 11px 12px;
+  font: inherit;
+  color: var(--rdc-text);
+  background: #fff;
+}
+
+.rdc-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.rdc-label {
+  display: block;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.rdc-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.rdc-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rdc-muted {
+  color: var(--rdc-text-muted);
+}
+
+.rdc-center {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .rdc-header {
+    border-radius: 0;
+    padding: 12px 14px;
+  }
+
+  .rdc-brand img {
+    height: 44px;
+  }
+}
