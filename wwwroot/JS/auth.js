@@ -376,41 +376,75 @@ function resolveAccountEmail(account) {
     const claims = account?.idTokenClaims || {};
     console.log("Resolving email from account claims:", JSON.stringify(claims, null, 2));
     
-    const directCandidates = [
+    // Priority 1: Real email claims (most reliable)
+    const emailCandidates = [
         claims.email,
-        claims.preferred_username,
-        claims.upn,
-        claims.signInName,
         claims.emailAddress,
-        claims.mail,
-        account?.username
+        claims.mail
     ];
 
     if (Array.isArray(claims.emails)) {
-        directCandidates.push(...claims.emails);
+        emailCandidates.push(...claims.emails);
     }
 
+    console.log("Email candidates (priority 1 - real email fields):", emailCandidates);
+    for (const candidate of emailCandidates) {
+        if (isLikelyEmail(candidate)) {
+            const trimmed = (candidate || "").trim().toLowerCase();
+            // Prefer real domains over onmicrosoft.com
+            if (!trimmed.includes("onmicrosoft.com") && !trimmed.includes("@unknown.local")) {
+                console.log("Found real email address:", candidate);
+                return candidate.trim();
+            }
+        }
+    }
+
+    // Priority 2: Sign-in names (could be email or UPN)
+    const signInNameCandidates = [];
+    
     if (Array.isArray(claims.signInNames)) {
         for (const signInName of claims.signInNames) {
             if (typeof signInName === "string") {
-                directCandidates.push(signInName);
+                signInNameCandidates.push(signInName);
             } else if (signInName && typeof signInName === "object") {
-                directCandidates.push(signInName.emailAddress, signInName.value);
+                signInNameCandidates.push(signInName.emailAddress, signInName.value);
             }
         }
     } else {
-        directCandidates.push(claims.signInNames?.emailAddress, claims.signInNames?.value);
+        signInNameCandidates.push(claims.signInNames?.emailAddress, claims.signInNames?.value);
     }
 
-    console.log("Direct candidates for email:", directCandidates);
-
-    for (const candidate of directCandidates) {
+    console.log("SignIn name candidates (priority 2):", signInNameCandidates);
+    for (const candidate of signInNameCandidates) {
         if (isLikelyEmail(candidate)) {
-            console.log("Found email in direct candidates:", candidate);
-            return candidate.trim();
+            const trimmed = (candidate || "").trim().toLowerCase();
+            if (!trimmed.includes("onmicrosoft.com") && !trimmed.includes("@unknown.local")) {
+                console.log("Found email in signIn names:", candidate);
+                return candidate.trim();
+            }
         }
     }
 
+    // Priority 3: Fallback to UPN/username only if it looks like email
+    const fallbackCandidates = [
+        claims.preferred_username,
+        claims.upn,
+        account?.username
+    ];
+
+    console.log("Fallback candidates (priority 3 - UPN/username):", fallbackCandidates);
+    for (const candidate of fallbackCandidates) {
+        if (isLikelyEmail(candidate)) {
+            const trimmed = (candidate || "").trim().toLowerCase();
+            // Only use real domain names, not onmicrosoft.com
+            if (!trimmed.includes("onmicrosoft.com") && !trimmed.includes("@unknown.local")) {
+                console.log("Found email in fallback (real domain):", candidate);
+                return candidate.trim();
+            }
+        }
+    }
+
+    // Deep search as last resort
     const stack = [claims];
     while (stack.length > 0) {
         const current = stack.pop();
@@ -420,8 +454,11 @@ function resolveAccountEmail(account) {
 
         if (typeof current === "string") {
             if (isLikelyEmail(current)) {
-                console.log("Found email in recursive search:", current);
-                return current.trim();
+                const trimmed = current.trim().toLowerCase();
+                if (!trimmed.includes("onmicrosoft.com") && !trimmed.includes("@unknown.local")) {
+                    console.log("Found email in recursive search:", current);
+                    return current.trim();
+                }
             }
             continue;
         }
@@ -440,7 +477,7 @@ function resolveAccountEmail(account) {
         }
     }
 
-    console.log("No email found in MSAL claims, returning empty string");
+    console.log("No real email found in MSAL claims, returning empty string");
     return "";
 }
 
