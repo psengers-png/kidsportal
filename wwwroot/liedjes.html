@@ -192,6 +192,15 @@
             margin-top: 30px;
         }
 
+        #beattyLoadingVideo {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 auto 16px;
+            display: none;
+        }
+
         #audioPlayer {
             display: none;
             width: 100%;
@@ -310,6 +319,13 @@
         </form>
 
         <div id="resultaat">
+            <video id="beattyLoadingVideo" muted playsinline loop preload="auto">
+                <source src="/Images/Vid Beatty.mp4" type="video/mp4">
+                <source src="/Images/Beatty.mp4" type="video/mp4">
+                <source src="/Images/beatty.mp4" type="video/mp4">
+                <source src="/Images/Beatty.webm" type="video/webm">
+                <source src="/Images/beatty.webm" type="video/webm">
+            </video>
             <audio id="audioPlayer" controls></audio>
             <div id="lyrics"></div>
         </div>
@@ -364,6 +380,7 @@ homeBtn.onclick = () => window.location.href = "/home.html";
 const form = document.getElementById("liedjesForm");
 const audioPlayer = document.getElementById("audioPlayer");
 const lyricsBox = document.getElementById("lyrics");
+const beattyLoadingVideo = document.getElementById("beattyLoadingVideo");
 const downloadBtn = document.getElementById("downloadBtn");
 const btn = document.getElementById("genereerBtn");
 
@@ -390,6 +407,26 @@ function renderResult(data) {
     } else {
         lyricsBox.textContent = "Geen lyrics ontvangen.";
     }
+}
+
+function startLoadingState() {
+    btn.disabled = true;
+    audioPlayer.style.display = "none";
+    downloadBtn.style.display = "none";
+    lyricsBox.style.display = "block";
+    lyricsBox.textContent = "Liedje wordt aangemaakt...";
+    beattyLoadingVideo.style.display = "block";
+    beattyLoadingVideo.currentTime = 0;
+    const playPromise = beattyLoadingVideo.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+    }
+}
+
+function stopLoadingState() {
+    beattyLoadingVideo.pause();
+    beattyLoadingVideo.currentTime = 0;
+    beattyLoadingVideo.style.display = "none";
 }
 
 async function pollStatus(taskId) {
@@ -434,10 +471,7 @@ async function pollStatus(taskId) {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    btn.disabled = true;
-    audioPlayer.style.display = "none";
-    lyricsBox.style.display = "block";
-    lyricsBox.textContent = "Liedje wordt aangemaakt...";
+    startLoadingState();
 
     const onderwerp = document.getElementById("onderwerp").value.trim();
     const stijl = document.getElementById("stijl").value.trim();
@@ -484,7 +518,6 @@ form.addEventListener("submit", async (e) => {
             } else {
                 lyricsBox.textContent = `Fout (${resp.status}): ${text}`;
             }
-            btn.disabled = false;
             return;
         }
 
@@ -493,7 +526,6 @@ form.addEventListener("submit", async (e) => {
             data = JSON.parse(text);
         } catch (err) {
             lyricsBox.textContent = `JSON parsing error: ${text}`;
-            btn.disabled = false;
             return;
         }
 
@@ -503,16 +535,16 @@ form.addEventListener("submit", async (e) => {
             if (polled) {
                 renderResult(polled);
             }
-            btn.disabled = false;
             return;
         }
 
         renderResult(data);
     } catch (err) {
         lyricsBox.textContent = "Fout: " + err;
+    } finally {
+        stopLoadingState();
+        btn.disabled = false;
     }
-
-    btn.disabled = false;
 });
 </script>
 

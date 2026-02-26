@@ -186,6 +186,15 @@
             line-height: 1.6;
         }
 
+        #gigglyLoadingVideo {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 auto 16px;
+            display: none;
+        }
+
         @media (max-width: 720px) {
             header {
                 padding: 12px 14px;
@@ -288,6 +297,15 @@
             <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
         </form>
 
+        <video id="gigglyLoadingVideo" muted playsinline loop preload="auto">
+            <source src="/Images/Vid Gigly.mp4" type="video/mp4">
+            <source src="/Images/Vid Giggly.mp4" type="video/mp4">
+            <source src="/Images/Giggly.mp4" type="video/mp4">
+            <source src="/Images/giggly.mp4" type="video/mp4">
+            <source src="/Images/Giggly.webm" type="video/webm">
+            <source src="/Images/giggly.webm" type="video/webm">
+        </video>
+
         <div id="resultaat"></div>
     </div>
 
@@ -343,11 +361,30 @@ homeBtn.onclick = () => window.location.href = "/home.html";
 const form = document.getElementById("mopForm");
 const resultaat = document.getElementById("resultaat");
 const btn = document.getElementById("genereerBtn");
+const gigglyLoadingVideo = document.getElementById("gigglyLoadingVideo");
+
+function startLoadingState() {
+    btn.disabled = true;
+    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
+    gigglyLoadingVideo.currentTime = 0;
+    const playPromise = gigglyLoadingVideo.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.catch(() => {
+            gigglyLoadingVideo.style.display = "none";
+        });
+    }
+    gigglyLoadingVideo.style.display = "block";
+}
+
+function stopLoadingState() {
+    gigglyLoadingVideo.pause();
+    gigglyLoadingVideo.currentTime = 0;
+    gigglyLoadingVideo.style.display = "none";
+}
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
-    btn.disabled = true;
+    startLoadingState();
     const onderwerp = form.onderwerp.value.trim();
     const mopType = form.mopType.value;
     console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
@@ -389,7 +426,6 @@ form.addEventListener("submit", async (e) => {
             } else {
                 resultaat.innerHTML = '<p style="color:red;">Fout (' + res.status + '): ' + text + '</p>';
             }
-            btn.disabled = false;
             return;
         }
         let data;
@@ -397,7 +433,6 @@ form.addEventListener("submit", async (e) => {
             data = JSON.parse(text);
         } catch (e) {
             resultaat.innerHTML = '<p style="color:red;">JSON parsing error: ' + text + '</p>';
-            btn.disabled = false;
             return;
         }
         if (data.mop) {
@@ -408,8 +443,10 @@ form.addEventListener("submit", async (e) => {
     } catch (err) {
         resultaat.innerHTML = '<p style="color:red;">Fout: ' + err + '</p>';
         console.error("Error:", err);
+    } finally {
+        stopLoadingState();
+        btn.disabled = false;
     }
-    btn.disabled = false;
 });
 </script>
 
