@@ -9,6 +9,8 @@ api_key = os.environ.get("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("OPENAI_API_KEY is not set in environment variables")
 client = OpenAI(api_key=api_key)
+raw_model_name = (os.environ.get("OPENAI_MODEL") or "gpt-5").strip()
+model_name = (raw_model_name.rstrip(" .,;:") or "gpt-5")
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     # CORS headers
@@ -56,12 +58,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # OpenAI aanroepen (moderne client)
         try:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=model_name,
                 messages=[
                     {"role": "system", "content": "Je bent een creatieve assistent die leuke challenges bedenkt."},
                     {"role": "user", "content": prompt}
-                ],
-                temperature=0.8
+                ]
             )
 
             challenge = response.choices[0].message.content

@@ -182,6 +182,15 @@
             text-align: center;
         }
 
+        #driplyLoadingVideo {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 14px auto 0;
+            display: none;
+        }
+
         #resultaat img {
             max-width: 100%;
             border-radius: 20px;
@@ -301,6 +310,14 @@
     </form>
 
     <div id="resultaat"></div>
+    <video id="driplyLoadingVideo" muted playsinline loop preload="auto">
+        <source src="/Images/Vid Diply.mp4" type="video/mp4">
+        <source src="/Images/Vid Driply.mp4" type="video/mp4">
+        <source src="/Images/Driply.mp4" type="video/mp4">
+        <source src="/Images/driply.mp4" type="video/mp4">
+        <source src="/Images/Driply.webm" type="video/webm">
+        <source src="/Images/driply.webm" type="video/webm">
+    </video>
 
 </main>
 
@@ -358,6 +375,7 @@ async function initFormLogic() {
     const form = document.getElementById("kleurplaatForm");
     const resultaat = document.getElementById("resultaat");
     const downloadBtn = document.getElementById("downloadBtn");
+    const driplyLoadingVideo = document.getElementById("driplyLoadingVideo");
     const homeBtn = document.getElementById("homeBtn");
 
     // Terug naar home
@@ -383,9 +401,26 @@ async function initFormLogic() {
     activiteitInput.addEventListener("input", updateFieldStates);
     fotoInput.addEventListener("change", updateFieldStates);
 
+    function startLoadingState() {
+        downloadBtn.style.display = 'none';
+        resultaat.textContent = "Kleurplaat wordt aangemaakt...";
+        driplyLoadingVideo.style.display = "block";
+        driplyLoadingVideo.currentTime = 0;
+        const playPromise = driplyLoadingVideo.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
+    }
+
+    function stopLoadingState() {
+        driplyLoadingVideo.pause();
+        driplyLoadingVideo.currentTime = 0;
+        driplyLoadingVideo.style.display = "none";
+    }
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        resultaat.textContent = "Kleurplaat wordt aangemaakt...";
+        startLoadingState();
 
         const wie = wieInput.value;
         const waar = waarInput.value;
@@ -473,6 +508,8 @@ async function initFormLogic() {
         } catch (err) {
             resultaat.textContent = 'Fout: ' + err;
             console.error("Error:", err);
+        } finally {
+            stopLoadingState();
         }
     });
 }
