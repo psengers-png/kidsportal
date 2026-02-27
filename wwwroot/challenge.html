@@ -180,6 +180,20 @@
             line-height: 1.6;
         }
 
+        .judge-box {
+            margin-top: 18px;
+            padding: 16px;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            background: #eff6ff;
+        }
+
+        #judgeResult {
+            margin-top: 12px;
+            color: #1f2d3d;
+            font-weight: 600;
+        }
+
         #questyLoadingVideo {
             width: 100%;
             max-width: 360px;
@@ -364,6 +378,7 @@ const form = document.getElementById("challengeForm");
 const resultaat = document.getElementById("resultaat");
 const questyLoadingVideo = document.getElementById("questyLoadingVideo");
 const submitBtn = form.querySelector('button[type="submit"]');
+let currentChallengeText = "";
 
 function startLoadingState() {
     submitBtn.disabled = true;
@@ -382,6 +397,15 @@ function stopLoadingState() {
     questyLoadingVideo.pause();
     questyLoadingVideo.currentTime = 0;
     questyLoadingVideo.style.display = "none";
+}
+
+function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Kon foto niet lezen"));
+        reader.readAsDataURL(file);
+    });
 }
 
 form.addEventListener("submit", async (e) => {
@@ -447,10 +471,18 @@ form.addEventListener("submit", async (e) => {
             return;
         }
 
+        currentChallengeText = data.challenge || "";
         resultaat.innerHTML = `
             <div class="challenge-box">
                 <strong>🎯 Jouw Challenge:</strong><br><br>
                 ${data.challenge}
+            </div>
+            <div class="judge-box">
+                <strong>📸 Upload 2 of meer foto's van de resultaten</strong><br><br>
+                <input id="challengePhotos" type="file" accept="image/*" multiple>
+                <br><br>
+                <button id="judgePhotosBtn" type="button">🏆 Laat OpenAI beoordelen</button>
+                <div id="judgeResult"></div>
             </div>
         `;
     } catch (err) {
@@ -459,6 +491,79 @@ form.addEventListener("submit", async (e) => {
     } finally {
         stopLoadingState();
         submitBtn.disabled = false;
+    }
+});
+
+resultaat.addEventListener("click", async (event) => {
+    if (event.target.id !== "judgePhotosBtn") {
+        return;
+    }
+
+    const photosInput = document.getElementById("challengePhotos");
+    const judgeResult = document.getElementById("judgeResult");
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+
+    if (!photosInput || !judgeResult) {
+        return;
+    }
+
+    const files = Array.from(photosInput.files || []);
+    if (files.length < 2) {
+        judgeResult.innerHTML = "<span style='color:#c53030;'>Upload minimaal 2 foto's.</span>";
+        return;
+    }
+
+    if (!userId) {
+        judgeResult.innerHTML = "<span style='color:#c53030;'>Je bent niet ingelogd.</span>";
+        return;
+    }
+
+    event.target.disabled = true;
+    judgeResult.textContent = "⏳ Resultaten worden beoordeeld...";
+
+    try {
+        const submissions = await Promise.all(
+            files.map(async (file, index) => ({
+                name: `Deelnemer ${index + 1}`,
+                image: await fileToDataUrl(file)
+            }))
+        );
+
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({
+                type: 'challenge',
+                payload: {
+                    action: 'judge_results',
+                    challenge: currentChallengeText,
+                    submissions
+                }
+            })
+        });
+
+        const text = await resp.text();
+        if (!resp.ok) {
+            judgeResult.innerHTML = `<span style='color:#c53030;'>Fout (${resp.status}): ${text}</span>`;
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            judgeResult.innerHTML = `<span style='color:#c53030;'>Kon beoordeling niet lezen: ${text}</span>`;
+            return;
+        }
+
+        judgeResult.innerHTML = `✅ Winnaar: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
+    } catch (err) {
+        judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
+    } finally {
+        event.target.disabled = false;
     }
 });
 </script>
