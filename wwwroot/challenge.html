@@ -325,10 +325,10 @@
 
     <div id="resultaat"></div>
     <div id="uploadSection" class="judge-box" style="display:none;">
-        <strong>📸 Upload 2 of meer foto's van de resultaten</strong><br><br>
+        <strong>📸 Upload 1 foto van alle resultaten</strong><br><br>
         <input id="challengePhotos" type="file" accept="image/*" multiple>
         <br><br>
-        <button id="judgePhotosBtn" type="button">🏆 Laat OpenAI beoordelen</button>
+        <button id="judgePhotosBtn" type="button">🏆 Laat Questy beoordelen</button>
         <div id="judgeResult"></div>
     </div>
 
@@ -505,8 +505,8 @@ judgePhotosBtn.addEventListener("click", async (event) => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
 
     const files = Array.from(photosInput.files || []);
-    if (files.length < 2) {
-        judgeResult.innerHTML = "<span style='color:#c53030;'>Upload minimaal 2 foto's.</span>";
+    if (files.length < 1) {
+        judgeResult.innerHTML = "<span style='color:#c53030;'>Upload minimaal 1 foto.</span>";
         return;
     }
 
@@ -516,7 +516,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
     }
 
     event.target.disabled = true;
-    judgeResult.textContent = "⏳ Resultaten worden beoordeeld...";
+    judgeResult.textContent = "⏳ Questy kijkt wie het mooist heeft getekend...";
 
     try {
         const submissions = await Promise.all(
@@ -556,7 +556,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
             return;
         }
 
-        judgeResult.innerHTML = `✅ Winnaar: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
+        judgeResult.innerHTML = `✅ Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
     } finally {
