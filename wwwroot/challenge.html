@@ -324,6 +324,13 @@
     </video>
 
     <div id="resultaat"></div>
+    <div id="uploadSection" class="judge-box" style="display:none;">
+        <strong>📸 Upload 2 of meer foto's van de resultaten</strong><br><br>
+        <input id="challengePhotos" type="file" accept="image/*" multiple>
+        <br><br>
+        <button id="judgePhotosBtn" type="button">🏆 Laat OpenAI beoordelen</button>
+        <div id="judgeResult"></div>
+    </div>
 
 </main>
 
@@ -378,6 +385,10 @@ const form = document.getElementById("challengeForm");
 const resultaat = document.getElementById("resultaat");
 const questyLoadingVideo = document.getElementById("questyLoadingVideo");
 const submitBtn = form.querySelector('button[type="submit"]');
+const uploadSection = document.getElementById("uploadSection");
+const photosInput = document.getElementById("challengePhotos");
+const judgePhotosBtn = document.getElementById("judgePhotosBtn");
+const judgeResult = document.getElementById("judgeResult");
 let currentChallengeText = "";
 
 function startLoadingState() {
@@ -477,14 +488,10 @@ form.addEventListener("submit", async (e) => {
                 <strong>🎯 Jouw Challenge:</strong><br><br>
                 ${data.challenge}
             </div>
-            <div class="judge-box">
-                <strong>📸 Upload 2 of meer foto's van de resultaten</strong><br><br>
-                <input id="challengePhotos" type="file" accept="image/*" multiple>
-                <br><br>
-                <button id="judgePhotosBtn" type="button">🏆 Laat OpenAI beoordelen</button>
-                <div id="judgeResult"></div>
-            </div>
         `;
+        uploadSection.style.display = "block";
+        judgeResult.innerHTML = "";
+        photosInput.value = "";
     } catch (err) {
         resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
         console.error("Error:", err);
@@ -494,18 +501,8 @@ form.addEventListener("submit", async (e) => {
     }
 });
 
-resultaat.addEventListener("click", async (event) => {
-    if (event.target.id !== "judgePhotosBtn") {
-        return;
-    }
-
-    const photosInput = document.getElementById("challengePhotos");
-    const judgeResult = document.getElementById("judgeResult");
+judgePhotosBtn.addEventListener("click", async (event) => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
-
-    if (!photosInput || !judgeResult) {
-        return;
-    }
 
     const files = Array.from(photosInput.files || []);
     if (files.length < 2) {
