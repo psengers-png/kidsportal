@@ -1,4 +1,3 @@
-
 import os
 import json
 import azure.functions as func
@@ -49,10 +48,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         # Prompt samenstellen
         prompt = (
-            f"acteer als een creatieve assistent en genereer  leuke unieke challenges voor een kind van 5-10 jaar met deze kenmerken:\n"
+            f"Acteer als een creatieve assistent en genereer een leuke, unieke challenge voor een kind van 5-10 jaar met deze kenmerken:\n"
             f"- Energie-niveau: {energie}\n"
             f"- Type activiteit (categorie): {activiteit_type} (keuze uit: Knutselen, Kleuren, Puzzel, Kennis, Buiten, Natuur)\n"
-            f"De challenge moet kort, duidelijk en leuk zijn. Geef alleen de challenge-tekst, geen uitleg."
+            f"Regels:\n"
+            f"- De challenge moet kort, duidelijk en leuk zijn (1-2 zinnen).\n"
+            f"- Geef alleen de challenge-tekst, geen uitleg of stappenplan.\n"
+            f"- Als de categorie NIET 'Buiten' of 'Natuur' is, moet de challenge expliciet BINNEN plaatsvinden.\n"
+            f"- Vermijd alles wat buiten, natuur, weer, parken, bos, tuin, strand of straat impliceert tenzij de categorie 'Buiten' of 'Natuur' is.\n"
+            f"- Gebruik alleen huis-, kamer- of tafelmaterialen voor binnen-categorieen."
         )
 
         # OpenAI aanroepen (moderne client)
@@ -60,7 +64,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             response = client.chat.completions.create(
                 model=model_name,
                 messages=[
-                    {"role": "system", "content": "Je bent een creatieve assistent die leuke challenges bedenkt."},
+                    {"role": "system", "content": "Je bent een creatieve assistent die leuke challenges bedenkt voor kinderen van 5 tot 10 jaar."},
                     {"role": "user", "content": prompt}
                 ]
             )
