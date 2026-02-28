@@ -286,7 +286,7 @@
 
         <form id="scetchyForm" style="display:none;">
             <div class="form-group">
-                <label for="onderwerp">Welk object wil je tekenen?</label>
+                <label for="onderwerp">Wat wil je tekenen?</label>
                 <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. krokodil">
             </div>
             <button type="submit" id="genereerBtn">✍️ Maak tekeninstructie</button>
@@ -391,7 +391,6 @@ function stopLoadingState() {
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     startLoadingState();
-
     const onderwerp = form.onderwerp.value.trim();
 
     try {
