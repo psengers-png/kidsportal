@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scetchy - Tekeninstructie</title>
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .header-left img {
+            height: 150px;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+
+        .header-btn:hover {
+            background: #e2e8f0;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .window {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .agent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .agent-header img {
+            height: 250px;
+        }
+
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        #statusText {
+            text-align: center;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        #resultaat {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #resultaat img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        #scetchyLoadingVideo {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 auto 16px;
+            display: none;
+        }
+
+        @keyframes rain {
+            from { background-position: 0 0; }
+            to { background-position: -10px 20px; }
+        }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 12px 14px;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .header-left img {
+                height: 95px;
+            }
+
+            .header-left h1 {
+                margin: 0;
+                font-size: 1.35rem;
+            }
+
+            .header-right {
+                width: 100%;
+                margin-left: 0;
+                justify-content: center;
+            }
+
+            .header-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            main {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .window {
+                border-radius: 20px;
+                padding: 20px 16px;
+            }
+
+            .agent-header img {
+                height: 165px;
+                max-width: 100%;
+                object-fit: contain;
+            }
+
+            .agent-header h2 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="rain"></div>
+
+<header>
+    <div class="header-left">
+        <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
+        <h1>Rainy Day Club</h1>
+    </div>
+    <div class="header-right">
+        <button class="header-btn" id="homeBtn">🏠 Home</button>
+        <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white;">Upgrade naar onbeperkt</button>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Uitloggen</button>
+    </div>
+</header>
+
+<main>
+    <div class="window">
+
+        <div class="agent-header">
+            <img src="Images/Scetchy.png" alt="Scetchy">
+            <h2>Scetchy – Tekeninstructie Agent</h2>
+            <p>Scetchy maakt stap-voor-stap tekeninstructies die kinderen makkelijk kunnen volgen ✏️🖍️</p>
+        </div>
+
+        <p id="statusText">Bezig met controleren...</p>
+
+        <form id="scetchyForm" style="display:none;">
+            <div class="form-group">
+                <label for="onderwerp">Welk object wil je tekenen?</label>
+                <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. krokodil">
+            </div>
+            <button type="submit" id="genereerBtn">✍️ Maak tekeninstructie</button>
+            <button id="downloadBtn" style="display:none;">⬇️ Download</button>
+        </form>
+
+        <video id="scetchyLoadingVideo" muted playsinline loop preload="auto">
+            <source src="/Images/vid%20Sketchy.mp4" type="video/mp4">
+            <source src="/Images/vid Sketchy.mp4" type="video/mp4">
+        </video>
+
+        <div id="resultaat"></div>
+    </div>
+
+</main>
+
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module" src="/JS/auth.js"></script>
+
+<script type="module">
+import { msalInstance } from '/JS/auth.js';
+import { startStripeCheckout } from '/JS/abonnement.js';
+
+setTimeout(() => {
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
+    const statusText = document.getElementById("statusText");
+    const form = document.getElementById("scetchyForm");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!userId) {
+        statusText.textContent = "Log in om Scetchy te gebruiken.";
+        return;
+    }
+
+    statusText.style.display = "none";
+    form.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+
+    logoutBtn.onclick = async () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('ciamLoginInProgress');
+        if (window.msalInstance?.logoutRedirect) {
+            try {
+                await window.msalInstance.logoutRedirect({
+                    postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
+                });
+                return;
+            } catch (error) {}
+        }
+        window.location.href = '/login.html?loggedOut=1';
+    };
+}, 1000);
+
+const homeBtn = document.getElementById("homeBtn");
+homeBtn.onclick = () => window.location.href = "/home.html";
+
+const abonnementBtn = document.getElementById('abonnementBtn');
+if (abonnementBtn) {
+    abonnementBtn.onclick = async () => {
+        const accounts = msalInstance.getAllAccounts();
+        const storedUserId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+        const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
+        const userId = storedUserId || accountUserId;
+        if (!userId) return;
+        const selectedPlanType = window.ensurePreferredPlanTypeSelection
+            ? await window.ensurePreferredPlanTypeSelection(true)
+            : 'particulier';
+        localStorage.setItem('preferredPlanType', selectedPlanType);
+        startStripeCheckout(userId, selectedPlanType);
+    };
+}
+
+const form = document.getElementById("scetchyForm");
+const resultaat = document.getElementById("resultaat");
+const btn = document.getElementById("genereerBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const scetchyLoadingVideo = document.getElementById("scetchyLoadingVideo");
+
+function startLoadingState() {
+    btn.disabled = true;
+    downloadBtn.style.display = 'none';
+    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">⏳ Scetchy maakt je tekeninstructie...</p>';
+    scetchyLoadingVideo.currentTime = 0;
+    const playPromise = scetchyLoadingVideo.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.catch(() => {
+            scetchyLoadingVideo.style.display = "none";
+        });
+    }
+    scetchyLoadingVideo.style.display = "block";
+}
+
+function stopLoadingState() {
+    scetchyLoadingVideo.pause();
+    scetchyLoadingVideo.currentTime = 0;
+    scetchyLoadingVideo.style.display = "none";
+}
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    startLoadingState();
+
+    const onderwerp = form.onderwerp.value.trim();
+
+    try {
+        const res = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': localStorage.getItem('userId') || ''
+            },
+            body: JSON.stringify({
+                type: 'scetchy',
+                payload: { onderwerp }
+            })
+        });
+
+        const text = await res.text();
+        if (!res.ok) {
+            if (res.status === 403 && text.includes('limiet')) {
+                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis aanvragen bereikt.<br>Upgrade naar onbeperkt vanaf €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button></div>`;
+                setTimeout(() => {
+                    const accounts = msalInstance.getAllAccounts();
+                    const btnInline = document.getElementById('abonnementBtnInline');
+                    const storedUserId = localStorage.getItem('userId') || '';
+                    const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
+                    const userId = storedUserId || accountUserId;
+                    if (btnInline && userId) {
+                        btnInline.onclick = async () => {
+                            const selectedPlanType = window.ensurePreferredPlanTypeSelection
+                                ? await window.ensurePreferredPlanTypeSelection(true)
+                                : 'particulier';
+                            localStorage.setItem('preferredPlanType', selectedPlanType);
+                            startStripeCheckout(userId, selectedPlanType);
+                        };
+                    }
+                }, 100);
+            } else {
+                resultaat.innerHTML = `<p style='color:red;'>Fout (${res.status}): ${text}</p>`;
+            }
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+            return;
+        }
+
+        if (data.image_data_uri) {
+            const img = document.createElement('img');
+            img.src = data.image_data_uri;
+            resultaat.innerHTML = '';
+            resultaat.appendChild(img);
+
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = data.image_data_uri;
+                a.download = 'tekeninstructie.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+        } else {
+            resultaat.innerHTML = `<p style='color:red;'>${data.error || 'Onbekende fout.'}</p>`;
+        }
+    } catch (err) {
+        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+    } finally {
+        stopLoadingState();
+        btn.disabled = false;
+    }
+});
+</script>
+
+</body>
+</html>
