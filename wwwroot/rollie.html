@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Rollie - Dobbelspel Generator</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(6px);
+            border-bottom: 1px solid #dbeafe;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-left img {
+            width: 56px;
+            height: 56px;
+            border-radius: 9999px;
+            object-fit: cover;
+            border: 2px solid #93c5fd;
+            background: #fff;
+        }
+        .header-left h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #1e3a8a;
+        }
+        .header-right {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+        .header-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+        }
+        .header-btn.secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        .wrap {
+            max-width: 760px;
+            margin: 26px auto;
+            padding: 0 16px 28px;
+        }
+        .panel {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 28px rgba(30, 58, 138, 0.15);
+            padding: 24px;
+        }
+        #statusText {
+            text-align: center;
+            color: #2563eb;
+            font-weight: 600;
+            margin: 10px 0 0;
+        }
+        .form-group { margin-bottom: 18px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+        input, select {
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 15px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+        .submit-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 18px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result-box {
+            margin-top: 18px;
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            border-radius: 10px;
+            padding: 16px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        #rollieLoadingVideo {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            margin: 12px auto;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <img src="Images/Rollie.png" alt="Rollie">
+        <h1>🎲 Rollie – Dobbelspel Agent</h1>
+    </div>
+    <div class="header-right">
+        <button class="header-btn secondary" id="homeBtn">← Home</button>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Uitloggen</button>
+    </div>
+</header>
+
+<div class="wrap">
+    <div class="panel">
+        <p id="statusText">Bezig met controleren...</p>
+
+        <form id="rollieForm" style="display:none;">
+            <div class="form-group">
+                <label for="aantal_spelers">Aantal spelers</label>
+                <input id="aantal_spelers" type="number" min="1" max="20" required>
+            </div>
+
+            <div class="form-group">
+                <label for="energie_niveau">Energie niveau</label>
+                <select id="energie_niveau" required>
+                    <option value="">-- Kies een optie --</option>
+                    <option value="laag">Laag</option>
+                    <option value="gemiddeld">Gemiddeld</option>
+                    <option value="hoog">Hoog</option>
+                </select>
+            </div>
+
+            <button class="submit-btn" type="submit">🚀 Bedenk een spel</button>
+        </form>
+
+        <video id="rollieLoadingVideo" muted playsinline loop preload="auto">
+            <source src="/Images/Vid Rollie.mp4" type="video/mp4">
+        </video>
+
+        <div id="resultaat"></div>
+    </div>
+</div>
+
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script type="module" src="/JS/auth.js"></script>
+
+<script type="module">
+import { msalInstance } from '/JS/auth.js';
+
+setTimeout(() => {
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
+    const statusText = document.getElementById('statusText');
+    const form = document.getElementById('rollieForm');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (!userId) {
+        statusText.textContent = 'Log in om Rollie te gebruiken.';
+        return;
+    }
+
+    statusText.style.display = 'none';
+    form.style.display = 'block';
+    logoutBtn.style.display = 'inline-block';
+
+    logoutBtn.onclick = async () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('ciamLoginInProgress');
+        if (window.msalInstance?.logoutRedirect) {
+            try {
+                await window.msalInstance.logoutRedirect({
+                    postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
+                });
+                return;
+            } catch (error) {}
+        }
+        window.location.href = '/login.html?loggedOut=1';
+    };
+}, 1000);
+
+const homeBtn = document.getElementById('homeBtn');
+homeBtn.onclick = () => window.location.href = '/home.html';
+
+const form = document.getElementById('rollieForm');
+const resultaat = document.getElementById('resultaat');
+const submitBtn = form.querySelector('button[type="submit"]');
+const rollieLoadingVideo = document.getElementById('rollieLoadingVideo');
+
+function startLoadingState() {
+    submitBtn.disabled = true;
+    resultaat.innerHTML = "<p style='text-align:center; color:#2563eb;'>⏳ Rollie verzint een dobbelspel...</p>";
+    rollieLoadingVideo.currentTime = 0;
+    const playPromise = rollieLoadingVideo.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+            rollieLoadingVideo.style.display = 'none';
+        });
+    }
+    rollieLoadingVideo.style.display = 'block';
+}
+
+function stopLoadingState() {
+    rollieLoadingVideo.pause();
+    rollieLoadingVideo.currentTime = 0;
+    rollieLoadingVideo.style.display = 'none';
+}
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+    if (!userId) {
+        resultaat.innerHTML = "<p style='color:#dc2626;'>Je bent niet ingelogd.</p>";
+        return;
+    }
+
+    startLoadingState();
+
+    const payload = {
+        aantal_spelers: document.getElementById('aantal_spelers').value,
+        energie_niveau: document.getElementById('energie_niveau').value
+    };
+
+    try {
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({
+                type: 'rollie',
+                payload
+            })
+        });
+
+        const text = await resp.text();
+
+        if (!resp.ok) {
+            resultaat.innerHTML = `<p style='color:#dc2626;'>Fout (${resp.status}): ${text}</p>`;
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            resultaat.innerHTML = `<p style='color:#dc2626;'>Kon antwoord niet lezen: ${text}</p>`;
+            return;
+        }
+
+        resultaat.innerHTML = `<div class="result-box">${data.spel || 'Geen spel ontvangen.'}</div>`;
+    } catch (error) {
+        resultaat.innerHTML = `<p style='color:#dc2626;'>Fout: ${error}</p>`;
+    } finally {
+        stopLoadingState();
+        submitBtn.disabled = false;
+    }
+});
+</script>
+</body>
+</html>
