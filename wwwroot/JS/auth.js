@@ -331,6 +331,26 @@ function showEmailInputModal() {
         input.style.marginBottom = "16px";
         input.focus();
 
+        const consentWrapper = document.createElement("label");
+        consentWrapper.style.display = "flex";
+        consentWrapper.style.alignItems = "flex-start";
+        consentWrapper.style.gap = "8px";
+        consentWrapper.style.fontSize = "13px";
+        consentWrapper.style.color = "#475569";
+        consentWrapper.style.lineHeight = "1.4";
+        consentWrapper.style.marginBottom = "16px";
+
+        const consentCheckbox = document.createElement("input");
+        consentCheckbox.type = "checkbox";
+        consentCheckbox.style.marginTop = "2px";
+        consentCheckbox.style.flexShrink = "0";
+
+        const consentText = document.createElement("span");
+        consentText.innerHTML = "Ik ga akkoord met de <a href=\"/terms.html\" target=\"_blank\" rel=\"noopener noreferrer\">voorwaarden</a> en de <a href=\"/privacy.html\" target=\"_blank\" rel=\"noopener noreferrer\">privacyverklaring</a>.";
+
+        consentWrapper.appendChild(consentCheckbox);
+        consentWrapper.appendChild(consentText);
+
         const actions = document.createElement("div");
         actions.style.display = "flex";
         actions.style.gap = "10px";
@@ -371,11 +391,17 @@ function showEmailInputModal() {
 
         cancelButton.addEventListener("click", () => closeWithResult(""));
         submitButton.addEventListener("click", () => {
-            if (input.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
-                closeWithResult(input.value.trim());
-            } else {
+            if (!input.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
                 alert("Voer alstublieft een geldig e-mailadres in.");
+                return;
             }
+
+            if (!consentCheckbox.checked) {
+                alert("Je moet akkoord gaan met de voorwaarden om door te gaan.");
+                return;
+            }
+
+            closeWithResult(input.value.trim());
         });
 
         input.addEventListener("keypress", (event) => {
@@ -389,6 +415,7 @@ function showEmailInputModal() {
         card.appendChild(title);
         card.appendChild(body);
         card.appendChild(input);
+        card.appendChild(consentWrapper);
         card.appendChild(actions);
         overlay.appendChild(card);
         document.body.appendChild(overlay);
