@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /login.html
+Disallow: /index.html
+Disallow: /abonnement-success.html
+Disallow: /abonnement-cancel.html
+
+Sitemap: https://rainydayclub.nl/sitemap.xml
