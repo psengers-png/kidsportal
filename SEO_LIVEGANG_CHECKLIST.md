@@ -40,10 +40,11 @@ Gebruik deze lijst direct na deployment van de SEO-wijzigingen.
 ## 4) Pagina’s die bewust NIET moeten ranken
 
 Controleer dat deze op `noindex` staan en niet in sitemap staan:
-- `index.html`
 - `login.html`
 - `abonnement-success.html`
 - `abonnement-cancel.html`
+
+> `index.html` mag **niet** op `noindex` staan zolang je root (`/`) daar soms op uitkomt.
 
 ## 5) 14-dagen monitoring
 
