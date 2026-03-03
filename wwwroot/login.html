@@ -226,6 +226,10 @@
             font-weight: 600;
         }
 
+        .consent-group.optional {
+            margin-top: -6px;
+        }
+
         .button-group {
             display: flex;
             gap: 12px;
@@ -385,6 +389,13 @@
                 </label>
             </div>
 
+            <div class="consent-group optional">
+                <input type="checkbox" id="marketingConsent" aria-label="Ja, ik wil nieuws en vragen ontvangen">
+                <label for="marketingConsent">
+                    Ja, ik ontvang graag af en toe nieuws, updates of vragen per e-mail. Je kunt je altijd uitschrijven.
+                </label>
+            </div>
+
             <div class="button-group">
                 <button class="btn-primary" id="continueBtn" onclick="handleContinueLogin()">
                     Doorgaan
@@ -498,6 +509,7 @@
         async function handleContinueLogin() {
             const emailHint = (document.getElementById("emailInput")?.value || "").trim();
             const hasConsent = document.getElementById("termsConsent")?.checked;
+            const hasMarketingConsent = document.getElementById("marketingConsent")?.checked === true;
             const emailError = document.getElementById("emailError");
             const continueBtn = document.getElementById("continueBtn");
 
@@ -519,6 +531,12 @@
                 continueBtn.innerHTML = '<span class="loading"></span>Doorgaan...';
                 sessionStorage.setItem("ciamLoginInProgress", "1");
                 localStorage.setItem("pendingSignupEmail", emailHint);
+                localStorage.setItem("marketingConsent", hasMarketingConsent ? "true" : "false");
+                if (hasMarketingConsent) {
+                    localStorage.setItem("marketingConsentAt", new Date().toISOString());
+                } else {
+                    localStorage.removeItem("marketingConsentAt");
+                }
                 await msalInstance.loginRedirect({
                     redirectUri: window.location.origin + "/home.html",
                     loginHint: emailHint,

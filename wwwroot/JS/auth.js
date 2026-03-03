@@ -351,6 +351,26 @@ function showEmailInputModal() {
         consentWrapper.appendChild(consentCheckbox);
         consentWrapper.appendChild(consentText);
 
+        const marketingWrapper = document.createElement("label");
+        marketingWrapper.style.display = "flex";
+        marketingWrapper.style.alignItems = "flex-start";
+        marketingWrapper.style.gap = "8px";
+        marketingWrapper.style.fontSize = "13px";
+        marketingWrapper.style.color = "#475569";
+        marketingWrapper.style.lineHeight = "1.4";
+        marketingWrapper.style.marginBottom = "16px";
+
+        const marketingCheckbox = document.createElement("input");
+        marketingCheckbox.type = "checkbox";
+        marketingCheckbox.style.marginTop = "2px";
+        marketingCheckbox.style.flexShrink = "0";
+
+        const marketingText = document.createElement("span");
+        marketingText.textContent = "Ja, ik ontvang graag af en toe nieuws, updates of vragen per e-mail. Je kunt je altijd uitschrijven.";
+
+        marketingWrapper.appendChild(marketingCheckbox);
+        marketingWrapper.appendChild(marketingText);
+
         const actions = document.createElement("div");
         actions.style.display = "flex";
         actions.style.gap = "10px";
@@ -401,6 +421,13 @@ function showEmailInputModal() {
                 return;
             }
 
+            localStorage.setItem("marketingConsent", marketingCheckbox.checked ? "true" : "false");
+            if (marketingCheckbox.checked) {
+                localStorage.setItem("marketingConsentAt", new Date().toISOString());
+            } else {
+                localStorage.removeItem("marketingConsentAt");
+            }
+
             closeWithResult(input.value.trim());
         });
 
@@ -416,6 +443,7 @@ function showEmailInputModal() {
         card.appendChild(body);
         card.appendChild(input);
         card.appendChild(consentWrapper);
+        card.appendChild(marketingWrapper);
         card.appendChild(actions);
         overlay.appendChild(card);
         document.body.appendChild(overlay);
@@ -882,6 +910,10 @@ async function registerUser(userId, email, name) {
     const safeName = (name || "").trim() || "Unknown";
     const storedPreferred = (localStorage.getItem("preferredPlanType") || "").toLowerCase();
     const preferredPlanType = storedPreferred === "enterprise" ? "enterprise" : (storedPreferred === "particulier" ? "particulier" : null);
+    const communicationOptIn = localStorage.getItem("marketingConsent") === "true";
+    const communicationOptInAt = communicationOptIn
+        ? (localStorage.getItem("marketingConsentAt") || new Date().toISOString())
+        : null;
 
     // If no email from MSAL claims, ask user directly
     if (!safeEmail || safeEmail.includes("@unknown.local")) {
@@ -929,7 +961,16 @@ async function registerUser(userId, email, name) {
         const response = await fetch(createUserUrl, {
             method: "POST",
             headers,
-            body: JSON.stringify({ userId, email: finalEmail, name: safeName, preferredPlanType, ciamLinked: true, loginMethod: "password" }),
+            body: JSON.stringify({
+                userId,
+                email: finalEmail,
+                name: safeName,
+                preferredPlanType,
+                ciamLinked: true,
+                loginMethod: "password",
+                communicationOptIn,
+                communicationOptInAt
+            }),
         });
 
         if (response.ok) {
