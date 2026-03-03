@@ -199,6 +199,33 @@
             border-left: 4px solid #667eea;
         }
 
+        .consent-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .consent-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .consent-group label {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 400;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .consent-group a {
+            color: #1f2d3d;
+            font-weight: 600;
+        }
+
         .button-group {
             display: flex;
             gap: 12px;
@@ -351,6 +378,13 @@
                 Vul je e-mailadres in en ga verder. De vervolgstap is voor iedereen hetzelfde.
             </div>
 
+            <div class="consent-group">
+                <input type="checkbox" id="termsConsent" aria-label="Akkoord met voorwaarden en privacyverklaring">
+                <label for="termsConsent">
+                    Ik ga akkoord met de <a href="/terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a> en de <a href="/privacy.html" target="_blank" rel="noopener noreferrer">privacyverklaring</a>.
+                </label>
+            </div>
+
             <div class="button-group">
                 <button class="btn-primary" id="continueBtn" onclick="handleContinueLogin()">
                     Doorgaan
@@ -463,12 +497,19 @@
 
         async function handleContinueLogin() {
             const emailHint = (document.getElementById("emailInput")?.value || "").trim();
+            const hasConsent = document.getElementById("termsConsent")?.checked;
             const emailError = document.getElementById("emailError");
             const continueBtn = document.getElementById("continueBtn");
 
             emailError.classList.remove("show");
             if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
                 emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.classList.add("show");
+                return;
+            }
+
+            if (!hasConsent) {
+                emailError.textContent = "Je moet akkoord gaan met de voorwaarden om door te gaan.";
                 emailError.classList.add("show");
                 return;
             }
