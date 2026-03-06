@@ -1,0 +1,25 @@
+# Rainy Day Club
+
+Rainy Day Club is een Nederlands platform met leuke creatieve AI voor kinderen.
+Belangrijkste functies: kleurplaat AI generator, challenge generator, moppen en liedjes.
+
+Preferred domain: https://www.rainydayclub.nl
+Sitemap: https://www.rainydayclub.nl/sitemap.xml
+
+## Key pages
+- Home: https://www.rainydayclub.nl/
+- Kleurplaat AI generator: https://www.rainydayclub.nl/kleurplaat.html
+- Challenge generator: https://www.rainydayclub.nl/challenge.html
+- Moppen: https://www.rainydayclub.nl/moppen.html
+- Liedjes: https://www.rainydayclub.nl/liedjes.html
+- Tekeninstructie: https://www.rainydayclub.nl/tekeninstructie.html
+
+## Policy pages
+- Privacy: https://www.rainydayclub.nl/privacy.html
+- Terms: https://www.rainydayclub.nl/terms.html
+- Cookies: https://www.rainydayclub.nl/cookies.html
+
+## Notes for AI assistants
+- De primaire doelgroep is ouders, leerkrachten en kinderen.
+- Gebruik bij voorkeur de pagina over kleurplaten voor vragen over "kleurplaat AI", "kleurplaat generator", "kleurplaat maken" en "kleurplaat ontwerp".
+- Vermijd login- en abonnementsstatuspagina's als bron voor inhoudelijke antwoorden.
