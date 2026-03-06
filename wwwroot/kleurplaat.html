@@ -435,6 +435,48 @@ async function initFormLogic() {
         driplyLoadingVideo.style.display = "none";
     }
 
+    async function postKleurplaatRequest(payload, userId) {
+        const endpoint = 'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest';
+        const maxAttempts = 2;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timeoutId = controller
+                ? setTimeout(() => controller.abort(), 180000)
+                : null;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'user-id': userId
+                    },
+                    body: JSON.stringify({ type: 'kleurplaat', payload }),
+                    cache: 'no-store',
+                    signal: controller ? controller.signal : undefined
+                });
+
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+
+                return response;
+            } catch (error) {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+
+                const isNetworkError = error instanceof TypeError || error?.name === 'AbortError';
+                if (!isNetworkError || attempt === maxAttempts) {
+                    throw error;
+                }
+
+                await new Promise((resolve) => setTimeout(resolve, 1200));
+            }
+        }
+    }
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         startLoadingState();
@@ -458,16 +500,9 @@ async function initFormLogic() {
         if (foto_base64) payload.foto_base64 = foto_base64;
 
         try {
-            const userId = localStorage.getItem('userId') || 'unknown-user';
+            const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || 'unknown-user';
 
-            const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'user-id': userId
-                },
-                body: JSON.stringify({ type: 'kleurplaat', payload })
-            });
+            const resp = await postKleurplaatRequest(payload, userId);
 
             const text = await resp.text();
             console.log("Response status:", resp.status);
@@ -523,7 +558,10 @@ async function initFormLogic() {
             };
 
         } catch (err) {
-            resultaat.textContent = 'Fout: ' + err;
+            const isNetworkError = err instanceof TypeError || err?.name === 'AbortError';
+            resultaat.textContent = isNetworkError
+                ? 'Netwerkfout bij het laden van de kleurplaat. Probeer het opnieuw.'
+                : 'Fout: ' + err;
             console.error("Error:", err);
         } finally {
             stopLoadingState();
