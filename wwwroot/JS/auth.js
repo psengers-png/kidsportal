@@ -996,6 +996,22 @@ async function registerExistingUsers(users) {
 
 // Voorbeeldgebruik verwijderd om onnodige API-calls tijdens pagina-load te voorkomen
 
+function getStripePublicKeyForSession(sessionId) {
+    const configuredKey = (window.STRIPE_PUBLISHABLE_KEY || "").trim();
+    const fallbackTestKey = "pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR";
+    const stripePublicKey = configuredKey || fallbackTestKey;
+
+    if (!stripePublicKey) {
+        throw new Error("Stripe publishable key ontbreekt in de frontend-configuratie.");
+    }
+
+    if (typeof sessionId === "string" && sessionId.startsWith("cs_live_") && stripePublicKey.startsWith("pk_test_")) {
+        throw new Error("Live checkout sessie ontvangen, maar frontend gebruikt nog een test Stripe publishable key (pk_test).");
+    }
+
+    return stripePublicKey;
+}
+
 // Ensure startStripeCheckout remains defined and accessible for home.html
 async function startStripeCheckout(userId, planType = "particulier") {
     const normalizedPlanType = (planType || "particulier").toLowerCase() === "enterprise"
@@ -1021,28 +1037,38 @@ async function startStripeCheckout(userId, planType = "particulier") {
         console.log("createCheckout API Response Text:", responseText);
 
         if (response.ok) {
+            let parsedResponse;
             try {
-                const { id } = JSON.parse(responseText);
-                if (!id) {
-                    throw new Error("Missing session ID in API response.");
-                }
-
-                const stripePublicKey = "pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR";
-                const stripe = Stripe(stripePublicKey);
-
-                if (!stripe) {
-                    throw new Error("Failed to initialize Stripe. Check the publishable key.");
-                }
-
-                console.log("Redirecting to Stripe Checkout with session ID:", id);
-                const result = await stripe.redirectToCheckout({ sessionId: id });
-                if (result.error) {
-                    console.error("Stripe redirection error:", result.error.message);
-                    alert("Er ging iets mis bij het starten van de checkout.");
-                }
+                parsedResponse = JSON.parse(responseText);
             } catch (parseError) {
-                console.error("Error parsing API response JSON:", parseError);
+                console.error("Error parsing createCheckout API response JSON:", parseError);
                 alert("Fout bij het verwerken van de API-reactie.");
+                return;
+            }
+
+            const { id, url } = parsedResponse || {};
+            if (!id && !url) {
+                throw new Error("Missing checkout session ID and URL in API response.");
+            }
+
+            if (url) {
+                console.log("Redirecting to Stripe Checkout with session URL:", url);
+                window.location.assign(url);
+                return;
+            }
+
+            const stripePublicKey = getStripePublicKeyForSession(id);
+            const stripe = Stripe(stripePublicKey);
+
+            if (!stripe) {
+                throw new Error("Failed to initialize Stripe. Check the publishable key.");
+            }
+
+            console.log("Redirecting to Stripe Checkout with session ID:", id);
+            const result = await stripe.redirectToCheckout({ sessionId: id });
+            if (result && result.error) {
+                console.error("Stripe redirection error:", result.error.message);
+                alert("Er ging iets mis bij het starten van de checkout.");
             }
         } else {
             console.error("Failed to create checkout session. Status:", response.status);

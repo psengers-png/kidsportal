@@ -1,6 +1,22 @@
 // abonnement.js
 // Handles Stripe integration for subscription upgrades
 
+function getStripePublicKeyForSession(sessionId) {
+    const configuredKey = (window.STRIPE_PUBLISHABLE_KEY || '').trim();
+    const fallbackTestKey = 'pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR';
+    const stripePublicKey = configuredKey || fallbackTestKey;
+
+    if (!stripePublicKey) {
+        throw new Error('Stripe publishable key ontbreekt in de frontend-configuratie.');
+    }
+
+    if (typeof sessionId === 'string' && sessionId.startsWith('cs_live_') && stripePublicKey.startsWith('pk_test_')) {
+        throw new Error('Live checkout sessie ontvangen, maar frontend gebruikt nog een test Stripe publishable key (pk_test).');
+    }
+
+    return stripePublicKey;
+}
+
 function startStripeCheckout(userId, planType = 'particulier') {
     const normalizedPlanType = (planType || 'particulier').toLowerCase() === 'enterprise'
         ? 'enterprise'
@@ -26,9 +42,15 @@ function startStripeCheckout(userId, planType = 'particulier') {
     })
     .then(data => {
         console.log("Stripe session data received:", data);
-        if (!data.id) throw new Error('Stripe session not created');
+        if (!data || (!data.id && !data.url)) throw new Error('Stripe session not created');
 
-        const stripePublicKey = 'pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR'; // Replace with dynamic injection if possible
+        if (data.url) {
+            console.log("Redirecting to Stripe Checkout with session URL:", data.url);
+            window.location.assign(data.url);
+            return;
+        }
+
+        const stripePublicKey = getStripePublicKeyForSession(data.id);
         const stripe = Stripe(stripePublicKey);
 
         if (!stripe) {
@@ -38,7 +60,7 @@ function startStripeCheckout(userId, planType = 'particulier') {
         console.log("Redirecting to Stripe Checkout with session ID:", data.id);
         stripe.redirectToCheckout({ sessionId: data.id })
             .then(result => {
-                if (result.error) {
+                if (result && result.error) {
                     console.error("Stripe redirection error:", result.error.message);
                     alert("Er ging iets mis bij het starten van de checkout.");
                 }
