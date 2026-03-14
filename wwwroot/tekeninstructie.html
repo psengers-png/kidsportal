@@ -419,7 +419,7 @@ form.addEventListener("submit", async (e) => {
         const text = await res.text();
         if (!res.ok) {
             if (res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis aanvragen bereikt.<br>Upgrade naar onbeperkt vanaf €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button></div>`;
+                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis aanvragen bereikt.<br>Upgrade naar onbeperkt vanaf €2,99/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button></div>`;
                 setTimeout(() => {
                     const accounts = msalInstance.getAllAccounts();
                     const btnInline = document.getElementById('abonnementBtnInline');

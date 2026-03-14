@@ -507,7 +507,7 @@ form.addEventListener("submit", async (e) => {
         const text = await resp.text();
         if (!resp.ok) {
             if (resp.status === 403 && text.includes('limiet')) {
-                lyricsBox.innerHTML = "Je hebt het maximum aantal gratis liedjes aangevraagd.<br>Upgrade naar onbeperkt vanaf €4/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button>";
+                lyricsBox.innerHTML = "Je hebt het maximum aantal gratis liedjes aangevraagd.<br>Upgrade naar onbeperkt vanaf €2,99/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button>";
                 setTimeout(() => {
                     const accounts = msalInstance.getAllAccounts();
                     const storedUserId = localStorage.getItem('userId') || '';

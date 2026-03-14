@@ -240,7 +240,7 @@ function showPlanTypeSelectionModal() {
         actions.style.flexWrap = "wrap";
 
         const particulierButton = document.createElement("button");
-        particulierButton.textContent = "Particulier (€4/mnd)";
+        particulierButton.textContent = "Particulier (€2,99/mnd)";
         particulierButton.style.padding = "10px 18px";
         particulierButton.style.border = "1px solid #cbd5e1";
         particulierButton.style.borderRadius = "10px";
@@ -998,14 +998,22 @@ async function registerExistingUsers(users) {
 
 function getStripePublicKeyForSession(sessionId) {
     const configuredKey = (window.STRIPE_PUBLISHABLE_KEY || "").trim();
+    const configuredLiveKey = (window.STRIPE_PUBLISHABLE_KEY_LIVE || "").trim();
+    const configuredTestKey = (window.STRIPE_PUBLISHABLE_KEY_TEST || "").trim();
     const fallbackTestKey = "pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR";
-    const stripePublicKey = configuredKey || fallbackTestKey;
+    const isLiveSession = typeof sessionId === "string" && sessionId.startsWith("cs_live_");
+    const stripePublicKey = isLiveSession
+        ? (configuredLiveKey || configuredKey)
+        : (configuredTestKey || configuredKey || fallbackTestKey);
 
     if (!stripePublicKey) {
+        if (isLiveSession) {
+            throw new Error("Live checkout sessie ontvangen zonder Stripe publishable live key. Zet window.STRIPE_PUBLISHABLE_KEY_LIVE of window.STRIPE_PUBLISHABLE_KEY.");
+        }
         throw new Error("Stripe publishable key ontbreekt in de frontend-configuratie.");
     }
 
-    if (typeof sessionId === "string" && sessionId.startsWith("cs_live_") && stripePublicKey.startsWith("pk_test_")) {
+    if (isLiveSession && stripePublicKey.startsWith("pk_test_")) {
         throw new Error("Live checkout sessie ontvangen, maar frontend gebruikt nog een test Stripe publishable key (pk_test).");
     }
 
@@ -1079,8 +1087,9 @@ async function startStripeCheckout(userId, planType = "particulier") {
             }
         }
     } catch (error) {
-        console.error("Error in startStripeCheckout:", error);
-        alert("Er ging iets mis bij het starten van de checkout.");
+        const errorMessage = error?.message || "Er ging iets mis bij het starten van de checkout.";
+        console.error("Error in startStripeCheckout:", errorMessage, error);
+        alert(errorMessage);
     }
     console.log("startStripeCheckout execution completed.");
 }
