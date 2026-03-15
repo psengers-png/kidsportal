@@ -565,57 +565,22 @@ function clearLocalSessionData() {
     sessionStorage.removeItem("ciamLoginInProgress");
 }
 
-function resolveLogoutHint(account) {
-    if (!account) {
-        return undefined;
-    }
-
-    const claimHint = account.idTokenClaims?.login_hint
-        || account.idTokenClaims?.preferred_username
-        || account.username;
-
-    return typeof claimHint === "string" && claimHint.trim()
-        ? claimHint.trim()
-        : undefined;
-}
-
-async function logoutCurrentUser() {
+function logoutCurrentUser() {
     const postLogoutRedirectUri = window.location.origin + "/login.html?loggedOut=1";
 
+    // Wis alle MSAL-sleutels uit localStorage
     try {
-        if (window.msalReadyPromise) {
-            await window.msalReadyPromise;
-        }
-    } catch (error) {
-        console.warn("MSAL was not ready before logout:", error);
-    }
+        const keysToRemove = Object.keys(localStorage).filter(
+            k => k.startsWith("msal.") || k.startsWith("msal|") || k.includes(".ciamlogin.")
+        );
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+    } catch (_) { /* ignore */ }
 
-    const activeAccount = window.msalInstance?.getAllAccounts?.()?.[0] || null;
-    const logoutHint = resolveLogoutHint(activeAccount);
-
-    if (window.msalInstance?.logoutRedirect) {
-        try {
-            await window.msalInstance.logoutRedirect({
-                account: activeAccount || undefined,
-                logoutHint,
-                postLogoutRedirectUri
-            });
-            return;
-        } catch (error) {
-            console.warn("MSAL logout failed, fallback to local logout:", error);
-        }
-    }
-
-    try {
-        if (window.msalInstance?.clearCache) {
-            await window.msalInstance.clearCache({ account: activeAccount || undefined });
-        }
-    } catch (error) {
-        console.warn("MSAL cache clear failed during logout fallback:", error);
-    }
-
+    // Wis eigen sessiedata
     clearLocalSessionData();
-    window.location.href = postLogoutRedirectUri;
+
+    // Redirect
+    window.location.replace(postLogoutRedirectUri);
 }
 window.logoutCurrentUser = logoutCurrentUser;
 
@@ -629,7 +594,12 @@ function createHeaderMenuItem(label, onClick, options = {}) {
     button.textContent = label;
     button.addEventListener("click", async (event) => {
         event.preventDefault();
-        await onClick();
+        event.stopPropagation();
+        try {
+            await onClick();
+        } catch (error) {
+            console.error("Menu item actie mislukt:", error);
+        }
     });
     return button;
 }
@@ -734,9 +704,9 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
         divider.className = "rdc-account-menu-divider";
         dropdown.appendChild(divider);
 
-        dropdown.appendChild(createHeaderMenuItem("Uitloggen", async () => {
+        dropdown.appendChild(createHeaderMenuItem("Uitloggen", () => {
             hideHeaderMenuDropdown(dropdown);
-            await logoutCurrentUser();
+            logoutCurrentUser();
         }));
 
         return;

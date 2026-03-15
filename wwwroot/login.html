@@ -536,8 +536,7 @@
 
                 await msalInstance.loginRedirect({
                     scopes: ["openid", "profile", "offline_access"],
-                    redirectUri: window.location.origin + "/home.html",
-                    loginHint: emailHint
+                    redirectUri: window.location.origin + "/home.html"
                 });
             } catch (error) {
                 console.error("Existing login redirect failed:", error);
