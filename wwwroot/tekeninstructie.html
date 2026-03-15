@@ -225,27 +225,17 @@
                 padding: 12px 14px;
             }
 
-            .header-left {
-                width: 100%;
-                justify-content: center;
-                text-align: center;
-                flex-direction: column;
-                gap: 8px;
-            }
-
             .header-left img {
-                height: 95px;
+                height: 48px;
             }
 
             .header-left h1 {
                 margin: 0;
-                font-size: 1.35rem;
-            }
-
-            .header-right {
-                width: 100%;
-                margin-left: 0;
-                justify-content: center;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 45vw;
             }
 
             .header-btn {
@@ -286,7 +276,6 @@
         <h1>Rainy Day Club</h1>
     </div>
     <div class="header-right">
-        <button class="header-btn" id="homeBtn">🏠 Home</button>
         <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white;">Upgrade naar onbeperkt</button>
         <button class="header-btn" id="logoutBtn" style="display:none;">Uitloggen</button>
     </div>
@@ -345,9 +334,6 @@ setTimeout(() => {
     form.style.display = "block";
     window.refreshHeaderAccountMenu?.();
 }, 1000);
-
-const homeBtn = document.getElementById("homeBtn");
-homeBtn.onclick = () => window.location.href = "/home.html";
 
 const abonnementBtn = document.getElementById('abonnementBtn');
 if (abonnementBtn) {

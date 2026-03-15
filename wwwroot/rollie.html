@@ -49,16 +49,11 @@
             gap: 12px;
         }
         .header-left img {
-            width: 56px;
-            height: 56px;
-            border-radius: 9999px;
-            object-fit: cover;
-            border: 2px solid #93c5fd;
-            background: #fff;
+            height: 150px;
         }
         .header-left h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 2rem;
             color: #1e3a8a;
         }
         .header-right {
@@ -147,16 +142,32 @@
             margin: 12px auto;
             display: none;
         }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 12px 14px;
+            }
+            .header-left img {
+                height: 48px;
+            }
+            .header-left h1 {
+                margin: 0;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 45vw;
+            }
+        }
     </style>
 </head>
 <body>
 <header>
     <div class="header-left">
-        <img src="Images/Rollie.png" alt="Rollie">
-        <h1>🎲 Rollie – Dobbelspel Agent</h1>
+        <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
+        <h1>Rainy Day Club</h1>
     </div>
     <div class="header-right">
-        <button class="header-btn secondary" id="homeBtn">← Home</button>
         <button class="header-btn" id="logoutBtn" style="display:none;">Uitloggen</button>
     </div>
 </header>
@@ -213,9 +224,6 @@ setTimeout(() => {
     form.style.display = 'block';
     window.refreshHeaderAccountMenu?.();
 }, 1000);
-
-const homeBtn = document.getElementById('homeBtn');
-homeBtn.onclick = () => window.location.href = '/home.html';
 
 const form = document.getElementById('rollieForm');
 const resultaat = document.getElementById('resultaat');
