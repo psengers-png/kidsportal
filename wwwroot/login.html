@@ -391,7 +391,8 @@
                 <strong>Waarom inloggen?</strong><br>
                 Met een account krijg je toegang tot alle agents en persoonlijke functies van Rainy Day Club, zoals je voortgang en opgeslagen resultaten.<br>
                 Een account aanmaken is vrijblijvend: je zit nergens aan vast en je kunt op elk moment stoppen.<br>
-                We gebruiken je e-mailadres alleen voor inloggen, accounttoegang en belangrijke accountberichten.
+                We gebruiken je e-mailadres alleen voor inloggen, accounttoegang en belangrijke accountberichten.<br>
+                Heb je al een account? Klik op <strong>Inloggen</strong>. Nieuw hier? Vink akkoord aan en klik op <strong>Account aanmaken</strong>.
             </div>
 
             <div class="form-group">
@@ -419,8 +420,11 @@
             </div>
 
             <div class="button-group">
-                <button class="btn-primary" id="continueBtn" onclick="handleContinueLogin()">
-                    Doorgaan
+                <button class="btn-primary" id="loginBtn" onclick="handleExistingLogin()">
+                    Inloggen
+                </button>
+                <button class="btn-secondary" id="createAccountBtn" onclick="handleCreateAccount()">
+                    Account aanmaken
                 </button>
             </div>
 
@@ -528,12 +532,16 @@
             }
         }
 
-        async function handleContinueLogin() {
+        async function startCiamFlow(isCreateAccountFlow) {
             const emailHint = (document.getElementById("emailInput")?.value || "").trim();
             const hasConsent = document.getElementById("termsConsent")?.checked;
             const hasMarketingConsent = document.getElementById("marketingConsent")?.checked === true;
             const emailError = document.getElementById("emailError");
-            const continueBtn = document.getElementById("continueBtn");
+            const loginBtn = document.getElementById("loginBtn");
+            const createAccountBtn = document.getElementById("createAccountBtn");
+            const activeBtn = isCreateAccountFlow ? createAccountBtn : loginBtn;
+            const idleBtn = isCreateAccountFlow ? loginBtn : createAccountBtn;
+            const activeLoadingLabel = isCreateAccountFlow ? "Account aanmaken..." : "Inloggen...";
 
             emailError.classList.remove("show");
             if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
@@ -542,23 +550,32 @@
                 return;
             }
 
-            if (!hasConsent) {
+            if (isCreateAccountFlow && !hasConsent) {
                 emailError.textContent = "Je moet akkoord gaan met de voorwaarden om door te gaan.";
                 emailError.classList.add("show");
                 return;
             }
 
             try {
-                continueBtn.disabled = true;
-                continueBtn.innerHTML = '<span class="loading"></span>Doorgaan...';
+                activeBtn.disabled = true;
+                idleBtn.disabled = true;
+                activeBtn.innerHTML = `<span class="loading"></span>${activeLoadingLabel}`;
                 sessionStorage.setItem("ciamLoginInProgress", "1");
-                localStorage.setItem("pendingSignupEmail", emailHint);
-                localStorage.setItem("marketingConsent", hasMarketingConsent ? "true" : "false");
-                if (hasMarketingConsent) {
-                    localStorage.setItem("marketingConsentAt", new Date().toISOString());
+
+                if (isCreateAccountFlow) {
+                    localStorage.setItem("pendingSignupEmail", emailHint);
+                    localStorage.setItem("marketingConsent", hasMarketingConsent ? "true" : "false");
+                    if (hasMarketingConsent) {
+                        localStorage.setItem("marketingConsentAt", new Date().toISOString());
+                    } else {
+                        localStorage.removeItem("marketingConsentAt");
+                    }
                 } else {
+                    localStorage.removeItem("pendingSignupEmail");
+                    localStorage.removeItem("marketingConsent");
                     localStorage.removeItem("marketingConsentAt");
                 }
+
                 await msalInstance.loginRedirect({
                     redirectUri: window.location.origin + "/home.html",
                     loginHint: emailHint,
@@ -566,17 +583,29 @@
                 });
             } catch (error) {
                 sessionStorage.removeItem("ciamLoginInProgress");
-                emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
+                emailError.textContent = isCreateAccountFlow
+                    ? "Account aanmaken is mislukt. Probeer opnieuw."
+                    : "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
                 emailError.classList.add("show");
-                continueBtn.disabled = false;
-                continueBtn.innerHTML = "Doorgaan";
+                loginBtn.disabled = false;
+                createAccountBtn.disabled = false;
+                loginBtn.innerHTML = "Inloggen";
+                createAccountBtn.innerHTML = "Account aanmaken";
             }
+        }
+
+        async function handleExistingLogin() {
+            await startCiamFlow(false);
+        }
+
+        async function handleCreateAccount() {
+            await startCiamFlow(true);
         }
 
         // Enter key on email
         document.getElementById("emailInput").addEventListener("keypress", (e) => {
             if (e.key === "Enter") {
-                handleContinueLogin();
+                handleExistingLogin();
             }
         });
 
