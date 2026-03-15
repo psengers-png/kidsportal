@@ -722,7 +722,7 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
         window.location.href = "/login.html";
     }));
 
-    dropdown.appendChild(createHeaderMenuItem("Account aanmaken", () => {
+    dropdown.appendChild(createHeaderMenuItem("Probeer Gratis", () => {
         hideHeaderMenuDropdown(dropdown);
         window.location.href = "/signup.html";
     }));
