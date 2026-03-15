@@ -695,11 +695,6 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
     dropdown.innerHTML = "";
 
     if (isLoggedIn) {
-        dropdown.appendChild(createHeaderMenuItem("Account beheren", () => {
-            handleAccountManageFromMenu();
-            hideHeaderMenuDropdown(dropdown);
-        }));
-
         dropdown.appendChild(createHeaderMenuItem("Account opzeggen", async () => {
             hideHeaderMenuDropdown(dropdown);
             await handleAccountCancelFromMenu();
@@ -1022,8 +1017,20 @@ window.addEventListener("pageshow", (event) => {
     }
 });
 
+function makeHeaderLogoClickable() {
+    const header = document.querySelector("header");
+    if (!header) { return; }
+    const logo = header.querySelector('img[src*="Logo Rainydayclub"], img[src*="logo"]');
+    if (!logo || logo.closest("a")) { return; } // already wrapped
+    logo.style.cursor = "pointer";
+    logo.addEventListener("click", () => {
+        window.location.href = "/home.html";
+    });
+}
+
 window.addEventListener("load", () => {
     console.log("Page loaded. Calling updateUI.");
+    makeHeaderLogoClickable();
     refreshHeaderAccountMenu();
     updateUI().finally(() => {
         refreshHeaderAccountMenu();
