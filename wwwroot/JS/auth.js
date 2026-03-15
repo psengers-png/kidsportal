@@ -707,7 +707,7 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
 
     dropdown.appendChild(createHeaderMenuItem("Account aanmaken", () => {
         hideHeaderMenuDropdown(dropdown);
-        window.location.href = "/login.html";
+        window.location.href = "/signup.html";
     }));
 }
 

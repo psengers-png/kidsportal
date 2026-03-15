@@ -12,15 +12,15 @@
         gtag('config', 'G-M9MF9YBFN0');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - RainyDay Club</title>
-    <meta name="description" content="Loginpagina van Rainy Day Club." />
+    <title>Account aanmaken - RainyDay Club</title>
+    <meta name="description" content="Maak een account aan bij Rainy Day Club." />
     <meta name="robots" content="noindex, nofollow" />
-    <link rel="canonical" href="https://www.rainydayclub.nl/login.html" />
+    <link rel="canonical" href="https://www.rainydayclub.nl/signup.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
-    <meta property="og:title" content="Login | Rainy Day Club" />
-    <meta property="og:description" content="Toegang tot je Rainy Day Club account." />
-    <meta property="og:url" content="https://www.rainydayclub.nl/login.html" />
+    <meta property="og:title" content="Account aanmaken | Rainy Day Club" />
+    <meta property="og:description" content="Maak een Rainy Day Club account aan." />
+    <meta property="og:url" content="https://www.rainydayclub.nl/signup.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
     <meta name="twitter:card" content="summary" />
     <style>
@@ -173,14 +173,6 @@
             font-size: 14px;
         }
 
-        .form-section {
-            display: none;
-        }
-
-        .form-section.active {
-            display: block;
-        }
-
         .form-group {
             margin-bottom: 20px;
         }
@@ -280,16 +272,6 @@
             cursor: not-allowed;
         }
 
-        .btn-secondary {
-            background: #f0f4f8;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-
         .error-message {
             color: #dc2626;
             font-size: 14px;
@@ -302,21 +284,6 @@
         }
 
         .error-message.show {
-            display: block;
-        }
-
-        .success-message {
-            color: #059669;
-            font-size: 14px;
-            padding: 12px;
-            background: #f0fdf4;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            border-left: 4px solid #059669;
-            display: none;
-        }
-
-        .success-message.show {
             display: block;
         }
 
@@ -378,41 +345,51 @@
     <section>
     <div class="login-container">
         <div class="logo">
-            <h1>Inloggen</h1>
-            <p>Log in met je bestaande account</p>
+            <h1>Account aanmaken</h1>
+            <p>Maak vrijblijvend je account aan</p>
         </div>
 
-        <!-- Email Form -->
-        <div class="form-section active" id="emailForm">
-            <div class="error-message" id="emailError"></div>
-            <div class="success-message" id="emailSuccess"></div>
+        <div id="emailError" class="error-message"></div>
 
-            <div class="info-text">
-                Heb je al een account? Vul je e-mailadres in en klik op <strong>Inloggen</strong>.<br>
-                Nog geen account? Ga naar <a href="/signup.html">Account aanmaken</a>.
-            </div>
-
-            <div class="form-group">
-                <label for="emailInput">E-mailadres</label>
-                <input 
-                    type="email" 
-                    id="emailInput" 
-                    placeholder="jouw@email.com"
-                    autocomplete="email"
-                >
-            </div>
-
-            <div class="button-group">
-                <button class="btn-primary" id="loginBtn" onclick="handleExistingLogin()">
-                    Inloggen
-                </button>
-            </div>
-
-            <div class="back-link">
-                <a href="/">← Terug</a>
-            </div>
+        <div class="info-text">
+            Met een account krijg je toegang tot alle agents en persoonlijke functies van Rainy Day Club, zoals je voortgang en opgeslagen resultaten.<br>
+            Een account aanmaken is vrijblijvend: je zit nergens aan vast en je kunt op elk moment stoppen.<br>
+            We gebruiken je e-mailadres alleen voor inloggen, accounttoegang en belangrijke accountberichten.
         </div>
 
+        <div class="form-group">
+            <label for="emailInput">E-mailadres</label>
+            <input
+                type="email"
+                id="emailInput"
+                placeholder="jouw@email.com"
+                autocomplete="email"
+            >
+        </div>
+
+        <div class="consent-group">
+            <input type="checkbox" id="termsConsent" aria-label="Akkoord met voorwaarden en privacyverklaring">
+            <label for="termsConsent">
+                Ik ga akkoord met de <a href="/terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a> en de <a href="/privacy.html" target="_blank" rel="noopener noreferrer">privacyverklaring</a>.
+            </label>
+        </div>
+
+        <div class="consent-group optional">
+            <input type="checkbox" id="marketingConsent" aria-label="Ja, ik wil nieuws en vragen ontvangen">
+            <label for="marketingConsent">
+                Ja, ik ontvang graag af en toe nieuws, updates of vragen per e-mail. Je kunt je altijd uitschrijven.
+            </label>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" id="createAccountBtn" onclick="handleCreateAccount()">
+                Account aanmaken
+            </button>
+        </div>
+
+        <div class="back-link">
+            <a href="/login.html">Heb je al een account? Inloggen →</a>
+        </div>
     </div>
     </section>
 
@@ -434,31 +411,6 @@
         };
 
         const msalInstance = new msal.PublicClientApplication(msalConfig);
-
-        function showLoggedOutMessageIfNeeded() {
-            const params = new URLSearchParams(window.location.search || "");
-            if (params.get("loggedOut") !== "1") {
-                if (params.get("ciamRequired") === "1") {
-                    const emailError = document.getElementById("emailError");
-                    if (emailError) {
-                        emailError.textContent = "Rond eerst je Entra ID account-aanmaak af via wachtwoord-login.";
-                        emailError.classList.add("show");
-                    }
-                    const cleanUrlCiam = window.location.origin + window.location.pathname;
-                    window.history.replaceState({}, document.title, cleanUrlCiam);
-                }
-                return;
-            }
-
-            const emailSuccess = document.getElementById("emailSuccess");
-            if (emailSuccess) {
-                emailSuccess.textContent = "Je bent succesvol uitgelogd.";
-                emailSuccess.classList.add("show");
-            }
-
-            const cleanUrl = window.location.origin + window.location.pathname;
-            window.history.replaceState({}, document.title, cleanUrl);
-        }
 
         function normalizeUserId(rawUserId) {
             if (!rawUserId) {
@@ -500,37 +452,50 @@
                     sessionStorage.removeItem("ciamLoginInProgress");
 
                     window.location.href = "/home.html";
-                    return;
                 }
             } catch (error) {
                 sessionStorage.removeItem("ciamLoginInProgress");
                 const emailError = document.getElementById("emailError");
                 if (emailError) {
-                    emailError.textContent = "CIAM login kon niet worden afgerond. Probeer opnieuw.";
+                    emailError.textContent = "Account aanmaken kon niet worden afgerond. Probeer opnieuw.";
                     emailError.classList.add("show");
                 }
             }
         }
 
-        async function handleExistingLogin() {
+        async function handleCreateAccount() {
             const emailHint = (document.getElementById("emailInput")?.value || "").trim();
+            const hasConsent = document.getElementById("termsConsent")?.checked;
+            const hasMarketingConsent = document.getElementById("marketingConsent")?.checked === true;
             const emailError = document.getElementById("emailError");
-            const loginBtn = document.getElementById("loginBtn");
+            const createAccountBtn = document.getElementById("createAccountBtn");
 
             emailError.classList.remove("show");
+
             if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
                 emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
                 emailError.classList.add("show");
                 return;
             }
 
+            if (!hasConsent) {
+                emailError.textContent = "Je moet akkoord gaan met de voorwaarden om een account aan te maken.";
+                emailError.classList.add("show");
+                return;
+            }
+
             try {
-                loginBtn.disabled = true;
-                loginBtn.innerHTML = '<span class="loading"></span>Inloggen...';
+                createAccountBtn.disabled = true;
+                createAccountBtn.innerHTML = '<span class="loading"></span>Account aanmaken...';
+
                 sessionStorage.setItem("ciamLoginInProgress", "1");
-                localStorage.removeItem("pendingSignupEmail");
-                localStorage.removeItem("marketingConsent");
-                localStorage.removeItem("marketingConsentAt");
+                localStorage.setItem("pendingSignupEmail", emailHint);
+                localStorage.setItem("marketingConsent", hasMarketingConsent ? "true" : "false");
+                if (hasMarketingConsent) {
+                    localStorage.setItem("marketingConsentAt", new Date().toISOString());
+                } else {
+                    localStorage.removeItem("marketingConsentAt");
+                }
 
                 await msalInstance.loginRedirect({
                     redirectUri: window.location.origin + "/home.html",
@@ -539,21 +504,19 @@
                 });
             } catch (error) {
                 sessionStorage.removeItem("ciamLoginInProgress");
-                emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
+                emailError.textContent = "Account aanmaken is mislukt. Probeer opnieuw.";
                 emailError.classList.add("show");
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = "Inloggen";
+                createAccountBtn.disabled = false;
+                createAccountBtn.innerHTML = "Account aanmaken";
             }
         }
 
-        // Enter key on email
         document.getElementById("emailInput").addEventListener("keypress", (e) => {
             if (e.key === "Enter") {
-                handleExistingLogin();
+                handleCreateAccount();
             }
         });
 
-        showLoggedOutMessageIfNeeded();
         bootstrapCiamLogin();
     </script>
 </body>
