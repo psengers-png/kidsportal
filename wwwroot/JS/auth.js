@@ -4,10 +4,11 @@ console.log("auth.js geladen");
 const msalConfig = {
     auth: {
         clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
-        authority: "https://kidsportal2.ciamlogin.com/",
+        authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
         redirectUri: window.location.origin + "/home.html",
         postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
-        knownAuthorities: ["kidsportal2.ciamlogin.com"]
+        knownAuthorities: ["kidsportal2.ciamlogin.com"],
+        navigateToLoginRequestUrl: false
     },
     cache: { cacheLocation: "localStorage" }
 };
@@ -557,16 +558,47 @@ function getStoredUserId() {
     return localStorage.getItem("userId") || localStorage.getItem("user-id") || "";
 }
 
-async function logoutCurrentUser() {
+function clearLocalSessionData() {
     localStorage.removeItem("userId");
     localStorage.removeItem("user-id");
     localStorage.removeItem("userEmail");
     sessionStorage.removeItem("ciamLoginInProgress");
+}
+
+function resolveLogoutHint(account) {
+    if (!account) {
+        return undefined;
+    }
+
+    const claimHint = account.idTokenClaims?.login_hint
+        || account.idTokenClaims?.preferred_username
+        || account.username;
+
+    return typeof claimHint === "string" && claimHint.trim()
+        ? claimHint.trim()
+        : undefined;
+}
+
+async function logoutCurrentUser() {
+    const postLogoutRedirectUri = window.location.origin + "/login.html?loggedOut=1";
+
+    try {
+        if (window.msalReadyPromise) {
+            await window.msalReadyPromise;
+        }
+    } catch (error) {
+        console.warn("MSAL was not ready before logout:", error);
+    }
+
+    const activeAccount = window.msalInstance?.getAllAccounts?.()?.[0] || null;
+    const logoutHint = resolveLogoutHint(activeAccount);
 
     if (window.msalInstance?.logoutRedirect) {
         try {
             await window.msalInstance.logoutRedirect({
-                postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1"
+                account: activeAccount || undefined,
+                logoutHint,
+                postLogoutRedirectUri
             });
             return;
         } catch (error) {
@@ -574,7 +606,16 @@ async function logoutCurrentUser() {
         }
     }
 
-    window.location.href = "/login.html?loggedOut=1";
+    try {
+        if (window.msalInstance?.clearCache) {
+            await window.msalInstance.clearCache({ account: activeAccount || undefined });
+        }
+    } catch (error) {
+        console.warn("MSAL cache clear failed during logout fallback:", error);
+    }
+
+    clearLocalSessionData();
+    window.location.href = postLogoutRedirectUri;
 }
 window.logoutCurrentUser = logoutCurrentUser;
 

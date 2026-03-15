@@ -425,7 +425,7 @@
         const msalConfig = {
             auth: {
                 clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
-                authority: "https://kidsportal2.ciamlogin.com/",
+                authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
                 redirectUri: window.location.origin + "/home.html",
                 postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
                 knownAuthorities: ["kidsportal2.ciamlogin.com"],
@@ -504,6 +504,7 @@
                     return;
                 }
             } catch (error) {
+                console.error("CIAM login bootstrap failed:", error);
                 sessionStorage.removeItem("ciamLoginInProgress");
                 const emailError = document.getElementById("emailError");
                 if (emailError) {
@@ -534,11 +535,12 @@
                 localStorage.removeItem("marketingConsentAt");
 
                 await msalInstance.loginRedirect({
-                    scopes: [],
+                    scopes: ["openid", "profile", "offline_access"],
                     redirectUri: window.location.origin + "/home.html",
                     loginHint: emailHint
                 });
             } catch (error) {
+                console.error("Existing login redirect failed:", error);
                 sessionStorage.removeItem("ciamLoginInProgress");
                 emailError.textContent = "Inloggen met wachtwoord is mislukt. Probeer opnieuw.";
                 emailError.classList.add("show");
