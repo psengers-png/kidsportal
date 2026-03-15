@@ -695,6 +695,11 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
     dropdown.innerHTML = "";
 
     if (isLoggedIn) {
+        dropdown.appendChild(createHeaderMenuItem("Account beheren", () => {
+            hideHeaderMenuDropdown(dropdown);
+            handleAccountManageFromMenu();
+        }));
+
         dropdown.appendChild(createHeaderMenuItem("Account opzeggen", async () => {
             hideHeaderMenuDropdown(dropdown);
             await handleAccountCancelFromMenu();
