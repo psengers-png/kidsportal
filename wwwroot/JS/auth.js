@@ -489,6 +489,11 @@ function injectHeaderMenuStyles() {
     const style = document.createElement("style");
     style.id = headerMenuStyleId;
     style.textContent = `
+        /* Zorg dat de header boven pagina-content zweeft zodat het dropdown niet bedekt wordt */
+        header {
+            z-index: 200 !important;
+        }
+
         .rdc-account-menu {
             position: relative;
             display: inline-block;
