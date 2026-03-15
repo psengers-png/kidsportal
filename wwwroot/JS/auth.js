@@ -4,8 +4,9 @@ console.log("auth.js geladen");
 const msalConfig = {
     auth: {
         clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
-        authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
+        authority: "https://kidsportal2.ciamlogin.com/",
         redirectUri: window.location.origin + "/home.html",
+        postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
         knownAuthorities: ["kidsportal2.ciamlogin.com"]
     },
     cache: { cacheLocation: "localStorage" }
