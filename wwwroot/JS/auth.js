@@ -476,6 +476,319 @@ async function startLoginRedirectWithNotice(message) {
 
 window.startLoginRedirectWithNotice = startLoginRedirectWithNotice;
 
+const headerMenuStyleId = "rdc-account-menu-style";
+let headerMenuGlobalListenerAttached = false;
+
+function injectHeaderMenuStyles() {
+    if (document.getElementById(headerMenuStyleId)) {
+        return;
+    }
+
+    const style = document.createElement("style");
+    style.id = headerMenuStyleId;
+    style.textContent = `
+        .rdc-account-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .rdc-account-menu-trigger {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .rdc-account-menu-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 230px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+            padding: 6px;
+            display: none;
+            z-index: 3000;
+        }
+
+        .rdc-account-menu-dropdown.show {
+            display: block;
+        }
+
+        .rdc-account-menu-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #1f2d3d;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .rdc-account-menu-item:hover {
+            background: #f0f4f8;
+        }
+
+        .rdc-account-menu-item.danger {
+            color: #dc2626;
+        }
+
+        .rdc-account-menu-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 6px 4px;
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+
+function getStoredUserId() {
+    return localStorage.getItem("userId") || localStorage.getItem("user-id") || "";
+}
+
+async function logoutCurrentUser() {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("user-id");
+    localStorage.removeItem("userEmail");
+    sessionStorage.removeItem("ciamLoginInProgress");
+
+    if (window.msalInstance?.logoutRedirect) {
+        try {
+            await window.msalInstance.logoutRedirect({
+                postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1"
+            });
+            return;
+        } catch (error) {
+            console.warn("MSAL logout failed, fallback to local logout:", error);
+        }
+    }
+
+    window.location.href = "/login.html?loggedOut=1";
+}
+window.logoutCurrentUser = logoutCurrentUser;
+
+function createHeaderMenuItem(label, onClick, options = {}) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "rdc-account-menu-item";
+    if (options.danger) {
+        button.classList.add("danger");
+    }
+    button.textContent = label;
+    button.addEventListener("click", async (event) => {
+        event.preventDefault();
+        await onClick();
+    });
+    return button;
+}
+
+function hideHeaderMenuDropdown(dropdown) {
+    if (!dropdown) {
+        return;
+    }
+    dropdown.classList.remove("show");
+}
+
+function toggleHeaderMenuDropdown(dropdown) {
+    if (!dropdown) {
+        return;
+    }
+    dropdown.classList.toggle("show");
+}
+
+function handleAccountManageFromMenu() {
+    const userId = getStoredUserId();
+    if (!userId) {
+        window.location.href = "/login.html";
+        return;
+    }
+
+    const abonnementBtn = document.getElementById("abonnementBtn");
+    if (abonnementBtn) {
+        abonnementBtn.click();
+        return;
+    }
+
+    window.location.href = "/home.html";
+}
+
+async function handleAccountCancelFromMenu() {
+    const userId = getStoredUserId();
+    if (!userId) {
+        window.location.href = "/login.html";
+        return;
+    }
+
+    try {
+        const latestStatus = await checkUserStatus(userId);
+        if (hasPilotAccess(latestStatus)) {
+            alert("Pilot toegang is actief. Opzeggen is niet nodig.");
+            return;
+        }
+
+        if (!latestStatus || !latestStatus.isActive) {
+            alert("Je hebt geen actief abonnement om op te zeggen. Gebruik 'Account beheren' voor je accountinstellingen.");
+            return;
+        }
+
+        const shouldCancel = await showSubscriptionManageModal();
+        if (!shouldCancel) {
+            return;
+        }
+
+        const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelsubscription", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "user-id": userId
+            }
+        });
+
+        if (response.ok) {
+            alert("Abonnement opgezegd. Je behoudt toegang tot het einde van je huidige factuurperiode.");
+            const abonnementBtn = document.getElementById("abonnementBtn");
+            if (abonnementBtn) {
+                applySubscriptionButtonState(abonnementBtn, false);
+            }
+            refreshHeaderAccountMenu();
+        } else {
+            alert("Er is een fout opgetreden bij het opzeggen van je abonnement.");
+        }
+    } catch (error) {
+        console.error("Error cancelling subscription from menu:", error);
+        alert("Er ging iets mis bij het opzeggen van je abonnement.");
+    }
+}
+
+function renderHeaderMenuItems(dropdown, isLoggedIn) {
+    if (!dropdown) {
+        return;
+    }
+
+    dropdown.innerHTML = "";
+
+    if (isLoggedIn) {
+        dropdown.appendChild(createHeaderMenuItem("Account beheren", () => {
+            handleAccountManageFromMenu();
+            hideHeaderMenuDropdown(dropdown);
+        }));
+
+        dropdown.appendChild(createHeaderMenuItem("Account opzeggen", async () => {
+            hideHeaderMenuDropdown(dropdown);
+            await handleAccountCancelFromMenu();
+        }, { danger: true }));
+
+        const divider = document.createElement("div");
+        divider.className = "rdc-account-menu-divider";
+        dropdown.appendChild(divider);
+
+        dropdown.appendChild(createHeaderMenuItem("Uitloggen", async () => {
+            hideHeaderMenuDropdown(dropdown);
+            await logoutCurrentUser();
+        }));
+
+        return;
+    }
+
+    dropdown.appendChild(createHeaderMenuItem("Inloggen", () => {
+        hideHeaderMenuDropdown(dropdown);
+        window.location.href = "/login.html";
+    }));
+
+    dropdown.appendChild(createHeaderMenuItem("Account aanmaken", () => {
+        hideHeaderMenuDropdown(dropdown);
+        window.location.href = "/login.html";
+    }));
+}
+
+function refreshHeaderAccountMenu() {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn || !logoutBtn.parentElement) {
+        return;
+    }
+
+    injectHeaderMenuStyles();
+
+    const parent = logoutBtn.parentElement;
+    let menuRoot = parent.querySelector(".rdc-account-menu");
+    let trigger;
+    let dropdown;
+
+    if (!menuRoot) {
+        menuRoot = document.createElement("div");
+        menuRoot.className = "rdc-account-menu";
+
+        trigger = document.createElement("button");
+        trigger.type = "button";
+        trigger.className = "header-btn rdc-account-menu-trigger";
+        trigger.setAttribute("aria-haspopup", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.title = "Accountmenu";
+        trigger.textContent = "👤";
+
+        dropdown = document.createElement("div");
+        dropdown.className = "rdc-account-menu-dropdown";
+
+        trigger.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            toggleHeaderMenuDropdown(dropdown);
+            trigger.setAttribute("aria-expanded", dropdown.classList.contains("show") ? "true" : "false");
+        });
+
+        menuRoot.appendChild(trigger);
+        menuRoot.appendChild(dropdown);
+        parent.insertBefore(menuRoot, logoutBtn);
+    } else {
+        trigger = menuRoot.querySelector(".rdc-account-menu-trigger");
+        dropdown = menuRoot.querySelector(".rdc-account-menu-dropdown");
+    }
+
+    const isLoggedIn = Boolean(getStoredUserId());
+    renderHeaderMenuItems(dropdown, isLoggedIn);
+
+    logoutBtn.style.display = "none";
+    logoutBtn.setAttribute("aria-hidden", "true");
+    logoutBtn.tabIndex = -1;
+
+    if (!headerMenuGlobalListenerAttached) {
+        document.addEventListener("click", (event) => {
+            const menu = document.querySelector(".rdc-account-menu");
+            if (!menu) {
+                return;
+            }
+            const dropdownEl = menu.querySelector(".rdc-account-menu-dropdown");
+            const triggerEl = menu.querySelector(".rdc-account-menu-trigger");
+            if (!dropdownEl || !triggerEl) {
+                return;
+            }
+            if (!menu.contains(event.target)) {
+                hideHeaderMenuDropdown(dropdownEl);
+                triggerEl.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        headerMenuGlobalListenerAttached = true;
+    }
+}
+window.refreshHeaderAccountMenu = refreshHeaderAccountMenu;
+
+window.addEventListener("storage", (event) => {
+    if (event.key === "userId" || event.key === "user-id") {
+        refreshHeaderAccountMenu();
+    }
+});
+
 function applySubscriptionButtonState(abonnementBtn, isActive) {
     if (!abonnementBtn) {
         return;
@@ -694,7 +1007,10 @@ window.addEventListener("pageshow", (event) => {
 
 window.addEventListener("load", () => {
     console.log("Page loaded. Calling updateUI.");
-    updateUI();
+    refreshHeaderAccountMenu();
+    updateUI().finally(() => {
+        refreshHeaderAccountMenu();
+    });
 });
 
 // ---------------- UI LOGICA ---------------------
@@ -778,6 +1094,8 @@ async function updateUI() {
     } else {
         console.error("abonnementBtn not found on the page.");
     }
+
+    refreshHeaderAccountMenu();
 }
 
 async function checkUserStatus(userId) {

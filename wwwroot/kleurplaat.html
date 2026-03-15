@@ -456,34 +456,17 @@ setTimeout(() => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("kleurplaatForm");
-    const logoutBtn = document.getElementById("logoutBtn");
 
     if (!userId) {
         statusText.textContent = "Log in om kleurplaten te maken.";
+        window.refreshHeaderAccountMenu?.();
         return;
     }
 
     // Wel ingelogd, toon form
     statusText.style.display = "none";
     form.style.display = "block";
-    logoutBtn.style.display = "inline-block";
-
-    // Logout functie
-    logoutBtn.onclick = async () => {
-        localStorage.removeItem('userId');
-        localStorage.removeItem('user-id');
-        localStorage.removeItem('userEmail');
-        sessionStorage.removeItem('ciamLoginInProgress');
-        if (window.msalInstance?.logoutRedirect) {
-            try {
-                await window.msalInstance.logoutRedirect({
-                    postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
-                });
-                return;
-            } catch (error) {}
-        }
-        window.location.href = '/login.html?loggedOut=1';
-    };
+    window.refreshHeaderAccountMenu?.();
 }, 1000);
 
 async function initFormLogic() {

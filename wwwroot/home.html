@@ -288,7 +288,7 @@
     <button class="header-btn" id="abonnementBtn" style="background:#ef4444; color:white;">
       Upgrade naar onbeperkt
     </button>
-    <button class="header-btn" id="logoutBtn">
+    <button class="header-btn" id="logoutBtn" style="display:none;">
       Uitloggen
     </button>
   </div>
@@ -394,39 +394,22 @@
         const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
         const isLoggedIn = Boolean(userId);
 
-        if (!logoutBtn || !abonnementBtn) {
+        if (logoutBtn) {
+          logoutBtn.style.display = 'none';
+        }
+
+        if (!abonnementBtn) {
+          window.refreshHeaderAccountMenu?.();
           return isLoggedIn;
         }
 
         if (isLoggedIn) {
-          logoutBtn.textContent = 'Uitloggen';
-          logoutBtn.onclick = async () => {
-            localStorage.removeItem('userId');
-            localStorage.removeItem('user-id');
-            localStorage.removeItem('userEmail');
-            sessionStorage.removeItem('ciamLoginInProgress');
-
-            if (window.msalInstance?.logoutRedirect) {
-              try {
-                await window.msalInstance.logoutRedirect({
-                  postLogoutRedirectUri: window.location.origin + '/login.html?loggedOut=1'
-                });
-                return;
-              } catch (error) {
-                console.warn('MSAL logout failed, falling back to local logout:', error);
-              }
-            }
-
-            window.location.href = '/login.html?loggedOut=1';
-          };
           abonnementBtn.style.display = 'inline-block';
         } else {
-          logoutBtn.textContent = 'Inloggen';
-          logoutBtn.onclick = () => {
-            window.location.href = '/login.html';
-          };
           abonnementBtn.style.display = 'none';
         }
+
+        window.refreshHeaderAccountMenu?.();
 
         return isLoggedIn;
       }
