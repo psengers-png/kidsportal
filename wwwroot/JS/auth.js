@@ -1598,8 +1598,10 @@ async function startStripeCheckout(userId, planType = "particulier") {
             console.error("Failed to create checkout session. Status:", response.status);
             if (responseText && responseText.toLowerCase().includes("pilot")) {
                 alert("Pilot actief: je hebt al onbeperkte toegang en hoeft niet te betalen.");
+            } else if (responseText && responseText.toLowerCase().includes("price id")) {
+                alert(`Abonnement tijdelijk niet beschikbaar: ${responseText}`);
             } else {
-                alert("Fout bij het aanmaken van een checkout sessie.");
+                alert(`Fout bij het aanmaken van een checkout sessie (${response.status}).`);
             }
         }
     } catch (error) {
