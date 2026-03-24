@@ -1588,22 +1588,19 @@ async function registerExistingUsers(users) {
 function getStripePublicKeyForSession(sessionId) {
     const configuredKey = (window.STRIPE_PUBLISHABLE_KEY || "").trim();
     const configuredLiveKey = (window.STRIPE_PUBLISHABLE_KEY_LIVE || "").trim();
-    const configuredTestKey = (window.STRIPE_PUBLISHABLE_KEY_TEST || "").trim();
-    const fallbackTestKey = "pk_test_51SweYKQLay46C9bGO1fnol6hioP6nFku2OQmseFh2TTVFtLMJhzrvKuk3kwJ2PlEqzOH23CIWAx6tStYUphOuO6o00VazuHLPR";
     const isLiveSession = typeof sessionId === "string" && sessionId.startsWith("cs_live_");
-    const stripePublicKey = isLiveSession
-        ? (configuredLiveKey || configuredKey)
-        : (configuredTestKey || configuredKey || fallbackTestKey);
+    const stripePublicKey = configuredLiveKey || configuredKey;
 
     if (!stripePublicKey) {
-        if (isLiveSession) {
-            throw new Error("Live checkout sessie ontvangen zonder Stripe publishable live key. Zet window.STRIPE_PUBLISHABLE_KEY_LIVE of window.STRIPE_PUBLISHABLE_KEY.");
-        }
-        throw new Error("Stripe publishable key ontbreekt in de frontend-configuratie.");
+        throw new Error("Stripe publishable live key ontbreekt in de frontend-configuratie. Zet window.STRIPE_PUBLISHABLE_KEY_LIVE of window.STRIPE_PUBLISHABLE_KEY.");
     }
 
-    if (isLiveSession && stripePublicKey.startsWith("pk_test_")) {
-        throw new Error("Live checkout sessie ontvangen, maar frontend gebruikt nog een test Stripe publishable key (pk_test).");
+    if (stripePublicKey.startsWith("pk_test_")) {
+        throw new Error("Frontend gebruikt nog een test Stripe publishable key (pk_test), terwijl alleen Stripe live gebruikt mag worden.");
+    }
+
+    if (!isLiveSession) {
+        throw new Error("Er is geen Stripe live checkout sessie ontvangen. Controleer of de backend met live Stripe is verbonden.");
     }
 
     return stripePublicKey;
