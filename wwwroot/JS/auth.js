@@ -351,8 +351,20 @@ function showPlanTypeSelectionModal() {
 }
 window.showPlanTypeSelectionModal = showPlanTypeSelectionModal;
 
-function showSubscriptionUpgradeModal(userId) {
+function showSubscriptionUpgradeModal(userId, options = {}) {
     return new Promise((resolve) => {
+        const mode = (options?.mode || 'limit').toLowerCase();
+        const featureName = options?.featureName || 'Deze functie';
+
+        const isPremiumMode = mode === 'premium';
+        const modalIconText = isPremiumMode ? '✨' : '🚀';
+        const modalTitleText = isPremiumMode
+            ? 'Premium functie'
+            : 'Je gratis aanvragen zijn op!';
+        const modalSubText = isPremiumMode
+            ? `${featureName} is alleen beschikbaar met een actief maandelijks of jaarlijks abonnement.`
+            : 'Kies een abonnement voor onbeperkte toegang tot alle functies.';
+
         const overlay = document.createElement("div");
         overlay.style.position = "fixed";
         overlay.style.inset = "0";
@@ -385,19 +397,19 @@ function showSubscriptionUpgradeModal(userId) {
         closeBtn.style.lineHeight = "1";
 
         const icon = document.createElement("div");
-        icon.textContent = "🚀";
+        icon.textContent = modalIconText;
         icon.style.fontSize = "42px";
         icon.style.marginBottom = "10px";
 
         const title = document.createElement("div");
-        title.textContent = "Je gratis aanvragen zijn op!";
+        title.textContent = modalTitleText;
         title.style.fontSize = "22px";
         title.style.fontWeight = "800";
         title.style.color = "#1e293b";
         title.style.marginBottom = "6px";
 
         const sub = document.createElement("div");
-        sub.textContent = "Kies een abonnement voor onbeperkte toegang tot alle functies.";
+        sub.textContent = modalSubText;
         sub.style.fontSize = "15px";
         sub.style.color = "#64748b";
         sub.style.marginBottom = "24px";
