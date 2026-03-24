@@ -68,6 +68,29 @@
             margin-bottom: 14px;
         }
 
+        .status-banner {
+            display: none;
+            margin-bottom: 14px;
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+        }
+
+        .status-banner.show {
+            display: block;
+        }
+
+        .status-banner-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .status-banner-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
         .card h2 {
             margin: 0 0 8px;
             font-size: 1.45rem;
@@ -170,6 +193,11 @@
 </header>
 
 <main>
+    <div class="status-banner" id="subscriptionBanner">
+        <div class="status-banner-title" id="subscriptionBannerTitle">Status laden...</div>
+        <div class="status-banner-text" id="subscriptionBannerText"></div>
+    </div>
+
     <div class="card">
         <h2>Jouw account</h2>
         <div class="muted">Hier zie je je huidige plan, gebruik en wat je kunt doen als je wilt upgraden of opzeggen.</div>
@@ -271,6 +299,36 @@
         const endsAt = formatDateNl(status?.subscriptionEndsAt);
         const totalUsed = Number(status?.totalRequestsUsed || 0);
         const maxRequests = Number(status?.maxRequests || 10);
+        const banner = document.getElementById('subscriptionBanner');
+        const bannerTitle = document.getElementById('subscriptionBannerTitle');
+        const bannerText = document.getElementById('subscriptionBannerText');
+
+        banner.classList.add('show');
+
+        if (isCanceling) {
+            banner.style.background = '#fff7ed';
+            banner.style.border = '1px solid #fdba74';
+            bannerTitle.style.color = '#9a3412';
+            bannerText.style.color = '#7c2d12';
+            bannerTitle.textContent = endsAt ? `Opgezegd — loopt af op ${endsAt}` : 'Opgezegd — nog tijdelijk actief';
+            bannerText.textContent = endsAt
+                ? `Je abonnement is opgezegd, maar blijft geldig tot ${endsAt}. Daarna stopt het automatisch en val je terug op het gratis plan.`
+                : 'Je abonnement is opgezegd, maar blijft actief tot het einde van je huidige factuurperiode.';
+        } else if (isActive) {
+            banner.style.background = '#ecfdf5';
+            banner.style.border = '1px solid #86efac';
+            bannerTitle.style.color = '#166534';
+            bannerText.style.color = '#166534';
+            bannerTitle.textContent = 'Actief abonnement';
+            bannerText.textContent = `Je hebt momenteel ${readablePlan(status)} en onbeperkte toegang tot alle functies.`;
+        } else {
+            banner.style.background = '#eff6ff';
+            banner.style.border = '1px solid #93c5fd';
+            bannerTitle.style.color = '#1d4ed8';
+            bannerText.style.color = '#1e3a8a';
+            bannerTitle.textContent = 'Gratis plan actief';
+            bannerText.textContent = `Je kunt ${Math.max(0, maxRequests - totalUsed)} gratis aanvragen deze maand gebruiken voordat je een abonnement nodig hebt.`;
+        }
 
         document.getElementById('statusValue').textContent = isCanceling
             ? 'Opgezegd, nog actief'
