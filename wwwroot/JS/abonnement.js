@@ -26,8 +26,9 @@ function getStripePublicKeyForSession(sessionId) {
 }
 
 function startStripeCheckout(userId, planType = 'particulier') {
-    const normalizedPlanType = (planType || 'particulier').toLowerCase() === 'enterprise'
-        ? 'enterprise'
+    const pt = (planType || 'particulier').toLowerCase();
+    const normalizedPlanType = pt === 'enterprise' ? 'enterprise'
+        : pt === 'jaarlijks' ? 'jaarlijks'
         : 'particulier';
 
     console.log("Starting Stripe checkout for user:", userId, "planType:", normalizedPlanType);

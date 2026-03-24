@@ -223,13 +223,13 @@ function showPlanTypeSelectionModal() {
         card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
         const title = document.createElement("div");
-        title.textContent = "Kies je accounttype";
+        title.textContent = "Kies je abonnement";
         title.style.fontSize = "22px";
         title.style.fontWeight = "700";
         title.style.marginBottom = "8px";
 
         const body = document.createElement("div");
-        body.textContent = "Je kunt dit later altijd wijzigen bij abonnement kiezen.";
+        body.textContent = "Jaarlijks betalen bespaart je bijna twee maanden!";
         body.style.fontSize = "16px";
         body.style.lineHeight = "1.45";
         body.style.color = "#334155";
@@ -241,27 +241,27 @@ function showPlanTypeSelectionModal() {
         actions.style.justifyContent = "center";
         actions.style.flexWrap = "wrap";
 
-        const particulierButton = document.createElement("button");
-        particulierButton.textContent = "Particulier (€2,99/mnd)";
-        particulierButton.style.padding = "10px 18px";
-        particulierButton.style.border = "1px solid #cbd5e1";
-        particulierButton.style.borderRadius = "10px";
-        particulierButton.style.background = "#ffffff";
-        particulierButton.style.color = "#334155";
-        particulierButton.style.fontSize = "15px";
-        particulierButton.style.fontWeight = "600";
-        particulierButton.style.cursor = "pointer";
+        const maandButton = document.createElement("button");
+        maandButton.textContent = "Maandelijks (€2,99/mnd)";
+        maandButton.style.padding = "10px 18px";
+        maandButton.style.border = "1px solid #cbd5e1";
+        maandButton.style.borderRadius = "10px";
+        maandButton.style.background = "#ffffff";
+        maandButton.style.color = "#334155";
+        maandButton.style.fontSize = "15px";
+        maandButton.style.fontWeight = "600";
+        maandButton.style.cursor = "pointer";
 
-        const enterpriseButton = document.createElement("button");
-        enterpriseButton.textContent = "Enterprise (€30/mnd)";
-        enterpriseButton.style.padding = "10px 18px";
-        enterpriseButton.style.border = "none";
-        enterpriseButton.style.borderRadius = "10px";
-        enterpriseButton.style.background = "#2563eb";
-        enterpriseButton.style.color = "#ffffff";
-        enterpriseButton.style.fontSize = "15px";
-        enterpriseButton.style.fontWeight = "600";
-        enterpriseButton.style.cursor = "pointer";
+        const jaarButton = document.createElement("button");
+        jaarButton.textContent = "Jaarlijks (€12,99/jaar)";
+        jaarButton.style.padding = "10px 18px";
+        jaarButton.style.border = "none";
+        jaarButton.style.borderRadius = "10px";
+        jaarButton.style.background = "#6366f1";
+        jaarButton.style.color = "#ffffff";
+        jaarButton.style.fontSize = "15px";
+        jaarButton.style.fontWeight = "600";
+        jaarButton.style.cursor = "pointer";
 
         const closeWithSelection = (selectedPlanType) => {
             overlay.remove();
@@ -274,11 +274,11 @@ function showPlanTypeSelectionModal() {
             }
         });
 
-        particulierButton.addEventListener("click", () => closeWithSelection("particulier"));
-        enterpriseButton.addEventListener("click", () => closeWithSelection("enterprise"));
+        maandButton.addEventListener("click", () => closeWithSelection("particulier"));
+        jaarButton.addEventListener("click", () => closeWithSelection("jaarlijks"));
 
-        actions.appendChild(particulierButton);
-        actions.appendChild(enterpriseButton);
+        actions.appendChild(maandButton);
+        actions.appendChild(jaarButton);
         card.appendChild(title);
         card.appendChild(body);
         card.appendChild(actions);
@@ -287,6 +287,164 @@ function showPlanTypeSelectionModal() {
     });
 }
 window.showPlanTypeSelectionModal = showPlanTypeSelectionModal;
+
+function showSubscriptionUpgradeModal(userId) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.inset = "0";
+        overlay.style.background = "rgba(0, 0, 0, 0.55)";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "99999";
+
+        const card = document.createElement("div");
+        card.style.position = "relative";
+        card.style.width = "min(94vw, 520px)";
+        card.style.background = "#ffffff";
+        card.style.borderRadius = "20px";
+        card.style.padding = "32px 24px 28px";
+        card.style.boxShadow = "0 20px 48px rgba(0, 0, 0, 0.28)";
+        card.style.textAlign = "center";
+        card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
+
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "✕";
+        closeBtn.style.position = "absolute";
+        closeBtn.style.top = "14px";
+        closeBtn.style.right = "18px";
+        closeBtn.style.border = "none";
+        closeBtn.style.background = "transparent";
+        closeBtn.style.fontSize = "20px";
+        closeBtn.style.color = "#94a3b8";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.style.lineHeight = "1";
+
+        const icon = document.createElement("div");
+        icon.textContent = "🚀";
+        icon.style.fontSize = "42px";
+        icon.style.marginBottom = "10px";
+
+        const title = document.createElement("div");
+        title.textContent = "Je gratis aanvragen zijn op!";
+        title.style.fontSize = "22px";
+        title.style.fontWeight = "800";
+        title.style.color = "#1e293b";
+        title.style.marginBottom = "6px";
+
+        const sub = document.createElement("div");
+        sub.textContent = "Kies een abonnement voor onbeperkte toegang tot alle functies.";
+        sub.style.fontSize = "15px";
+        sub.style.color = "#64748b";
+        sub.style.marginBottom = "24px";
+        sub.style.lineHeight = "1.5";
+
+        const plans = document.createElement("div");
+        plans.style.display = "flex";
+        plans.style.gap = "14px";
+        plans.style.justifyContent = "center";
+        plans.style.flexWrap = "wrap";
+
+        function createPlanCard(label, price, period, badgeText, planType, isPrimary) {
+            const planCard = document.createElement("div");
+            planCard.style.flex = "1";
+            planCard.style.minWidth = "160px";
+            planCard.style.border = isPrimary ? "2px solid #6366f1" : "2px solid #e2e8f0";
+            planCard.style.borderRadius = "14px";
+            planCard.style.padding = "22px 14px 16px";
+            planCard.style.cursor = "pointer";
+            planCard.style.position = "relative";
+            planCard.style.background = isPrimary ? "#f5f3ff" : "#f8fafc";
+            planCard.style.transition = "box-shadow 0.15s";
+            planCard.addEventListener("mouseover", () => { planCard.style.boxShadow = "0 4px 16px rgba(99,102,241,0.18)"; });
+            planCard.addEventListener("mouseout", () => { planCard.style.boxShadow = "none"; });
+
+            if (badgeText) {
+                const badge = document.createElement("div");
+                badge.textContent = badgeText;
+                badge.style.position = "absolute";
+                badge.style.top = "-12px";
+                badge.style.left = "50%";
+                badge.style.transform = "translateX(-50%)";
+                badge.style.background = "#6366f1";
+                badge.style.color = "#ffffff";
+                badge.style.fontSize = "11px";
+                badge.style.fontWeight = "700";
+                badge.style.padding = "3px 10px";
+                badge.style.borderRadius = "999px";
+                badge.style.whiteSpace = "nowrap";
+                planCard.appendChild(badge);
+            }
+
+            const planLabel = document.createElement("div");
+            planLabel.textContent = label;
+            planLabel.style.fontSize = "16px";
+            planLabel.style.fontWeight = "700";
+            planLabel.style.color = "#1e293b";
+            planLabel.style.marginBottom = "6px";
+
+            const planPrice = document.createElement("div");
+            planPrice.textContent = price;
+            planPrice.style.fontSize = "28px";
+            planPrice.style.fontWeight = "800";
+            planPrice.style.color = isPrimary ? "#6366f1" : "#334155";
+
+            const planPeriod = document.createElement("div");
+            planPeriod.textContent = period;
+            planPeriod.style.fontSize = "13px";
+            planPeriod.style.color = "#94a3b8";
+            planPeriod.style.marginBottom = "14px";
+
+            const planBtn = document.createElement("button");
+            planBtn.textContent = "Kies dit plan";
+            planBtn.style.width = "100%";
+            planBtn.style.padding = "10px";
+            planBtn.style.border = "none";
+            planBtn.style.borderRadius = "9px";
+            planBtn.style.background = isPrimary ? "#6366f1" : "#334155";
+            planBtn.style.color = "#ffffff";
+            planBtn.style.fontSize = "14px";
+            planBtn.style.fontWeight = "600";
+            planBtn.style.cursor = "pointer";
+
+            planBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                overlay.remove();
+                resolve(planType);
+                localStorage.setItem("preferredPlanType", planType);
+                const checkout = window.startStripeCheckout;
+                if (checkout && userId) {
+                    checkout(userId, planType);
+                }
+            });
+
+            planCard.addEventListener("click", () => planBtn.click());
+            planCard.appendChild(planLabel);
+            planCard.appendChild(planPrice);
+            planCard.appendChild(planPeriod);
+            planCard.appendChild(planBtn);
+            return planCard;
+        }
+
+        plans.appendChild(createPlanCard("Maandelijks", "€2,99", "per maand", null, "particulier", false));
+        plans.appendChild(createPlanCard("Jaarlijks", "€12,99", "per jaar", "Beste keuze!", "jaarlijks", true));
+
+        closeBtn.addEventListener("click", () => { overlay.remove(); resolve(null); });
+        overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) { overlay.remove(); resolve(null); }
+        });
+
+        card.appendChild(closeBtn);
+        card.appendChild(icon);
+        card.appendChild(title);
+        card.appendChild(sub);
+        card.appendChild(plans);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+    });
+}
+window.showSubscriptionUpgradeModal = showSubscriptionUpgradeModal;
 
 function showEmailInputModal() {
     return new Promise((resolve) => {
@@ -848,6 +1006,9 @@ function getPreferredPlanTypeFromQuery() {
     const fromPlanType = (params.get("planType") || "").toLowerCase();
     const fromAccountType = (params.get("accountType") || "").toLowerCase();
     const candidate = fromPlanType || fromAccountType;
+    if (candidate === "jaarlijks") {
+        return "jaarlijks";
+    }
     if (candidate === "enterprise") {
         return "enterprise";
     }
@@ -864,6 +1025,9 @@ function normalizePreferredPlanType(value) {
     }
     if (normalized === "particulier") {
         return "particulier";
+    }
+    if (normalized === "jaarlijks") {
+        return "jaarlijks";
     }
     return null;
 }
@@ -1256,7 +1420,11 @@ async function registerUser(userId, email, name) {
     let safeEmail = (email || "").trim();
     const safeName = (name || "").trim() || "Unknown";
     const storedPreferred = (localStorage.getItem("preferredPlanType") || "").toLowerCase();
-    const preferredPlanType = storedPreferred === "enterprise" ? "enterprise" : (storedPreferred === "particulier" ? "particulier" : null);
+    const preferredPlanType = storedPreferred === "enterprise"
+        ? "enterprise"
+        : (storedPreferred === "jaarlijks"
+            ? "jaarlijks"
+            : (storedPreferred === "particulier" ? "particulier" : null));
     const communicationOptIn = localStorage.getItem("marketingConsent") === "true";
     const communicationOptInAt = communicationOptIn
         ? (localStorage.getItem("marketingConsentAt") || new Date().toISOString())
@@ -1369,8 +1537,9 @@ function getStripePublicKeyForSession(sessionId) {
 
 // Ensure startStripeCheckout remains defined and accessible for home.html
 async function startStripeCheckout(userId, planType = "particulier") {
-    const normalizedPlanType = (planType || "particulier").toLowerCase() === "enterprise"
-        ? "enterprise"
+    const pt = (planType || "particulier").toLowerCase();
+    const normalizedPlanType = pt === "enterprise" ? "enterprise"
+        : pt === "jaarlijks" ? "jaarlijks"
         : "particulier";
 
     console.log("startStripeCheckout called with userId:", userId, "planType:", normalizedPlanType);

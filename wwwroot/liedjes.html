@@ -485,24 +485,11 @@ form.addEventListener("submit", async (e) => {
         const text = await resp.text();
         if (!resp.ok) {
             if (resp.status === 403 && text.includes('limiet')) {
-                lyricsBox.innerHTML = "Je hebt het maximum aantal gratis liedjes aangevraagd.<br>Upgrade naar onbeperkt vanaf €2,99/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Kies abonnement</button>";
-                setTimeout(() => {
-                    const accounts = msalInstance.getAllAccounts();
-                    const storedUserId = localStorage.getItem('userId') || '';
-                    const accountUserId = accounts.length > 0 ? (accounts[0].username || '') : '';
-                    const resolvedUserId = storedUserId || accountUserId;
-                    const upgradeBtn = document.getElementById('abonnementBtnInline');
-
-                    if (upgradeBtn && resolvedUserId) {
-                        upgradeBtn.onclick = async () => {
-                            const selectedPlanType = window.ensurePreferredPlanTypeSelection
-                                ? await window.ensurePreferredPlanTypeSelection(true)
-                                : 'particulier';
-                            localStorage.setItem('preferredPlanType', selectedPlanType);
-                            startStripeCheckout(resolvedUserId, selectedPlanType);
-                        };
-                    }
-                }, 100);
+                lyricsBox.innerHTML = "<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>";
+                const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                if (window.showSubscriptionUpgradeModal) {
+                    window.showSubscriptionUpgradeModal(_upgradeUserId);
+                }
             } else {
                 lyricsBox.textContent = `Fout (${resp.status}): ${text}`;
             }

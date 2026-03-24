@@ -392,24 +392,11 @@ form.addEventListener("submit", async (e) => {
         console.log("Response text:", text);
         if (!res.ok) {
             if(res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#f5576c; font-weight:bold; text-align:center;'>Je hebt het maximum aantal gratis moppen aangevraagd.<br>Upgrade naar onbeperkt voor €2,99/mnd!<br><br><button id='abonnementBtnInline' style='background:#ef4444; color:white; padding:12px 24px; border-radius:8px; border:none; font-size:16px; font-weight:600;'>Upgrade nu</button></div>`;
-                // Stripe knop activeren
-                setTimeout(() => {
-                    const accounts = msalInstance.getAllAccounts();
-                    const btn = document.getElementById('abonnementBtnInline');
-                    const storedUserId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
-                    const accountUserId = accounts.length > 0 ? (accounts[0].homeAccountId || accounts[0].localAccountId || accounts[0].username || '') : '';
-                    const userId = storedUserId || accountUserId;
-                    if (btn && userId) {
-                        const sanitizedUserId = userId.split('.')[0];
-                        const checkout = window.startStripeCheckout || startStripeCheckout;
-                        if (checkout) {
-                            btn.onclick = () => checkout(sanitizedUserId);
-                        } else {
-                            console.error("startStripeCheckout is not available on this page.");
-                        }
-                    }
-                }, 100);
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                if (window.showSubscriptionUpgradeModal) {
+                    window.showSubscriptionUpgradeModal(_upgradeUserId);
+                }
             } else {
                 resultaat.innerHTML = '<p style="color:red;">Fout (' + res.status + '): ' + text + '</p>';
             }
