@@ -499,7 +499,7 @@
             abonnementBtn.onclick = async () => {
               abonnementBtn.disabled = true;
               const shouldCancel = window.showSubscriptionManageModal
-                ? await window.showSubscriptionManageModal()
+                ? await window.showSubscriptionManageModal(data)
                 : confirm('Wil je je abonnement opzeggen?\n\nJe behoudt volledige toegang tot het einde van je huidige factuurperiode. Daarna stopt je abonnement automatisch.');
               if (!shouldCancel) {
                 abonnementBtn.disabled = false;

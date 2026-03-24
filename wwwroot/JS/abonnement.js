@@ -43,11 +43,17 @@ function startStripeCheckout(userId, planType = 'particulier') {
         },
         body: JSON.stringify({ userId, planType: normalizedPlanType })
     })
-    .then(res => {
+    .then(async res => {
+        const rawText = await res.text();
         if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
+            throw new Error(rawText || `HTTP error! status: ${res.status}`);
         }
-        return res.json();
+
+        try {
+            return JSON.parse(rawText);
+        } catch (error) {
+            throw new Error('Ongeldige response van checkout-service.');
+        }
     })
     .then(data => {
         console.log("Stripe session data received:", data);

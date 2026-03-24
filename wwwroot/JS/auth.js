@@ -109,7 +109,27 @@ function showCenteredLoginNotice(message) {
     });
 }
 
-function showSubscriptionManageModal() {
+function getReadablePlanName(userStatus) {
+    const planType = (userStatus?.planType || "").toString().toLowerCase();
+    const preferredPlanType = (userStatus?.preferredPlanType || "").toString().toLowerCase();
+    const candidate = preferredPlanType || planType;
+
+    if (candidate === "jaarlijks") {
+        return "Jaarabonnement (€12,99/jaar)";
+    }
+    if (candidate === "particulier") {
+        return "Maandabonnement (€2,99/maand)";
+    }
+    if (candidate === "pilot") {
+        return "Pilot toegang";
+    }
+    if (candidate === "gratis") {
+        return "Gratis plan";
+    }
+    return "Onbekend";
+}
+
+function showSubscriptionManageModal(userStatus = null) {
     return new Promise((resolve) => {
         const overlay = document.createElement("div");
         overlay.style.position = "fixed";
@@ -121,12 +141,12 @@ function showSubscriptionManageModal() {
         overlay.style.zIndex = "99999";
 
         const card = document.createElement("div");
-        card.style.width = "min(92vw, 460px)";
+        card.style.width = "min(94vw, 560px)";
         card.style.background = "#ffffff";
-        card.style.borderRadius = "16px";
-        card.style.padding = "22px 20px";
+        card.style.borderRadius = "18px";
+        card.style.padding = "24px 22px";
         card.style.boxShadow = "0 16px 36px rgba(0, 0, 0, 0.22)";
-        card.style.textAlign = "center";
+        card.style.textAlign = "left";
         card.style.fontFamily = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
         const title = document.createElement("div");
@@ -134,21 +154,58 @@ function showSubscriptionManageModal() {
         title.style.fontSize = "22px";
         title.style.fontWeight = "700";
         title.style.marginBottom = "8px";
+        title.style.textAlign = "center";
 
         const body = document.createElement("div");
-        body.textContent = "Je hebt onbeperkte toegang. Wil je je abonnement opzeggen?";
+        body.textContent = "Hier zie je de status van je account en wat er gebeurt als je opzegt.";
         body.style.fontSize = "16px";
         body.style.lineHeight = "1.45";
         body.style.color = "#334155";
+        body.style.textAlign = "center";
+
+        const summaryBox = document.createElement("div");
+        summaryBox.style.marginTop = "14px";
+        summaryBox.style.padding = "14px";
+        summaryBox.style.border = "1px solid #e2e8f0";
+        summaryBox.style.borderRadius = "12px";
+        summaryBox.style.background = "#f8fafc";
+
+        const currentPlan = document.createElement("div");
+        currentPlan.style.fontSize = "14px";
+        currentPlan.style.color = "#334155";
+        currentPlan.style.marginBottom = "6px";
+        currentPlan.innerHTML = `<strong>Huidig plan:</strong> ${getReadablePlanName(userStatus)}`;
+
+        const activeState = document.createElement("div");
+        const isActive = Boolean(userStatus?.isActive);
+        activeState.style.fontSize = "14px";
+        activeState.style.color = isActive ? "#166534" : "#7f1d1d";
+        activeState.style.marginBottom = "6px";
+        activeState.innerHTML = `<strong>Status:</strong> ${isActive ? "Actief" : "Niet actief"}`;
+
+        const usageInfo = document.createElement("div");
+        const totalUsed = Number(userStatus?.totalRequestsUsed || 0);
+        const maxRequests = Number(userStatus?.maxRequests || 10);
+        usageInfo.style.fontSize = "14px";
+        usageInfo.style.color = "#334155";
+        usageInfo.innerHTML = `<strong>Deze maand gebruikt:</strong> ${totalUsed} van ${maxRequests} gratis aanvragen`;
+
+        summaryBox.appendChild(currentPlan);
+        summaryBox.appendChild(activeState);
+        summaryBox.appendChild(usageInfo);
 
         const hint = document.createElement("div");
-        hint.textContent = "Je behoudt volledige toegang tot het einde van je huidige factuurperiode. Het abonnement stopt daarna automatisch.";
+        hint.innerHTML = "<strong>Wat betekent opzeggen?</strong><br>• Je huidige toegang blijft actief tot het einde van je factuurperiode.<br>• Daarna stopt je betaalde plan automatisch.<br>• Je account blijft bestaan en je kunt later opnieuw activeren.";
         hint.style.marginTop = "12px";
         hint.style.fontSize = "14px";
         hint.style.color = "#64748b";
+        hint.style.lineHeight = "1.5";
+        hint.style.padding = "10px 12px";
+        hint.style.background = "#f8fafc";
+        hint.style.borderRadius = "10px";
 
         const actions = document.createElement("div");
-        actions.style.marginTop = "16px";
+        actions.style.marginTop = "18px";
         actions.style.display = "flex";
         actions.style.gap = "10px";
         actions.style.justifyContent = "center";
@@ -194,6 +251,7 @@ function showSubscriptionManageModal() {
 
         card.appendChild(title);
         card.appendChild(body);
+        card.appendChild(summaryBox);
         card.appendChild(hint);
         card.appendChild(actions);
         overlay.appendChild(card);
@@ -816,7 +874,7 @@ async function handleAccountCancelFromMenu() {
             return;
         }
 
-        const shouldCancel = await showSubscriptionManageModal();
+        const shouldCancel = await showSubscriptionManageModal(latestStatus);
         if (!shouldCancel) {
             return;
         }
@@ -1368,7 +1426,7 @@ if (abonnementBtn) {
             localStorage.setItem("preferredPlanType", selectedPlanType);
             startStripeCheckout(userId, selectedPlanType);
         } else if (buttonLabel === "Account beheren" || buttonLabel === "Abonnement beheren" || buttonLabel === "Onbeperkte toegang") {
-            const shouldCancel = await showSubscriptionManageModal();
+            const shouldCancel = await showSubscriptionManageModal(latestStatus);
             if (!shouldCancel) {
                 return;
             }
