@@ -503,7 +503,7 @@ async function initFormLogic() {
                     const statusResp = await postKleurplaatRequest(
                         { mode: 'driply_status', request_id: requestId },
                         userId,
-                        'grok_kleurplaat'
+                        'driply_status'
                     );
                     const statusText = await statusResp.text();
                     let statusData;
