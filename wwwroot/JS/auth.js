@@ -846,13 +846,7 @@ function handleAccountManageFromMenu() {
         return;
     }
 
-    const abonnementBtn = document.getElementById("abonnementBtn");
-    if (abonnementBtn) {
-        abonnementBtn.click();
-        return;
-    }
-
-    window.location.href = "/home.html";
+    window.location.href = "/account.html";
 }
 
 async function handleAccountCancelFromMenu() {
