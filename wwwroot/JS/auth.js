@@ -110,9 +110,14 @@ function showCenteredLoginNotice(message) {
 }
 
 function getReadablePlanName(userStatus) {
+    const isActive = Boolean(userStatus?.isActive);
+    if (!isActive) {
+        return "Geen actief abonnement (gratis plan)";
+    }
+
     const planType = (userStatus?.planType || "").toString().toLowerCase();
     const preferredPlanType = (userStatus?.preferredPlanType || "").toString().toLowerCase();
-    const candidate = preferredPlanType || planType;
+    const candidate = planType || preferredPlanType;
 
     if (candidate === "jaarlijks") {
         return "Jaarabonnement (€12,99/jaar)";
@@ -126,7 +131,7 @@ function getReadablePlanName(userStatus) {
     if (candidate === "gratis") {
         return "Gratis plan";
     }
-    return "Onbekend";
+    return "Actief abonnement";
 }
 
 function showSubscriptionManageModal(userStatus = null) {

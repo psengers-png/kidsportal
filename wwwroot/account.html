@@ -224,14 +224,17 @@
     }
 
     function readablePlan(status) {
+        const isActive = Boolean(status?.isActive);
+        if (!isActive) return 'Geen actief abonnement (gratis plan)';
+
         const planType = (status?.planType || '').toLowerCase();
         const preferred = (status?.preferredPlanType || '').toLowerCase();
-        const candidate = preferred || planType;
+        const candidate = planType || preferred;
 
         if (candidate === 'jaarlijks') return 'Jaarabonnement (€12,99/jaar)';
         if (candidate === 'particulier') return 'Maandabonnement (€2,99/mnd)';
         if (candidate === 'pilot') return 'Pilot toegang';
-        return 'Gratis plan';
+        return 'Actief abonnement';
     }
 
     async function fetchUserStatus(userId) {
