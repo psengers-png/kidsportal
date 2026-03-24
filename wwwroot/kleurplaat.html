@@ -223,59 +223,6 @@
             color: #2563eb;
         }
 
-        #grokPremiumModal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.55);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 16px;
-        }
-
-        #grokPremiumModal.show {
-            display: flex;
-        }
-
-        .premium-modal-card {
-            width: min(460px, 100%);
-            background: #ffffff;
-            border-radius: 22px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.2);
-            padding: 24px;
-            text-align: center;
-        }
-
-        .premium-modal-card h3 {
-            margin: 0 0 10px;
-            color: #1f2d3d;
-            font-size: 1.35rem;
-        }
-
-        .premium-modal-card p {
-            margin: 0;
-            color: #475569;
-            line-height: 1.6;
-        }
-
-        .premium-modal-actions {
-            margin-top: 18px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .premium-secondary-btn {
-            background: #e2e8f0;
-            color: #1f2d3d;
-        }
-
-        .premium-secondary-btn:hover {
-            background: #cbd5e1;
-        }
-
         @media (max-width: 720px) {
             header {
                 padding: 12px 14px;
@@ -395,21 +342,6 @@
 
 </main>
 
-<div id="grokPremiumModal" role="dialog" aria-modal="true" aria-labelledby="grokPremiumTitle">
-    <div class="premium-modal-card">
-        <h3 id="grokPremiumTitle">Premium functie</h3>
-        <p>
-            Driply Tot Leven Brengen met GROK is alleen beschikbaar met een actief abonnement.<br>
-            Kies hieronder je upgrade.
-        </p>
-        <div class="premium-modal-actions">
-            <button type="button" id="premiumMonthlyBtn">Maandelijks</button>
-            <button type="button" id="premiumYearlyBtn">Jaarlijks</button>
-            <button type="button" id="premiumCloseBtn" class="premium-secondary-btn">Later</button>
-        </div>
-    </div>
-</div>
-
 
 <!-- Scripts -->
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
@@ -418,7 +350,6 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
-import { startStripeCheckout } from '/JS/abonnement.js';
 import { msalInstance } from '/JS/auth.js';
 
 // Wacht tot auth.js klaar is en checkt inlogstatus
@@ -448,47 +379,6 @@ async function initFormLogic() {
     const resultaat = document.getElementById("resultaat");
     const downloadBtn = document.getElementById("downloadBtn");
     const driplyLoadingVideo = document.getElementById("driplyLoadingVideo");
-    const grokPremiumModal = document.getElementById("grokPremiumModal");
-    const premiumMonthlyBtn = document.getElementById("premiumMonthlyBtn");
-    const premiumYearlyBtn = document.getElementById("premiumYearlyBtn");
-    const premiumCloseBtn = document.getElementById("premiumCloseBtn");
-
-    function openGrokPremiumModal() {
-        if (!grokPremiumModal) return;
-        grokPremiumModal.classList.add("show");
-    }
-
-    function closeGrokPremiumModal() {
-        if (!grokPremiumModal) return;
-        grokPremiumModal.classList.remove("show");
-    }
-
-    premiumCloseBtn?.addEventListener("click", closeGrokPremiumModal);
-    grokPremiumModal?.addEventListener("click", (event) => {
-        if (event.target === grokPremiumModal) {
-            closeGrokPremiumModal();
-        }
-    });
-
-    premiumMonthlyBtn?.addEventListener("click", () => {
-        const upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
-        if (!upgradeUserId) {
-            closeGrokPremiumModal();
-            return;
-        }
-        closeGrokPremiumModal();
-        startStripeCheckout(upgradeUserId, 'particulier');
-    });
-
-    premiumYearlyBtn?.addEventListener("click", () => {
-        const upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
-        if (!upgradeUserId) {
-            closeGrokPremiumModal();
-            return;
-        }
-        closeGrokPremiumModal();
-        startStripeCheckout(upgradeUserId, 'jaarlijks');
-    });
     // Functie om velden in/uit te schakelen
     function updateFieldStates() {
         const hasText = wieInput.value.trim() || waarInput.value.trim() || activiteitInput.value.trim();
@@ -656,10 +546,18 @@ async function initFormLogic() {
                 };
 
             } catch (error) {
-                const premiumErrorMessage = 'Deze GROK functie is alleen beschikbaar met een actief maandelijks of jaarlijks abonnement.';
-                if ((error?.message || '').includes(premiumErrorMessage)) {
-                    resultaat.innerHTML = '<div style="color:#64748b; text-align:center; padding: 16px;">Deze functie is Premium. Kies maandelijks of jaarlijks om door te gaan.</div>';
-                    openGrokPremiumModal();
+                const errorMessage = (error?.message || '').toLowerCase();
+                const isPremiumError =
+                    errorMessage.includes('grok functie') ||
+                    errorMessage.includes('actief maandelijks of jaarlijks abonnement') ||
+                    errorMessage.includes('premium');
+
+                if (isPremiumError) {
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                    const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                    if (window.showSubscriptionUpgradeModal) {
+                        window.showSubscriptionUpgradeModal(_upgradeUserId);
+                    }
                     return;
                 }
                 resultaat.textContent = 'Fout bij tot leven brengen: ' + error.message;
