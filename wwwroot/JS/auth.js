@@ -849,54 +849,6 @@ function handleAccountManageFromMenu() {
     window.location.href = "/account.html";
 }
 
-async function handleAccountCancelFromMenu() {
-    const userId = getStoredUserId();
-    if (!userId) {
-        window.location.href = "/login.html";
-        return;
-    }
-
-    try {
-        const latestStatus = await checkUserStatus(userId);
-        if (hasPilotAccess(latestStatus)) {
-            alert("Pilot toegang is actief. Opzeggen is niet nodig.");
-            return;
-        }
-
-        if (!latestStatus || !latestStatus.isActive) {
-            alert("Je hebt geen actief abonnement om op te zeggen. Gebruik 'Account beheren' voor je accountinstellingen.");
-            return;
-        }
-
-        const shouldCancel = await showSubscriptionManageModal(latestStatus);
-        if (!shouldCancel) {
-            return;
-        }
-
-        const response = await fetch("https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelsubscription", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "user-id": userId
-            }
-        });
-
-        if (response.ok) {
-            alert("Abonnement opgezegd. Je behoudt toegang tot het einde van je huidige factuurperiode.");
-            const abonnementBtn = document.getElementById("abonnementBtn");
-            if (abonnementBtn) {
-                applySubscriptionButtonState(abonnementBtn, false);
-            }
-            refreshHeaderAccountMenu();
-        } else {
-            alert("Er is een fout opgetreden bij het opzeggen van je abonnement.");
-        }
-    } catch (error) {
-        console.error("Error cancelling subscription from menu:", error);
-        alert("Er ging iets mis bij het opzeggen van je abonnement.");
-    }
-}
-
 function renderHeaderMenuItems(dropdown, isLoggedIn) {
     if (!dropdown) {
         return;
@@ -909,11 +861,6 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
             hideHeaderMenuDropdown(dropdown);
             handleAccountManageFromMenu();
         }));
-
-        dropdown.appendChild(createHeaderMenuItem("Account opzeggen", async () => {
-            hideHeaderMenuDropdown(dropdown);
-            await handleAccountCancelFromMenu();
-        }, { danger: true }));
 
         const divider = document.createElement("div");
         divider.className = "rdc-account-menu-divider";
