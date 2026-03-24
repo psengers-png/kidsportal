@@ -553,7 +553,7 @@ async function initFormLogic() {
                     errorMessage.includes('premium');
 
                 if (isPremiumError) {
-                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Deze aanvraag gebruikt een Premium functie (GROK). Je hebt een actief maandelijks of jaarlijks abonnement nodig om door te gaan.</div>`;
                     const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                     if (window.showSubscriptionUpgradeModal) {
                         window.showSubscriptionUpgradeModal(_upgradeUserId);
