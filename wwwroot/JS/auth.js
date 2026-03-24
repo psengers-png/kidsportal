@@ -830,6 +830,62 @@ function createHeaderMenuItem(label, onClick, options = {}) {
     return button;
 }
 
+function createHeaderMenuInfo(text, tone = "neutral") {
+    const info = document.createElement("div");
+    info.style.padding = "10px 12px";
+    info.style.fontSize = "12px";
+    info.style.lineHeight = "1.45";
+    info.style.borderRadius = "8px";
+    info.style.margin = "4px";
+    info.style.whiteSpace = "normal";
+    info.style.background = tone === "warning" ? "#fff7ed" : "#f8fafc";
+    info.style.color = tone === "warning" ? "#9a3412" : "#475569";
+    info.style.border = tone === "warning" ? "1px solid #fdba74" : "1px solid #e2e8f0";
+    info.textContent = text;
+    return info;
+}
+
+function formatDateNl(value) {
+    if (!value) {
+        return null;
+    }
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return null;
+    }
+
+    return new Intl.DateTimeFormat("nl-NL", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    }).format(date);
+}
+
+function getAccountMenuStatusText(userStatus) {
+    if (!userStatus) {
+        return "Accountstatus wordt geladen...";
+    }
+
+    const isActive = Boolean(userStatus.isActive);
+    const planStatus = (userStatus.planStatus || "").toLowerCase();
+    const endsAt = formatDateNl(userStatus.subscriptionEndsAt);
+
+    if (isActive && (planStatus === "cancel_at_period_end" || userStatus.subscriptionCanceledAt)) {
+        return endsAt
+            ? `Abonnement opgezegd — geldig t/m ${endsAt}.`
+            : "Abonnement opgezegd — nog actief tot einde factuurperiode.";
+    }
+
+    if (isActive) {
+        return `Actief: ${getReadablePlanName(userStatus)}.`;
+    }
+
+    const totalUsed = Number(userStatus.totalRequestsUsed || 0);
+    const maxRequests = Number(userStatus.maxRequests || 10);
+    return `Gratis plan — ${totalUsed}/${maxRequests} gratis aanvragen gebruikt.`;
+}
+
 function hideHeaderMenuDropdown(dropdown) {
     if (!dropdown) {
         return;
@@ -854,7 +910,7 @@ function handleAccountManageFromMenu() {
     window.location.href = "/account.html";
 }
 
-function renderHeaderMenuItems(dropdown, isLoggedIn) {
+function renderHeaderMenuItems(dropdown, isLoggedIn, userStatus = null) {
     if (!dropdown) {
         return;
     }
@@ -862,6 +918,11 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
     dropdown.innerHTML = "";
 
     if (isLoggedIn) {
+        dropdown.appendChild(createHeaderMenuInfo(
+            getAccountMenuStatusText(userStatus),
+            userStatus && (userStatus.planStatus === "cancel_at_period_end" || userStatus.subscriptionCanceledAt) ? "warning" : "neutral"
+        ));
+
         dropdown.appendChild(createHeaderMenuItem("Account beheren", () => {
             hideHeaderMenuDropdown(dropdown);
             handleAccountManageFromMenu();
@@ -890,7 +951,7 @@ function renderHeaderMenuItems(dropdown, isLoggedIn) {
     }));
 }
 
-function refreshHeaderAccountMenu() {
+async function refreshHeaderAccountMenu() {
     const logoutBtn = document.getElementById("logoutBtn");
     if (!logoutBtn || !logoutBtn.parentElement) {
         return;
@@ -933,8 +994,17 @@ function refreshHeaderAccountMenu() {
         dropdown = menuRoot.querySelector(".rdc-account-menu-dropdown");
     }
 
-    const isLoggedIn = Boolean(getStoredUserId());
-    renderHeaderMenuItems(dropdown, isLoggedIn);
+    const storedUserId = getStoredUserId();
+    const isLoggedIn = Boolean(storedUserId);
+    let userStatus = null;
+    if (isLoggedIn) {
+        try {
+            userStatus = await checkUserStatus(storedUserId);
+        } catch (error) {
+            console.warn("Kon accountstatus voor menu niet ophalen:", error);
+        }
+    }
+    renderHeaderMenuItems(dropdown, isLoggedIn, userStatus);
 
     logoutBtn.style.display = "none";
     logoutBtn.setAttribute("aria-hidden", "true");

@@ -223,6 +223,17 @@
         return (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
     }
 
+    function formatDateNl(value) {
+        if (!value) return null;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return null;
+        return new Intl.DateTimeFormat('nl-NL', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(date);
+    }
+
     function readablePlan(status) {
         const isActive = Boolean(status?.isActive);
         if (!isActive) return 'Geen actief abonnement (gratis plan)';
@@ -256,28 +267,41 @@
 
     function renderStatus(status) {
         const isActive = Boolean(status?.isActive);
+        const isCanceling = (status?.planStatus || '').toLowerCase() === 'cancel_at_period_end' || Boolean(status?.subscriptionCanceledAt);
+        const endsAt = formatDateNl(status?.subscriptionEndsAt);
         const totalUsed = Number(status?.totalRequestsUsed || 0);
         const maxRequests = Number(status?.maxRequests || 10);
 
-        document.getElementById('statusValue').textContent = isActive ? 'Actief' : 'Niet actief';
-        document.getElementById('statusValue').style.color = isActive ? '#166534' : '#b91c1c';
+        document.getElementById('statusValue').textContent = isCanceling
+            ? 'Opgezegd, nog actief'
+            : (isActive ? 'Actief' : 'Niet actief');
+        document.getElementById('statusValue').style.color = isCanceling
+            ? '#9a3412'
+            : (isActive ? '#166534' : '#b91c1c');
         document.getElementById('planValue').textContent = readablePlan(status);
         document.getElementById('usageValue').textContent = `${totalUsed} / ${maxRequests}`;
 
-        const nextStep = isActive
-            ? 'Je hebt onbeperkte toegang'
-            : (totalUsed >= maxRequests ? 'Upgrade nodig om door te gaan' : 'Je kunt nog gratis gebruiken');
+        const nextStep = isCanceling
+            ? (endsAt ? `Geldig t/m ${endsAt}` : 'Geldig tot einde factuurperiode')
+            : (isActive
+                ? 'Je hebt onbeperkte toegang'
+                : (totalUsed >= maxRequests ? 'Upgrade nodig om door te gaan' : 'Je kunt nog gratis gebruiken'));
         document.getElementById('nextStepValue').textContent = nextStep;
 
-        document.getElementById('statusNotice').textContent = isActive
-            ? 'Je abonnement is actief. Je kunt opzeggen wanneer je wilt.'
-            : (totalUsed >= maxRequests
-                ? 'Je gratis limiet is bereikt. Upgrade om onbeperkt verder te gaan.'
-                : 'Je account is actief op het gratis plan.');
+        document.getElementById('statusNotice').textContent = isCanceling
+            ? (endsAt
+                ? `Je abonnement is opgezegd en blijft geldig tot ${endsAt}. Daarna stopt het automatisch.`
+                : 'Je abonnement is opgezegd en blijft actief tot het einde van je factuurperiode.')
+            : (isActive
+                ? 'Je abonnement is actief. Je kunt opzeggen wanneer je wilt.'
+                : (totalUsed >= maxRequests
+                    ? 'Je gratis limiet is bereikt. Upgrade om onbeperkt verder te gaan.'
+                    : 'Je account is actief op het gratis plan.'));
 
         const cancelBtn = document.getElementById('cancelBtn');
-        cancelBtn.disabled = !isActive;
-        cancelBtn.style.opacity = isActive ? '1' : '0.55';
+        cancelBtn.disabled = !isActive || isCanceling;
+        cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
+        cancelBtn.textContent = isCanceling ? 'Al opgezegd' : 'Abonnement opzeggen';
     }
 
     async function refreshStatus() {
