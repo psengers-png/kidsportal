@@ -473,48 +473,79 @@ async function initFormLogic() {
         
         reader.onload = async () => {
             startLoadingState();
+            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply gaat aan de slag... even geduld!</p>';
             const imageBase64 = reader.result;
-            
+            const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || 'unknown-user';
+
             try {
-                const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || 'unknown-user';
-                const payload = {
-                    image_base64: imageBase64,
-                    mode: 'driply_dance'
-                };
-                const response = await postKleurplaatRequest(payload, userId, 'grok_kleurplaat');
-                const rawText = await response.text();
+                // Stap 1: start video-job, krijg request_id terug
+                const startResp = await postKleurplaatRequest(
+                    { image_base64: imageBase64, mode: 'driply_dance' },
+                    userId,
+                    'grok_kleurplaat'
+                );
+                const startText = await startResp.text();
+                if (!startResp.ok) throw new Error(startText || `HTTP ${startResp.status}`);
 
-                if (!response.ok) {
-                    throw new Error(rawText || `HTTP error! status: ${response.status}`);
+                let startData;
+                try { startData = JSON.parse(startText); }
+                catch { throw new Error('Ongeldige response van GROK service.'); }
+
+                if (startData.error) throw new Error(startData.error);
+                const requestId = startData.request_id;
+                if (!requestId) throw new Error('Geen request_id ontvangen van GROK.');
+
+                // Stap 2: poll status elke 4 seconden (max 90x = 6 minuten)
+                let videoUrl = null;
+                for (let attempt = 0; attempt < 90; attempt++) {
+                    await new Promise(r => setTimeout(r, 4000));
+
+                    const statusResp = await postKleurplaatRequest(
+                        { mode: 'driply_status', request_id: requestId },
+                        userId,
+                        'grok_kleurplaat'
+                    );
+                    const statusText = await statusResp.text();
+                    let statusData;
+                    try { statusData = JSON.parse(statusText); }
+                    catch { continue; }
+
+                    if (statusData.error) throw new Error(statusData.error);
+
+                    const progress = statusData.progress ?? 0;
+                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply danst en kleurt... ${progress}%</p>`;
+
+                    if (statusData.status === 'done' && statusData.video_url) {
+                        videoUrl = statusData.video_url;
+                        break;
+                    }
                 }
 
-                let data;
-                try {
-                    data = JSON.parse(rawText);
-                } catch (parseError) {
-                    throw new Error('Ongeldige response van GROK service.');
-                }
+                if (!videoUrl) throw new Error('Video generatie duurde te lang of is mislukt.');
 
-                if (!data || data.error || !data.image_data_uri) {
-                    throw new Error(data?.error || 'GROK colorization failed');
-                }
-                
-                // Display result
-                const img = document.createElement('img');
-                img.src = data.image_data_uri;
+                // Stap 3: toon video
+                const video = document.createElement('video');
+                video.src = videoUrl;
+                video.controls = true;
+                video.autoplay = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.style.maxWidth = '100%';
+                video.style.borderRadius = '20px';
+                video.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
                 resultaat.innerHTML = '';
-                resultaat.appendChild(img);
-                
+                resultaat.appendChild(video);
+
                 downloadBtn.style.display = 'inline-block';
                 downloadBtn.onclick = () => {
                     const a = document.createElement('a');
-                    a.href = data.image_data_uri;
-                    a.download = 'driply-kleurplaat.png';
+                    a.href = videoUrl;
+                    a.download = 'driply-dans.mp4';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                 };
-                
+
             } catch (error) {
                 resultaat.textContent = 'Fout bij tot leven brengen: ' + error.message;
                 console.error('Driply colorization error:', error);
