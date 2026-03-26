@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account beheren - Rainy Day Club</title>
-    <meta name="description" content="Beheer je Rainy Day Club account, abonnement en maandelijkse gratis aanvragen." />
+    <meta name="description" content="Beheer je Rainy Day Club account, abonnement en maandelijkse gratis creaties." />
     <meta name="robots" content="noindex, nofollow" />
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -212,7 +212,7 @@
                 <div class="value" id="planValue">Laden...</div>
             </div>
             <div class="status-item">
-                <div class="label">Gratis aanvragen</div>
+                <div class="label">Gratis creaties</div>
                 <div class="value" id="usageValue">Laden...</div>
             </div>
             <div class="status-item">
@@ -233,8 +233,8 @@
     <div class="card">
         <h2>Hoe werkt het?</h2>
         <ul class="info-list">
-            <li>Iedere ingelogde gebruiker krijgt <strong>10 gratis API-aanvragen per maand</strong>.</li>
-            <li>Na die 10 gratis aanvragen verschijnt automatisch de upgrade-popup.</li>
+            <li>Elke ingelogde gebruiker krijgt <strong>10 gratis creaties per maand</strong>.</li>
+            <li>Heb je de 10 gratis creaties gebruikt? Dan verschijnt automatisch een upgrade-pop-up.</li>
             <li>Je kunt kiezen uit <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.</li>
             <li>Bij opzeggen blijft je toegang actief tot het einde van je huidige factuurperiode.</li>
             <li>Je account blijft altijd bestaan; je kunt later opnieuw upgraden.</li>
@@ -327,7 +327,7 @@
             bannerTitle.style.color = '#1d4ed8';
             bannerText.style.color = '#1e3a8a';
             bannerTitle.textContent = 'Gratis plan actief';
-            bannerText.textContent = `Je kunt ${Math.max(0, maxRequests - totalUsed)} gratis aanvragen deze maand gebruiken voordat je een abonnement nodig hebt.`;
+            bannerText.textContent = `Je kunt ${Math.max(0, maxRequests - totalUsed)} gratis creaties deze maand gebruiken voordat je een abonnement nodig hebt.`;
         }
 
         document.getElementById('statusValue').textContent = isCanceling
