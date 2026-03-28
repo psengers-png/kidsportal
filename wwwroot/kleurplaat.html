@@ -223,63 +223,6 @@
             color: #2563eb;
         }
 
-        .instagram-section {
-            margin-top: 34px;
-            background: rgba(255,255,255,0.92);
-            border-radius: 30px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-        }
-
-        .instagram-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 18px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .instagram-header h3 {
-            margin: 0;
-            font-size: 1.7rem;
-        }
-
-        .instagram-header p {
-            margin: 8px 0 0;
-            max-width: 640px;
-            line-height: 1.6;
-        }
-
-        .instagram-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 18px;
-            border-radius: 999px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f97316, #ec4899 60%, #7c3aed);
-            box-shadow: 0 12px 26px rgba(236,72,153,0.25);
-        }
-
-        .instagram-feed-wrap {
-            width: 100%;
-            min-height: 560px;
-            border: 0;
-            border-radius: 20px;
-            background: #ffffff;
-            box-shadow: 0 12px 30px rgba(15,23,42,0.12);
-        }
-
-        .instagram-note {
-            margin: 12px 0 0;
-            color: #475569;
-            line-height: 1.6;
-        }
-
         @media (max-width: 720px) {
             header {
                 padding: 12px 14px;
@@ -321,24 +264,6 @@
 
             .agent-header h2 {
                 font-size: 1.55rem;
-            }
-
-            .instagram-section {
-                border-radius: 20px;
-                padding: 20px 16px;
-            }
-
-            .instagram-header h3 {
-                font-size: 1.35rem;
-            }
-
-            .instagram-link {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .instagram-feed-wrap {
-                min-height: 500px;
             }
         }
     </style>
@@ -416,32 +341,6 @@
     </video>
 
     </div>
-
-    <section class="instagram-section" aria-labelledby="instagramInspiratieTitle">
-        <div class="instagram-header">
-            <div>
-                <h3 id="instagramInspiratieTitle">Instagram feed van Driply</h3>
-                <p>
-                    Bekijk hier direct de nieuwste Driply posts van Rainy Day Club.
-                </p>
-            </div>
-            <a class="instagram-link" href="https://www.instagram.com/rainydayclub.nl/" target="_blank" rel="noopener noreferrer">
-                Bekijk @rainydayclub.nl
-            </a>
-        </div>
-
-        <iframe
-            class="instagram-feed-wrap"
-            src="https://www.instagram.com/rainydayclub.nl/embed"
-            title="Instagram feed Rainy Day Club"
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen>
-        </iframe>
-        <p class="instagram-note">
-            Laadt de feed niet? Open dan direct het profiel via de knop hierboven.
-        </p>
-    </section>
 
 </main>
 
