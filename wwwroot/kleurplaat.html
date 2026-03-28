@@ -265,153 +265,19 @@
             box-shadow: 0 12px 26px rgba(236,72,153,0.25);
         }
 
-        .feed-filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-        }
-
-        .feed-filter {
-            margin-top: 0;
-            padding: 10px 16px;
-            border-radius: 999px;
-            border: 1px solid #cbd5e1;
+        .instagram-feed-wrap {
+            width: 100%;
+            min-height: 560px;
+            border: 0;
+            border-radius: 20px;
             background: #ffffff;
-            color: #475569;
-            font-weight: 700;
+            box-shadow: 0 12px 30px rgba(15,23,42,0.12);
         }
 
-        .feed-filter.active {
-            background: #2563eb;
-            color: #ffffff;
-            border-color: #2563eb;
-        }
-
-        .instagram-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 18px;
-        }
-
-        .instagram-card {
-            display: flex;
-            flex-direction: column;
-            border-radius: 24px;
-            overflow: hidden;
-            background: #ffffff;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 18px 30px rgba(15,23,42,0.08);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .instagram-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 24px 36px rgba(15,23,42,0.12);
-        }
-
-        .instagram-card[hidden] {
-            display: none;
-        }
-
-        .instagram-thumb {
-            position: relative;
-            min-height: 220px;
-            padding: 18px;
-            display: flex;
-            align-items: flex-end;
-            background-size: cover;
-            background-position: center;
-            isolation: isolate;
-        }
-
-        .instagram-thumb::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(15,23,42,0.08), rgba(15,23,42,0.66));
-            z-index: -1;
-        }
-
-        .instagram-card:nth-child(2) .instagram-thumb {
-            background-image: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(236,72,153,0.35)), url('Images/Driply.png');
-        }
-
-        .instagram-card:nth-child(3) .instagram-thumb {
-            background-image: linear-gradient(135deg, rgba(14,165,233,0.18), rgba(16,185,129,0.28)), url('Images/Driply.png');
-        }
-
-        .instagram-card:nth-child(4) .instagram-thumb {
-            background-image: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(244,63,94,0.34)), url('Images/Driply.png');
-        }
-
-        .instagram-card:nth-child(5) .instagram-thumb {
-            background-image: linear-gradient(135deg, rgba(99,102,241,0.22), rgba(236,72,153,0.28)), url('Images/Driply.png');
-        }
-
-        .instagram-card:nth-child(6) .instagram-thumb {
-            background-image: linear-gradient(135deg, rgba(45,212,191,0.18), rgba(59,130,246,0.32)), url('Images/Driply.png');
-        }
-
-        .instagram-handle {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.92);
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .instagram-badge {
-            display: inline-flex;
-            align-items: center;
-            align-self: flex-start;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-            color: #ffffff;
-            background: rgba(37,99,235,0.9);
-        }
-
-        .instagram-card-body {
-            padding: 18px;
-        }
-
-        .instagram-card-body h4 {
-            margin: 0 0 8px;
-            font-size: 1.05rem;
-        }
-
-        .instagram-card-body p {
-            margin: 0;
+        .instagram-note {
+            margin: 12px 0 0;
             color: #475569;
             line-height: 1.6;
-        }
-
-        .instagram-card-footer {
-            margin-top: 14px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .instagram-tag {
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: #eff6ff;
-            color: #1d4ed8;
-            font-size: 0.78rem;
-            font-weight: 700;
         }
 
         @media (max-width: 720px) {
@@ -469,6 +335,10 @@
             .instagram-link {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .instagram-feed-wrap {
+                min-height: 500px;
             }
         }
     </style>
@@ -550,10 +420,9 @@
     <section class="instagram-section" aria-labelledby="instagramInspiratieTitle">
         <div class="instagram-header">
             <div>
-                <h3 id="instagramInspiratieTitle">Instagram inspiratie van Driply</h3>
+                <h3 id="instagramInspiratieTitle">Instagram feed van Driply</h3>
                 <p>
-                    Onderaan deze kleurplaat pagina vind je nu een inspiratiesectie voor Rainy Day Club. De feed staat standaard
-                    op Driply, zodat bezoekers meteen voorbeelden en ideeën zien die passen bij kleurplaten, prompts en foto-naar-kleurplaat concepten.
+                    Bekijk hier direct de nieuwste Driply posts van Rainy Day Club.
                 </p>
             </div>
             <a class="instagram-link" href="https://www.instagram.com/rainydayclub.nl/" target="_blank" rel="noopener noreferrer">
@@ -561,78 +430,17 @@
             </a>
         </div>
 
-        <div class="feed-filters" aria-label="Instagram filters">
-            <button type="button" class="feed-filter" data-feed-filter="all">Alles</button>
-            <button type="button" class="feed-filter active" data-feed-filter="driply">Driply</button>
-            <button type="button" class="feed-filter" data-feed-filter="kleurplaat">Kleurplaat ideeën</button>
-            <button type="button" class="feed-filter" data-feed-filter="foto">Foto naar kleurplaat</button>
-        </div>
-
-        <div class="instagram-grid" id="instagramGrid">
-            <a class="instagram-card" data-tags="driply kleurplaat prompt" href="https://www.instagram.com/rainydayclub.nl/" target="_blank" rel="noopener noreferrer">
-                <div class="instagram-thumb" style="background-image: linear-gradient(135deg, rgba(59,130,246,0.16), rgba(236,72,153,0.26)), url('Images/Driply.png');">
-                    <span class="instagram-handle">☔ @rainydayclub.nl</span>
-                    <span class="instagram-badge">Driply</span>
-                </div>
-                <div class="instagram-card-body">
-                    <h4>Prompt inspiratie voor unieke kleurplaten</h4>
-                    <p>Voor bezoekers die snel ideeën zoeken: dieren, sprookjes, voertuigen en fantasiewerelden die goed werken met Driply.</p>
-                    <div class="instagram-card-footer">
-                        <span class="instagram-tag">#driply</span>
-                        <span class="instagram-tag">#kleurplaat</span>
-                        <span class="instagram-tag">#ai</span>
-                    </div>
-                </div>
-            </a>
-
-            <a class="instagram-card" data-tags="driply foto kleurplaat" href="https://www.instagram.com/rainydayclub.nl/" target="_blank" rel="noopener noreferrer">
-                <div class="instagram-thumb">
-                    <span class="instagram-handle">☔ @rainydayclub.nl</span>
-                    <span class="instagram-badge">Foto → kleurplaat</span>
-                </div>
-                <div class="instagram-card-body">
-                    <h4>Van foto naar kleurplaat</h4>
-                    <p>Een inspirerend blok voor ouders: upload een foto en laat Driply er een eenvoudige lijntekening van maken.</p>
-                    <div class="instagram-card-footer">
-                        <span class="instagram-tag">#driply</span>
-                        <span class="instagram-tag">#foto</span>
-                        <span class="instagram-tag">#kleurplaat</span>
-                    </div>
-                </div>
-            </a>
-
-            <a class="instagram-card" data-tags="driply kleurplaat" href="https://www.instagram.com/rainydayclub.nl/" target="_blank" rel="noopener noreferrer">
-                <div class="instagram-thumb">
-                    <span class="instagram-handle">☔ @rainydayclub.nl</span>
-                    <span class="instagram-badge">Kleurplaat idee</span>
-                </div>
-                <div class="instagram-card-body">
-                    <h4>Kleurplaat thema's voor regenachtige dagen</h4>
-                    <p>Gebruik deze sectie als extra inspiratie voor leuke binnenactiviteiten, printmomenten en creatieve middagjes thuis.</p>
-                    <div class="instagram-card-footer">
-                        <span class="instagram-tag">#driply</span>
-                        <span class="instagram-tag">#regenachtigedag</span>
-                        <span class="instagram-tag">#kidsactivity</span>
-                    </div>
-                </div>
-            </a>
-
-            <a class="instagram-card" data-tags="driply foto video" href="https://www.instagram.com/rainydayclub.nl/" target="_blank" rel="noopener noreferrer">
-                <div class="instagram-thumb">
-                    <span class="instagram-handle">☔ @rainydayclub.nl</span>
-                    <span class="instagram-badge">Tot leven brengen</span>
-                </div>
-                <div class="instagram-card-body">
-                    <h4>Driply laat kleurplaten bewegen</h4>
-                    <p>Sluit visueel aan op de bestaande premium flow waarin een kleurplaat al dansend wordt ingekleurd.</p>
-                    <div class="instagram-card-footer">
-                        <span class="instagram-tag">#driply</span>
-                        <span class="instagram-tag">#video</span>
-                        <span class="instagram-tag">#premium</span>
-                    </div>
-                </div>
-            </a>
-        </div>
+        <iframe
+            class="instagram-feed-wrap"
+            src="https://www.instagram.com/rainydayclub.nl/embed"
+            title="Instagram feed Rainy Day Club"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+        </iframe>
+        <p class="instagram-note">
+            Laadt de feed niet? Open dan direct het profiel via de knop hierboven.
+        </p>
     </section>
 
 </main>
@@ -955,35 +763,6 @@ async function initFormLogic() {
 }
 
 initFormLogic();
-
-function initInstagramFeedFilters() {
-    const filters = Array.from(document.querySelectorAll('[data-feed-filter]'));
-    const cards = Array.from(document.querySelectorAll('.instagram-card'));
-
-    if (!filters.length || !cards.length) {
-        return;
-    }
-
-    const applyFilter = (filter) => {
-        filters.forEach((button) => {
-            button.classList.toggle('active', button.dataset.feedFilter === filter);
-        });
-
-        cards.forEach((card) => {
-            const tags = (card.dataset.tags || '').split(/\s+/).filter(Boolean);
-            const shouldShow = filter === 'all' || tags.includes(filter);
-            card.hidden = !shouldShow;
-        });
-    };
-
-    filters.forEach((button) => {
-        button.addEventListener('click', () => applyFilter(button.dataset.feedFilter || 'all'));
-    });
-
-    applyFilter('driply');
-}
-
-initInstagramFeedFilters();
 </script>
 
 </body>
