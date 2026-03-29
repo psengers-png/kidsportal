@@ -24,24 +24,73 @@
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Rollie.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            color: #1e293b;
             min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
         }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        @keyframes rain {
+            from { background-position-y: 0; }
+            to { background-position-y: 18px; }
+        }
+
         header {
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(6px);
-            border-bottom: 1px solid #dbeafe;
-            padding: 16px 20px;
+            position: relative;
+            z-index: 2;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .header-left {
             display: flex;
@@ -58,105 +107,111 @@
         }
         .header-right {
             display: flex;
+            align-items: center;
             gap: 10px;
             margin-left: auto;
             flex-wrap: wrap;
         }
+
         .header-btn {
-            border: none;
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
             cursor: pointer;
-            background: #2563eb;
-            color: white;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
         }
-        .header-btn.secondary {
+
+        .header-btn:hover {
             background: #e2e8f0;
-            color: #1e293b;
         }
-        .wrap {
-            max-width: 760px;
-            margin: 26px auto;
-            padding: 0 16px 28px;
+
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
         }
-        .panel {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 12px 28px rgba(30, 58, 138, 0.15);
-            padding: 24px;
+
+        .window {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
         }
         .agent-header {
             text-align: center;
-            margin-bottom: 22px;
+            margin-bottom: 30px;
         }
         .agent-header img {
             height: 250px;
         }
         .agent-header h2 {
             margin: 10px 0 0;
-            font-size: 2rem;
-            color: #1e3a8a;
+            font-size: 2.2rem;
         }
         .agent-header p {
             margin: 10px 0 0;
-            color: #334155;
+            color: #1f2d3d;
             line-height: 1.7;
         }
         #statusText {
             text-align: center;
             color: #2563eb;
             font-weight: 600;
-            margin: 10px 0 0;
+            margin: 0;
         }
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 20px; }
         label {
+            font-weight: 600;
             display: block;
             margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
         }
         input, select {
             width: 100%;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border: 2px solid #e0e7ff;
+            border-radius: 12px;
             padding: 12px;
-            font-size: 15px;
         }
         input:focus, select:focus {
             outline: none;
-            border-color: #60a5fa;
+            border-color: #3b82f6;
         }
         .submit-btn {
-            border: none;
-            border-radius: 10px;
             padding: 12px 18px;
-            background: #2563eb;
+            background: #3b82f6;
             color: white;
-            font-size: 15px;
-            font-weight: 700;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
             cursor: pointer;
+        }
+        .submit-btn:hover:not(:disabled) {
+            background: #2563eb;
         }
         .submit-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
         .result-box {
-            margin-top: 18px;
-            background: #eff6ff;
-            border-left: 4px solid #2563eb;
-            border-radius: 10px;
-            padding: 16px;
+            margin-top: 20px;
+            background: #f1f5f9;
+            border-left: 6px solid #3b82f6;
+            border-radius: 16px;
+            padding: 20px;
             white-space: pre-wrap;
             line-height: 1.6;
+            font-size: 16px;
         }
         #rollieLoadingVideo {
             width: 100%;
-            max-width: 320px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            margin: 12px auto;
+            max-width: 360px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 auto 16px;
             display: none;
         }
 
@@ -164,9 +219,11 @@
             header {
                 padding: 12px 14px;
             }
+
             .header-left img {
                 height: 48px;
             }
+
             .header-left h1 {
                 margin: 0;
                 font-size: 1.1rem;
@@ -175,11 +232,28 @@
                 text-overflow: ellipsis;
                 max-width: 45vw;
             }
+
+            .header-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            main {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .window {
+                border-radius: 20px;
+                padding: 20px 16px;
+            }
+
             .agent-header img {
                 height: 165px;
                 max-width: 100%;
                 object-fit: contain;
             }
+
             .agent-header h2 {
                 font-size: 1.55rem;
             }
@@ -187,6 +261,8 @@
     </style>
 </head>
 <body>
+<div class="rain"></div>
+
 <header>
     <div class="header-left">
         <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
@@ -197,8 +273,8 @@
     </div>
 </header>
 
-<div class="wrap">
-    <div class="panel">
+<main>
+    <div class="window">
         <div class="agent-header">
             <img src="Images/Rollie.png" alt="Rollie">
             <h2>Dobbelspel Generator met Rollie</h2>
@@ -236,7 +312,7 @@
 
         <div id="resultaat"></div>
     </div>
-</div>
+</main>
 
 <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
 <script type="module" src="/JS/auth.js"></script>
