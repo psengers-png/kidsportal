@@ -321,6 +321,64 @@ const apiRequestEndpoints = [
 ];
 let currentImage = '';
 
+function toSafeStrijkkraalOnderwerp(input) {
+    const value = (input || '').trim().toLowerCase();
+    if (!value) {
+        return input;
+    }
+
+    const replacementRules = [
+        {
+            aliases: ['stitch', 'lilo en stitch', 'lilo & stitch'],
+            replacement: 'een blauwe ruimte alien met grote oren, vrolijke tekenfilmstijl'
+        },
+        {
+            aliases: ['pikachu', 'pokemon', 'pokémon'],
+            replacement: 'een geel bliksemdiertje met rode wangetjes, vrolijke cartoonstijl'
+        },
+        {
+            aliases: ['mickey', 'minnie'],
+            replacement: 'een vrolijke muis met ronde oren, klassieke tekenfilmstijl'
+        },
+        {
+            aliases: ['mario', 'luigi'],
+            replacement: 'een vrolijke game-loodgieter met pet en snor, kleurrijke cartoonstijl'
+        },
+        {
+            aliases: ['sonic'],
+            replacement: 'een snelle blauwe egel met sportieve schoenen, energieke cartoonstijl'
+        },
+        {
+            aliases: ['spiderman', 'spider-man'],
+            replacement: 'een acrobatische superheld met web-patroon pak, dynamische cartoonstijl'
+        },
+        {
+            aliases: ['batman'],
+            replacement: 'een nacht-superheld met cape en vleermuis-thema, stoere cartoonstijl'
+        },
+        {
+            aliases: ['elsa', 'anna', 'frozen'],
+            replacement: 'een ijskoningin-prinses met vlecht en sneeuwthema, magische tekenfilmstijl'
+        },
+        {
+            aliases: ['paw patrol', 'chase', 'skye', 'marshall'],
+            replacement: 'een dappere reddingspup met uniform, vrolijke animatiestijl'
+        },
+        {
+            aliases: ['hello kitty'],
+            replacement: 'een schattig wit katje met strikje, lieve kawaii-stijl'
+        }
+    ];
+
+    for (const rule of replacementRules) {
+        if (rule.aliases.some((alias) => value.includes(alias))) {
+            return rule.replacement;
+        }
+    }
+
+    return input;
+}
+
 async function postApiRequest(body, userId) {
     let lastResponse = null;
     let lastError = null;
@@ -388,12 +446,12 @@ form.addEventListener('submit', async (e) => {
 
     try {
         const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
-        const response = await postApiRequest({
+        let response = await postApiRequest({
             type: 'strikey',
             payload: { onderwerp }
         }, userId);
 
-        const text = await response.text();
+        let text = await response.text();
         let data;
 
         try {
@@ -401,6 +459,43 @@ form.addEventListener('submit', async (e) => {
         } catch {
             resultaat.innerHTML = `<p style='color:#dc2626;'>Kon antwoord niet lezen: ${text}</p>`;
             return;
+        }
+
+        if (!response.ok) {
+            const safeOnderwerp = toSafeStrijkkraalOnderwerp(onderwerp);
+            const shouldRetryWithSafePrompt =
+                response.status === 400 &&
+                safeOnderwerp !== onderwerp &&
+                (data?.error || '').includes('strijkkraalmotief');
+
+            if (shouldRetryWithSafePrompt) {
+                response = await postApiRequest({
+                    type: 'strikey',
+                    payload: { onderwerp: safeOnderwerp }
+                }, userId);
+
+                text = await response.text();
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    resultaat.innerHTML = `<p style='color:#dc2626;'>Kon antwoord niet lezen: ${text}</p>`;
+                    return;
+                }
+
+                if (!response.ok) {
+                    resultaat.innerHTML = `<p style='color:#dc2626;'>${data.error || 'Er ging iets mis.'}</p>`;
+                    return;
+                }
+            }
+
+            if (!response.ok) {
+                resultaat.innerHTML = `<p style='color:#dc2626;'>${data.error || 'Er ging iets mis.'}</p>`;
+                return;
+            }
+
+            if (safeOnderwerp !== onderwerp) {
+                resultaat.innerHTML = "<p style='color:#0f766e; font-weight:600; margin-bottom:10px;'>Tip: dit onderwerp is automatisch iets neutraler omschreven om een resultaat te kunnen maken.</p>";
+            }
         }
 
         if (!response.ok) {
@@ -414,7 +509,8 @@ form.addEventListener('submit', async (e) => {
             return;
         }
 
-        resultaat.innerHTML = `<img src="${currentImage}" alt="Strijkkraalmotief">`;
+        const currentMessage = resultaat.innerHTML || '';
+        resultaat.innerHTML = `${currentMessage}<img src="${currentImage}" alt="Strijkkraalmotief">`;
         downloadBtn.style.display = 'inline-block';
     } catch (err) {
         resultaat.innerHTML = `<p style='color:#dc2626;'>Fout: ${err}</p>`;

@@ -86,6 +86,23 @@
             box-shadow: 0 12px 28px rgba(30, 58, 138, 0.15);
             padding: 24px;
         }
+        .agent-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        .agent-header img {
+            height: 250px;
+        }
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2rem;
+            color: #1e3a8a;
+        }
+        .agent-header p {
+            margin: 10px 0 0;
+            color: #334155;
+            line-height: 1.7;
+        }
         #statusText {
             text-align: center;
             color: #2563eb;
@@ -158,6 +175,14 @@
                 text-overflow: ellipsis;
                 max-width: 45vw;
             }
+            .agent-header img {
+                height: 165px;
+                max-width: 100%;
+                object-fit: contain;
+            }
+            .agent-header h2 {
+                font-size: 1.55rem;
+            }
         }
     </style>
 </head>
@@ -174,6 +199,16 @@
 
 <div class="wrap">
     <div class="panel">
+        <div class="agent-header">
+            <img src="Images/Rollie.png" alt="Rollie">
+            <h2>Dobbelspel Generator met Rollie</h2>
+            <p>Rollie bedenkt een spel op maat op basis van het aantal spelers en het energieniveau.</p>
+            <p style="max-width:700px; margin:12px auto 0;">
+                Perfect voor thuis of in de klas: snel een creatief dobbelspel met duidelijke regels,
+                een helder doel en een leuke twist die past bij jouw groep.
+            </p>
+        </div>
+
         <p id="statusText">Bezig met controleren...</p>
 
         <form id="rollieForm" style="display:none;">
