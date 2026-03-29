@@ -446,9 +446,11 @@ form.addEventListener('submit', async (e) => {
 
     try {
         const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+        const safeOnderwerp = toSafeStrijkkraalOnderwerp(onderwerp);
+        const onderwerpIsMapped = safeOnderwerp !== onderwerp;
         let response = await postApiRequest({
             type: 'strikey',
-            payload: { onderwerp }
+            payload: { onderwerp: safeOnderwerp }
         }, userId);
 
         let text = await response.text();
@@ -462,44 +464,12 @@ form.addEventListener('submit', async (e) => {
         }
 
         if (!response.ok) {
-            const safeOnderwerp = toSafeStrijkkraalOnderwerp(onderwerp);
-            const shouldRetryWithSafePrompt =
-                response.status === 400 &&
-                safeOnderwerp !== onderwerp &&
-                (data?.error || '').includes('strijkkraalmotief');
-
-            if (shouldRetryWithSafePrompt) {
-                response = await postApiRequest({
-                    type: 'strikey',
-                    payload: { onderwerp: safeOnderwerp }
-                }, userId);
-
-                text = await response.text();
-                try {
-                    data = JSON.parse(text);
-                } catch {
-                    resultaat.innerHTML = `<p style='color:#dc2626;'>Kon antwoord niet lezen: ${text}</p>`;
-                    return;
-                }
-
-                if (!response.ok) {
-                    resultaat.innerHTML = `<p style='color:#dc2626;'>${data.error || 'Er ging iets mis.'}</p>`;
-                    return;
-                }
-            }
-
-            if (!response.ok) {
-                resultaat.innerHTML = `<p style='color:#dc2626;'>${data.error || 'Er ging iets mis.'}</p>`;
-                return;
-            }
-
-            if (safeOnderwerp !== onderwerp) {
-                resultaat.innerHTML = "<p style='color:#0f766e; font-weight:600; margin-bottom:10px;'>Tip: dit onderwerp is automatisch iets neutraler omschreven om een resultaat te kunnen maken.</p>";
-            }
-        }
-
-        if (!response.ok) {
-            resultaat.innerHTML = `<p style='color:#dc2626;'>${data.error || 'Er ging iets mis.'}</p>`;
+            const detailedError =
+                data?.details?.error ||
+                data?.details ||
+                data?.error ||
+                'Er ging iets mis.';
+            resultaat.innerHTML = `<p style='color:#dc2626;'>${detailedError}</p>`;
             return;
         }
 
@@ -509,7 +479,9 @@ form.addEventListener('submit', async (e) => {
             return;
         }
 
-        const currentMessage = resultaat.innerHTML || '';
+        const currentMessage = onderwerpIsMapped
+            ? "<p style='color:#0f766e; font-weight:600; margin-bottom:10px;'>Tip: dit onderwerp is automatisch iets neutraler omschreven om een resultaat te kunnen maken.</p>"
+            : '';
         resultaat.innerHTML = `${currentMessage}<img src="${currentImage}" alt="Strijkkraalmotief">`;
         downloadBtn.style.display = 'inline-block';
     } catch (err) {
