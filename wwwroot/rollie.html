@@ -229,6 +229,44 @@ const form = document.getElementById('rollieForm');
 const resultaat = document.getElementById('resultaat');
 const submitBtn = form.querySelector('button[type="submit"]');
 const rollieLoadingVideo = document.getElementById('rollieLoadingVideo');
+const apiRequestEndpoints = [
+    'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest',
+    'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/api/apiRequest',
+    'https://sengfam1.azurewebsites.net/api/apiRequest'
+];
+
+async function postApiRequest(body, userId) {
+    let lastResponse = null;
+    let lastError = null;
+
+    for (const endpoint of apiRequestEndpoints) {
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.status === 404) {
+                lastResponse = response;
+                continue;
+            }
+
+            return response;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+
+    if (lastResponse) {
+        return lastResponse;
+    }
+
+    throw lastError || new Error('apiRequest endpoint niet bereikbaar');
+}
 
 function startLoadingState() {
     submitBtn.disabled = true;
@@ -266,17 +304,10 @@ form.addEventListener('submit', async (e) => {
     };
 
     try {
-        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'user-id': userId
-            },
-            body: JSON.stringify({
-                type: 'rollie',
-                payload
-            })
-        });
+        const resp = await postApiRequest({
+            type: 'rollie',
+            payload
+        }, userId);
 
         const text = await resp.text();
 

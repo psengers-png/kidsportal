@@ -315,7 +315,45 @@ const resultaat = document.getElementById('resultaat');
 const generateBtn = document.getElementById('generateBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 const strikeyLoadingVideo = document.getElementById('strikeyLoadingVideo');
+const apiRequestEndpoints = [
+    'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest',
+    'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/api/apiRequest',
+    'https://sengfam1.azurewebsites.net/api/apiRequest'
+];
 let currentImage = '';
+
+async function postApiRequest(body, userId) {
+    let lastResponse = null;
+    let lastError = null;
+
+    for (const endpoint of apiRequestEndpoints) {
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.status === 404) {
+                lastResponse = response;
+                continue;
+            }
+
+            return response;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+
+    if (lastResponse) {
+        return lastResponse;
+    }
+
+    throw lastError || new Error('apiRequest endpoint niet bereikbaar');
+}
 
 function startLoadingState() {
     generateBtn.disabled = true;
@@ -351,17 +389,10 @@ form.addEventListener('submit', async (e) => {
 
     try {
         const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
-        const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'user-id': userId
-            },
-            body: JSON.stringify({
-                type: 'strikey',
-                payload: { onderwerp }
-            })
-        });
+        const response = await postApiRequest({
+            type: 'strikey',
+            payload: { onderwerp }
+        }, userId);
 
         const text = await response.text();
         let data;
