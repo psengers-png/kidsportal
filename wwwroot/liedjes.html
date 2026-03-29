@@ -207,6 +207,33 @@
             color: #2563eb;
         }
 
+        .premium-banner {
+            display: none;
+            margin: 20px 0;
+            border-radius: 16px;
+            border: 2px solid #f59e0b;
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            color: #7c2d12;
+            padding: 16px 18px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(124, 45, 18, 0.14);
+        }
+
+        .premium-banner strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .premium-banner button {
+            margin-top: 12px;
+            background: #b91c1c;
+        }
+
+        .premium-banner button:hover {
+            background: #991b1b;
+        }
+
         #resultaat {
             margin-top: 30px;
         }
@@ -308,6 +335,12 @@
 
         <p id="statusText">Bezig met controleren...</p>
 
+        <div id="premiumBanner" class="premium-banner">
+            <strong>Premium functie</strong>
+            Beatty is alleen beschikbaar met een actief maandelijks of jaarlijks abonnement.
+            <button id="premiumUpgradeBtn" type="button">Upgrade naar Premium</button>
+        </div>
+
         <form id="liedjesForm" style="display:none;">
             <div class="form-section">
                 <div class="section-title">Beschrijving</div>
@@ -349,10 +382,35 @@
 import { startStripeCheckout } from '/JS/abonnement.js';
 import { msalInstance } from '/JS/auth.js';
 
-setTimeout(() => {
+let beattyPremiumAccess = false;
+
+async function fetchUserStatus(userId) {
+    const response = await fetch(`https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus?t=${Date.now()}`, {
+        method: 'GET',
+        headers: {
+            'user-id': userId,
+            'Cache-Control': 'no-cache'
+        },
+        cache: 'no-store'
+    });
+
+    if (!response.ok) {
+        return null;
+    }
+
+    try {
+        return await response.json();
+    } catch (_) {
+        return null;
+    }
+}
+
+async function initBeattyAccess() {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("liedjesForm");
+    const premiumBanner = document.getElementById('premiumBanner');
+    const premiumUpgradeBtn = document.getElementById('premiumUpgradeBtn');
 
     if (!userId) {
         statusText.textContent = "Log in om liedjes te maken.";
@@ -360,9 +418,38 @@ setTimeout(() => {
         return;
     }
 
+    const normalizedUserId = userId.split('.')[0];
+    const userStatus = await fetchUserStatus(normalizedUserId);
+    const hasPremium = Boolean(userStatus && userStatus.isActive);
+
+    beattyPremiumAccess = hasPremium;
+    if (!hasPremium) {
+        statusText.style.display = 'block';
+        statusText.style.color = '#b45309';
+        statusText.textContent = 'Beatty is een Premium functie. Upgrade om liedjes te maken.';
+        form.style.display = 'none';
+        premiumBanner.style.display = 'block';
+
+        premiumUpgradeBtn.onclick = () => {
+            if (window.showSubscriptionUpgradeModal) {
+                window.showSubscriptionUpgradeModal(normalizedUserId, {
+                    mode: 'premium',
+                    featureName: 'Beatty Liedjesmaker'
+                });
+            }
+        };
+
+        return;
+    }
+
+    premiumBanner.style.display = 'none';
     statusText.style.display = "none";
     form.style.display = "block";
     window.refreshHeaderAccountMenu?.();
+}
+
+setTimeout(() => {
+    initBeattyAccess();
 }, 1000);
 
 const form = document.getElementById("liedjesForm");
@@ -459,6 +546,19 @@ async function pollStatus(taskId) {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    if (!beattyPremiumAccess) {
+        lyricsBox.innerHTML = "<div style='color:#7c2d12; text-align:center; padding: 16px;'>Beatty is alleen beschikbaar met Premium abonnement.</div>";
+        const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+        if (window.showSubscriptionUpgradeModal) {
+            window.showSubscriptionUpgradeModal(_upgradeUserId, {
+                mode: 'premium',
+                featureName: 'Beatty Liedjesmaker'
+            });
+        }
+        return;
+    }
+
     startLoadingState();
 
     const onderwerp = document.getElementById("onderwerp").value.trim();
@@ -484,7 +584,21 @@ form.addEventListener("submit", async (e) => {
 
         const text = await resp.text();
         if (!resp.ok) {
-            if (resp.status === 403 && text.includes('limiet')) {
+            const normalizedError = (text || '').toLowerCase();
+            const isPremiumError =
+                normalizedError.includes('premium') ||
+                normalizedError.includes('actief maandelijks of jaarlijks abonnement');
+
+            if (resp.status === 403 && isPremiumError) {
+                lyricsBox.innerHTML = "<div style='color:#7c2d12; text-align:center; padding: 16px;'>Beatty is alleen beschikbaar met Premium abonnement.</div>";
+                const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                if (window.showSubscriptionUpgradeModal) {
+                    window.showSubscriptionUpgradeModal(_upgradeUserId, {
+                        mode: 'premium',
+                        featureName: 'Beatty Liedjesmaker'
+                    });
+                }
+            } else if (resp.status === 403 && normalizedError.includes('limiet')) {
                 lyricsBox.innerHTML = "<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>";
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
