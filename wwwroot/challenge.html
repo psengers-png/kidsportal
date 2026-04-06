@@ -354,26 +354,41 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
-import { msalInstance } from '/JS/auth.js';
-import { startStripeCheckout } from '/JS/abonnement.js';
-
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("challengeForm");
 
+    form.style.display = "block";
+
     if (!userId) {
-        statusText.textContent = "Log in om challenges te gebruiken.";
-        window.refreshHeaderAccountMenu?.();
-        return;
+        statusText.textContent = "Je bent niet ingelogd. Je kunt alvast kiezen; bij genereren vragen we je om in te loggen.";
+    } else {
+        statusText.style.display = "none";
     }
 
-    // Wel ingelogd, toon form
-    statusText.style.display = "none";
-    form.style.display = "block";
     window.refreshHeaderAccountMenu?.();
 }, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
 
 const form = document.getElementById("challengeForm");
 const resultaat = document.getElementById("resultaat");
@@ -415,6 +430,12 @@ function fileToDataUrl(file) {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const userId = await requireLoginForAction("Log in om challenges te gebruiken.");
+    if (!userId) {
+        return;
+    }
+
     startLoadingState();
 
     const energie = document.getElementById("energie").value;
@@ -426,12 +447,12 @@ form.addEventListener("submit", async (e) => {
     };
 
     try {
-        console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
+        console.log("Debug: userId before fetch:", userId);
         const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'user-id': localStorage.getItem('userId') || ''
+                'user-id': userId
             },
             body: JSON.stringify({
                 type: 'challenge',
@@ -483,16 +504,14 @@ form.addEventListener("submit", async (e) => {
 });
 
 judgePhotosBtn.addEventListener("click", async (event) => {
-    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+    const userId = await requireLoginForAction("Log in om je challenge-resultaat te laten beoordelen.");
+    if (!userId) {
+        return;
+    }
 
     const files = Array.from(photosInput.files || []);
     if (files.length < 1) {
         judgeResult.innerHTML = "<span style='color:#c53030;'>Upload minimaal 1 foto.</span>";
-        return;
-    }
-
-    if (!userId) {
-        judgeResult.innerHTML = "<span style='color:#c53030;'>Je bent niet ingelogd.</span>";
         return;
     }
 

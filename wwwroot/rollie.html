@@ -318,23 +318,40 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
-import { msalInstance } from '/JS/auth.js';
-
 setTimeout(() => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById('statusText');
     const form = document.getElementById('rollieForm');
 
+    form.style.display = 'block';
+
     if (!userId) {
-        statusText.textContent = 'Log in om Rollie te gebruiken.';
-        window.refreshHeaderAccountMenu?.();
-        return;
+        statusText.textContent = 'Je bent niet ingelogd. Vul gerust alvast in; bij genereren vragen we je om in te loggen.';
+    } else {
+        statusText.style.display = 'none';
     }
 
-    statusText.style.display = 'none';
-    form.style.display = 'block';
     window.refreshHeaderAccountMenu?.();
 }, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
 
 const form = document.getElementById('rollieForm');
 const resultaat = document.getElementById('resultaat');
@@ -400,9 +417,8 @@ function stopLoadingState() {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+    const userId = await requireLoginForAction('Log in om Rollie te gebruiken.');
     if (!userId) {
-        resultaat.innerHTML = "<p style='color:#dc2626;'>Je bent niet ingelogd.</p>";
         return;
     }
 

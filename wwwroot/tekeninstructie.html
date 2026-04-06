@@ -323,16 +323,35 @@ setTimeout(() => {
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("scetchyForm");
 
+    form.style.display = "block";
+
     if (!userId) {
-        statusText.textContent = "Log in om Scetchy te gebruiken.";
-        window.refreshHeaderAccountMenu?.();
-        return;
+        statusText.textContent = "Je bent niet ingelogd. Je kunt alvast invullen; bij genereren vragen we je om in te loggen.";
+    } else {
+        statusText.style.display = "none";
     }
 
-    statusText.style.display = "none";
-    form.style.display = "block";
     window.refreshHeaderAccountMenu?.();
 }, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
 
 const abonnementBtn = document.getElementById('abonnementBtn');
 if (abonnementBtn) {
@@ -378,6 +397,12 @@ function stopLoadingState() {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const userId = await requireLoginForAction("Log in om Scetchy te gebruiken.");
+    if (!userId) {
+        return;
+    }
+
     startLoadingState();
     const onderwerp = form.onderwerp.value.trim();
 
@@ -386,7 +411,7 @@ form.addEventListener("submit", async (e) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'user-id': localStorage.getItem('userId') || ''
+                'user-id': userId
             },
             body: JSON.stringify({
                 type: 'scetchy',

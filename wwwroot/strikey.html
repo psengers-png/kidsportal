@@ -291,23 +291,40 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
-import { msalInstance } from '/JS/auth.js';
-
 setTimeout(() => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById('statusText');
     const form = document.getElementById('strikeyForm');
 
+    form.style.display = 'block';
+
     if (!userId) {
-        statusText.textContent = 'Log in om Strikey te gebruiken.';
-        window.refreshHeaderAccountMenu?.();
-        return;
+        statusText.textContent = 'Je bent niet ingelogd. Vul gerust alvast in; bij genereren vragen we je om in te loggen.';
+    } else {
+        statusText.style.display = 'none';
     }
 
-    statusText.style.display = 'none';
-    form.style.display = 'block';
     window.refreshHeaderAccountMenu?.();
 }, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
 
 const form = document.getElementById('strikeyForm');
 const onderwerpInput = document.getElementById('onderwerp');
@@ -436,6 +453,11 @@ function stopLoadingState() {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const userId = await requireLoginForAction('Log in om Strikey te gebruiken.');
+    if (!userId) {
+        return;
+    }
+
     const onderwerp = onderwerpInput.value.trim();
     if (!onderwerp) {
         resultaat.innerHTML = "<p style='color:#dc2626;'>Vul eerst een onderwerp in.</p>";
@@ -445,7 +467,6 @@ form.addEventListener('submit', async (e) => {
     startLoadingState();
 
     try {
-        const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
         const safeOnderwerp = toSafeStrijkkraalOnderwerp(onderwerp);
         const onderwerpIsMapped = safeOnderwerp !== onderwerp;
         let response = await postApiRequest({
