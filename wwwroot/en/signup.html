@@ -332,7 +332,7 @@
 </head>
 <body>
 
-<a id="language-fab-en" href="/signup.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/signup.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
     <div class="rain"></div>
 
     <header>
@@ -348,17 +348,17 @@
     <div class="login-container">
         <div class="logo">
             <h1>Try for Free</h1>
-            <p>Start met 10 gratis aanvragen per maand 🚀</p>
+            <p>Start with 10 free requests per month 🚀</p>
         </div>
 
         <div id="emailError" class="error-message"></div>
 
         <div class="info-text">
-            <strong>🎉 Nieuw account = 10 gratis API-aanvragen per maand.</strong><br>
-            Zodra je maandlimiet op is, krijg je automatisch een upgrade-popup met 2 keuzes:<br>
-            <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.<br><br>
-            Maak een account aan en ontdek wat onze kindvriendelijke AI-agents voor jou kunnen doen — van kleurplaten tot liedjes, moppen en meer.<br><br>
-            We gebruiken je e-mailadres alleen om in te loggen en voor belangrijke berichten over je account.
+            <strong>🎉 New account = 10 free API requests per month.</strong><br>
+            Once your monthly limit is reached, you automatically get an upgrade popup with 2 choices:<br>
+            <strong>€2,99 per month</strong> or <strong>€12,99 per year</strong>.<br><br>
+            Create an account and discover what our kid-friendly AI agents can do for you — from coloring pages to songs, jokes, and more.<br><br>
+            We only use your email address for sign-in and important account messages.
         </div>
 
         <div class="form-group">
@@ -372,16 +372,16 @@
         </div>
 
         <div class="consent-group">
-            <input type="checkbox" id="termsConsent" aria-label="Akkoord met voorwaarden en privacyverklaring">
+            <input type="checkbox" id="termsConsent" aria-label="Agree to terms and privacy policy">
             <label for="termsConsent">
-                I agree to the <a href="/en/terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a> en de <a href="/en/privacy.html" target="_blank" rel="noopener noreferrer">privacyverklaring</a>.
+                I agree to the <a href="/en/terms.html" target="_blank" rel="noopener noreferrer">terms</a> and the <a href="/en/privacy.html" target="_blank" rel="noopener noreferrer">privacy policy</a>.
             </label>
         </div>
 
         <div class="consent-group optional">
-            <input type="checkbox" id="marketingConsent" aria-label="Ja, ik wil nieuws en vragen ontvangen">
+            <input type="checkbox" id="marketingConsent" aria-label="Yes, I want to receive updates and questions">
             <label for="marketingConsent">
-                Ja, ik ontvang graag updates over de pilot, nieuwe agents en andere nieuwtjes. Je kunt je altijd uitschrijven.
+                Yes, I would like updates about the pilot, new agents, and other news. You can unsubscribe at any time.
             </label>
         </div>
 
@@ -392,13 +392,13 @@
         </div>
 
         <div class="back-link">
-            <a href="/en/login.html">Heb je al een account? Log in →</a>
+            <a href="/en/login.html">Already have an account? Log in →</a>
         </div>
     </div>
     </section>
 
     <footer>
-        © 2026 Rainy Day Club — Van binnen is het altijd zonnig 🌈
+        © 2026 Rainy Day Club — It is always sunny on the inside 🌈
     </footer>
 
     <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
@@ -407,7 +407,7 @@
             auth: {
                 clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
                 authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-                redirectUri: window.location.origin + "/home.html",
+                redirectUri: window.location.origin + "/en/home.html",
                 postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
                 knownAuthorities: ["kidsportal2.ciamlogin.com"],
                 navigateToLoginRequestUrl: false
@@ -456,14 +456,14 @@
 
                     sessionStorage.removeItem("ciamLoginInProgress");
 
-                    window.location.href = "/home.html";
+                    window.location.href = "/en/home.html";
                 }
             } catch (error) {
                 console.error("CIAM signup bootstrap failed:", error);
                 sessionStorage.removeItem("ciamLoginInProgress");
                 const emailError = document.getElementById("emailError");
                 if (emailError) {
-                    emailError.textContent = "Account aanmaken kon niet worden afgerond. Probeer opnieuw.";
+                    emailError.textContent = "Account creation could not be completed. Please try again.";
                     emailError.classList.add("show");
                 }
             }
@@ -479,13 +479,13 @@
             emailError.classList.remove("show");
 
             if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
-                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.textContent = "Please enter a valid email address.";
                 emailError.classList.add("show");
                 return;
             }
 
             if (!hasConsent) {
-                emailError.textContent = "Je moet akkoord gaan met de voorwaarden om een account aan te maken.";
+                emailError.textContent = "You must agree to the terms to create an account.";
                 emailError.classList.add("show");
                 return;
             }
@@ -505,12 +505,12 @@
 
                 await msalInstance.loginRedirect({
                     scopes: ["openid", "profile", "offline_access"],
-                    redirectUri: window.location.origin + "/home.html"
+                    redirectUri: window.location.origin + "/en/home.html"
                 });
             } catch (error) {
                 console.error("Create account redirect failed:", error);
                 sessionStorage.removeItem("ciamLoginInProgress");
-                emailError.textContent = "Account aanmaken is mislukt. Probeer opnieuw.";
+                emailError.textContent = "Account creation failed. Please try again.";
                 emailError.classList.add("show");
                 createAccountBtn.disabled = false;
                 createAccountBtn.innerHTML = "Try for Free";

@@ -5,7 +5,7 @@
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage account - Rainy Day Club</title>
-    <meta name="description" content="Beheer je Rainy Day Club account, abonnement en maandelijkse gratis creaties." />
+    <meta name="description" content="Manage your Rainy Day Club account, subscription, and monthly free creations." />
     <meta name="robots" content="noindex, nofollow" />
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -183,7 +183,7 @@
 </head>
 <body>
 
-<a id="language-fab-en" href="/account.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/account.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 <header>
     <div class="header-left">
         <a href="/en/home.html"><img class="header-logo" src="Images/Logo Rainydayclub.png" alt="Rainy Day Club"></a>
@@ -197,50 +197,50 @@
 
 <main>
     <div class="status-banner" id="subscriptionBanner">
-        <div class="status-banner-title" id="subscriptionBannerTitle">Status laden...</div>
+        <div class="status-banner-title" id="subscriptionBannerTitle">Loading status...</div>
         <div class="status-banner-text" id="subscriptionBannerText"></div>
     </div>
 
     <div class="card">
-        <h2>Jouw account</h2>
-        <div class="muted">Hier zie je je huidige plan, gebruik en wat je kunt doen als je wilt upgraden of opzeggen.</div>
+        <h2>Your account</h2>
+        <div class="muted">Here you can see your current plan, usage, and what you can do if you want to upgrade or cancel.</div>
 
         <div class="status-grid">
             <div class="status-item">
                 <div class="label">Status</div>
-                <div class="value" id="statusValue">Laden...</div>
+                <div class="value" id="statusValue">Loading...</div>
             </div>
             <div class="status-item">
-                <div class="label">Huidig plan</div>
-                <div class="value" id="planValue">Laden...</div>
+                <div class="label">Current plan</div>
+                <div class="value" id="planValue">Loading...</div>
             </div>
             <div class="status-item">
-                <div class="label">Gratis creaties</div>
-                <div class="value" id="usageValue">Laden...</div>
+                <div class="label">Free creations</div>
+                <div class="value" id="usageValue">Loading...</div>
             </div>
             <div class="status-item">
-                <div class="label">Volgende stap</div>
-                <div class="value" id="nextStepValue">Laden...</div>
+                <div class="label">Next step</div>
+                <div class="value" id="nextStepValue">Loading...</div>
             </div>
         </div>
 
         <div class="actions">
             <button class="btn btn-primary" id="upgradeBtn">Upgrade subscription</button>
-            <button class="btn btn-danger" id="cancelBtn">Subscription opzeggen</button>
+            <button class="btn btn-danger" id="cancelBtn">Cancel subscription</button>
             <button class="btn btn-secondary" id="refreshBtn">Refresh status</button>
         </div>
 
-        <div class="notice" id="statusNotice">Status wordt opgehaald...</div>
+        <div class="notice" id="statusNotice">Fetching status...</div>
     </div>
 
     <div class="card">
         <h2>How does it work?</h2>
         <ul class="info-list">
-            <li>Elke ingelogde gebruiker krijgt <strong>10 gratis creaties per maand</strong>.</li>
-            <li>Heb je de 10 gratis creaties gebruikt? Dan verschijnt automatisch een upgrade-pop-up.</li>
-            <li>Je kunt kiezen uit <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.</li>
-            <li>Bij opzeggen blijft je toegang actief tot het einde van je huidige factuurperiode.</li>
-            <li>Je account blijft altijd bestaan; je kunt later opnieuw upgraden.</li>
+            <li>Every signed-in user gets <strong>10 free creations per month</strong>.</li>
+            <li>Used your 10 free creations? An upgrade popup appears automatically.</li>
+            <li>You can choose <strong>€2,99 per month</strong> or <strong>€12,99 per year</strong>.</li>
+            <li>If you cancel, your access remains active until the end of your current billing period.</li>
+            <li>Your account always stays available; you can upgrade again later.</li>
         </ul>
     </div>
 
@@ -267,16 +267,16 @@
 
     function readablePlan(status) {
         const isActive = Boolean(status?.isActive);
-        if (!isActive) return 'Geen actief abonnement (gratis plan)';
+        if (!isActive) return 'No active subscription (free plan)';
 
         const planType = (status?.planType || '').toLowerCase();
         const preferred = (status?.preferredPlanType || '').toLowerCase();
         const candidate = planType || preferred;
 
-        if (candidate === 'jaarlijks') return 'Jaarabonnement (€12,99/jaar)';
-        if (candidate === 'particulier') return 'Maandabonnement (€2,99/mnd)';
+        if (candidate === 'jaarlijks') return 'Yearly subscription (€12,99/year)';
+        if (candidate === 'particulier') return 'Monthly subscription (€2,99/month)';
         if (candidate === 'pilot') return 'Pilot access';
-        return 'Actief abonnement';
+        return 'Active subscription';
     }
 
     async function fetchUserStatus(userId) {
@@ -290,7 +290,7 @@
         });
 
         if (!response.ok) {
-            throw new Error(`Status ophalen mislukt (${response.status})`);
+            throw new Error(`Failed to fetch status (${response.status})`);
         }
 
         return response.json();
@@ -313,29 +313,29 @@
             banner.style.border = '1px solid #fdba74';
             bannerTitle.style.color = '#9a3412';
             bannerText.style.color = '#7c2d12';
-            bannerTitle.textContent = endsAt ? `Opgezegd — loopt af op ${endsAt}` : 'Opgezegd — nog tijdelijk actief';
+            bannerTitle.textContent = endsAt ? `Canceled - expires on ${endsAt}` : 'Canceled - still temporarily active';
             bannerText.textContent = endsAt
-                ? `Je abonnement is opgezegd, maar blijft geldig tot ${endsAt}. Daarna stopt het automatisch en val je terug op het gratis plan.`
-                : 'Je abonnement is opgezegd, maar blijft actief tot het einde van je huidige factuurperiode.';
+                ? `Your subscription has been canceled but remains valid until ${endsAt}. Then it ends automatically and you return to the free plan.`
+                : 'Your subscription has been canceled but remains active until the end of your current billing period.';
         } else if (isActive) {
             banner.style.background = '#ecfdf5';
             banner.style.border = '1px solid #86efac';
             bannerTitle.style.color = '#166534';
             bannerText.style.color = '#166534';
-            bannerTitle.textContent = 'Actief abonnement';
-            bannerText.textContent = `Je hebt momenteel ${readablePlan(status)} en onbeperkte toegang tot alle functies.`;
+            bannerTitle.textContent = 'Active subscription';
+            bannerText.textContent = `You currently have ${readablePlan(status)} and unlimited access to all features.`;
         } else {
             banner.style.background = '#eff6ff';
             banner.style.border = '1px solid #93c5fd';
             bannerTitle.style.color = '#1d4ed8';
             bannerText.style.color = '#1e3a8a';
-            bannerTitle.textContent = 'Gratis plan actief';
-            bannerText.textContent = `Je kunt ${Math.max(0, maxRequests - totalUsed)} gratis creaties deze maand gebruiken voordat je een abonnement nodig hebt.`;
+            bannerTitle.textContent = 'Free plan active';
+            bannerText.textContent = `You can ${Math.max(0, maxRequests - totalUsed)} free creations this month before you need a subscription.`;
         }
 
         document.getElementById('statusValue').textContent = isCanceling
-            ? 'Opgezegd, nog actief'
-            : (isActive ? 'Actief' : 'Niet actief');
+            ? 'Canceled, still active'
+            : (isActive ? 'Active' : 'Not active');
         document.getElementById('statusValue').style.color = isCanceling
             ? '#9a3412'
             : (isActive ? '#166534' : '#b91c1c');
@@ -345,41 +345,41 @@
         const nextStep = isCanceling
             ? (endsAt ? `Geldig t/m ${endsAt}` : 'Geldig tot einde factuurperiode')
             : (isActive
-                ? 'Je hebt onbeperkte toegang'
-                : (totalUsed >= maxRequests ? 'Upgrade nodig om door te gaan' : 'Je kunt nog gratis gebruiken'));
+                ? 'You have unlimited access'
+                : (totalUsed >= maxRequests ? 'Upgrade required to continue' : 'You can still use free requests'));
         document.getElementById('nextStepValue').textContent = nextStep;
 
         document.getElementById('statusNotice').textContent = isCanceling
             ? (endsAt
-                ? `Je abonnement is opgezegd en blijft geldig tot ${endsAt}. Daarna stopt het automatisch.`
-                : 'Je abonnement is opgezegd en blijft actief tot het einde van je factuurperiode.')
+                ? `Your subscription is canceled and remains valid until ${endsAt}. Then it stops automatically.`
+                : 'Your subscription is canceled and remains active until the end of your billing period.')
             : (isActive
-                ? 'Je abonnement is actief. Je kunt opzeggen wanneer je wilt.'
+                ? 'Your subscription is active. You can cancel whenever you want.'
                 : (totalUsed >= maxRequests
-                    ? 'Je gratis limiet is bereikt. Upgrade om onbeperkt verder te gaan.'
-                    : 'Je account is actief op het gratis plan.'));
+                    ? 'Your free limit has been reached. Upgrade for unlimited use.'
+                    : 'Your account is active on the free plan.'));
 
         const cancelBtn = document.getElementById('cancelBtn');
         cancelBtn.disabled = !isActive || isCanceling;
         cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
-        cancelBtn.textContent = isCanceling ? 'Al opgezegd' : 'Subscription opzeggen';
+        cancelBtn.textContent = isCanceling ? 'Already canceled' : 'Cancel subscription';
     }
 
     async function refreshStatus() {
         const notice = document.getElementById('statusNotice');
         const userId = getStoredUserId();
         if (!userId) {
-            window.location.href = '/login.html';
+            window.location.href = '/en/login.html';
             return null;
         }
 
         try {
-            notice.textContent = 'Status wordt vernieuwd...';
+            notice.textContent = 'Refreshing status...';
             const status = await fetchUserStatus(userId);
             renderStatus(status);
             return status;
         } catch (error) {
-            notice.textContent = error.message || 'Er ging iets mis bij het ophalen van je status.';
+            notice.textContent = error.message || 'Something went wrong while fetching your status.';
             throw error;
         }
     }
@@ -391,7 +391,7 @@
     document.getElementById('upgradeBtn').addEventListener('click', async () => {
         const userId = getStoredUserId();
         if (!userId) {
-            window.location.href = '/login.html';
+            window.location.href = '/en/login.html';
             return;
         }
 
@@ -400,26 +400,26 @@
             return;
         }
 
-        alert('Upgrade-popup is niet beschikbaar.');
+        alert('Upgrade popup is not available.');
     });
 
     document.getElementById('cancelBtn').addEventListener('click', async () => {
         const userId = getStoredUserId();
         if (!userId) {
-            window.location.href = '/login.html';
+            window.location.href = '/en/login.html';
             return;
         }
 
         try {
             const latestStatus = await refreshStatus();
             if (!latestStatus?.isActive) {
-                alert('Je hebt geen actief abonnement om op te zeggen.');
+                alert('You do not have an active subscription to cancel.');
                 return;
             }
 
             const shouldCancel = window.showSubscriptionManageModal
                 ? await window.showSubscriptionManageModal(latestStatus)
-                : confirm('Weet je zeker dat je wilt opzeggen?');
+                : confirm('Are you sure you want to cancel?');
 
             if (!shouldCancel) {
                 return;
@@ -434,14 +434,14 @@
             });
 
             if (response.ok) {
-                alert('Subscription opgezegd. Je behoudt toegang tot het einde van je huidige factuurperiode.');
+                alert('Subscription canceled. You keep access until the end of your current billing period.');
                 await refreshStatus();
             } else {
-                alert('Opzeggen is niet gelukt. Probeer opnieuw.');
+                alert('Cancellation failed. Please try again.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('Er ging iets mis bij het opzeggen.');
+            alert('Something went wrong while canceling.');
         }
     });
 

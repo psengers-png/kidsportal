@@ -20,7 +20,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Login | Rainy Day Club" />
-    <meta property="og:description" content="Toegang tot je Rainy Day Club account." />
+    <meta property="og:description" content="Access your Rainy Day Club account." />
     <meta property="og:url" content="https://www.rainydayclub.nl/en/login.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
     <meta name="twitter:card" content="summary" />
@@ -365,7 +365,7 @@
 </head>
 <body>
 
-<a id="language-fab-en" href="/login.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/login.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
     <div class="rain"></div>
 
     <header>
@@ -381,7 +381,7 @@
     <div class="login-container">
         <div class="logo">
             <h1>Log in</h1>
-            <p>Log in en gebruik elke maand 10 gratis aanvragen</p>
+            <p>Log in and use 10 free requests every month</p>
         </div>
 
         <!-- Email Form -->
@@ -390,10 +390,10 @@
             <div class="success-message" id="emailSuccess"></div>
 
             <div class="info-text">
-                Heb je al een account? Vul je e-mailadres in en klik op <strong>Log in</strong>.<br>
+                Already have an account? Enter your email address and click <strong>Log in</strong>.<br>
                 No account yet? Go to <a href="/en/signup.html">Try for Free</a>.<br><br>
-                <strong>Gratis plan:</strong> 10 API-aanvragen per maand.<br>
-                Daarna kun je kiezen voor <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.
+                <strong>Free plan:</strong> 10 API requests per month.<br>
+                After that you can choose <strong>€2,99 per month</strong> or <strong>€12,99 per year</strong>.
             </div>
 
             <div class="form-group">
@@ -413,7 +413,7 @@
             </div>
 
             <div class="back-link">
-                <a href="/">← Terug</a>
+                <a href="/en/home.html">← Back</a>
             </div>
         </div>
 
@@ -421,7 +421,7 @@
     </section>
 
     <footer>
-        © 2026 Rainy Day Club — Van binnen is het altijd zonnig 🌈
+        © 2026 Rainy Day Club — It is always sunny on the inside 🌈
     </footer>
 
     <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
@@ -430,7 +430,7 @@
             auth: {
                 clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
                 authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
-                redirectUri: window.location.origin + "/home.html",
+                redirectUri: window.location.origin + "/en/home.html",
                 postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
                 knownAuthorities: ["kidsportal2.ciamlogin.com"],
                 navigateToLoginRequestUrl: false
@@ -446,7 +446,7 @@
                 if (params.get("ciamRequired") === "1") {
                     const emailError = document.getElementById("emailError");
                     if (emailError) {
-                        emailError.textContent = "Rond eerst je Entra ID account-aanmaak af via wachtwoord-login.";
+                        emailError.textContent = "Finish your Entra ID account setup first via password sign-in.";
                         emailError.classList.add("show");
                     }
                     const cleanUrlCiam = window.location.origin + window.location.pathname;
@@ -457,7 +457,7 @@
 
             const emailSuccess = document.getElementById("emailSuccess");
             if (emailSuccess) {
-                emailSuccess.textContent = "Je bent succesvol uitgelogd.";
+                emailSuccess.textContent = "You have been signed out successfully.";
                 emailSuccess.classList.add("show");
             }
 
@@ -504,7 +504,7 @@
 
                     sessionStorage.removeItem("ciamLoginInProgress");
 
-                    window.location.href = "/home.html";
+                    window.location.href = "/en/home.html";
                     return;
                 }
             } catch (error) {
@@ -512,7 +512,7 @@
                 sessionStorage.removeItem("ciamLoginInProgress");
                 const emailError = document.getElementById("emailError");
                 if (emailError) {
-                    emailError.textContent = "CIAM login kon niet worden afgerond. Probeer opnieuw.";
+                    emailError.textContent = "CIAM login could not be completed. Please try again.";
                     emailError.classList.add("show");
                 }
             }
@@ -525,7 +525,7 @@
 
             emailError.classList.remove("show");
             if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
-                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.textContent = "Please enter a valid email address.";
                 emailError.classList.add("show");
                 return;
             }
@@ -540,12 +540,12 @@
 
                 await msalInstance.loginRedirect({
                     scopes: ["openid", "profile", "offline_access"],
-                    redirectUri: window.location.origin + "/home.html"
+                    redirectUri: window.location.origin + "/en/home.html"
                 });
             } catch (error) {
                 console.error("Existing login redirect failed:", error);
                 sessionStorage.removeItem("ciamLoginInProgress");
-                emailError.textContent = "Log in met wachtwoord is mislukt. Probeer opnieuw.";
+                emailError.textContent = "Password sign-in failed. Please try again.";
                 emailError.classList.add("show");
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = "Log in";

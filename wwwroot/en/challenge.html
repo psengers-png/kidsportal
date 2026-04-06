@@ -274,7 +274,7 @@
 
 <body>
 
-<a id="language-fab-en" href="/challenge.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/challenge.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 <div class="rain"></div>
 
 <header>
@@ -295,9 +295,9 @@
             <h2>Challenge generator for kids met Questy</h2>
             <p>Questy bedenkt leuke opdrachten voor regenachtige dagen ☁️🎯</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
-                Questy is een challenge generator voor kinderen waarmee je snel leuke en leerzame opdrachten maakt.
+                Questy is a challenge generator for kids that quickly creates fun and educational activities.
                 Choose an energy level en type activiteit en ontvang direct challenge ideeën die passen bij kinderen
-                van 5 tot 10 jaar, thuis of in de klas.
+                for children aged 5 to 10, at home or in the classroom.
             </p>
         </div>
 
@@ -317,7 +317,7 @@
         </div>
 
         <div class="form-group">
-            <label>Type activiteit (voor kinderen van 5-10 jaar)</label>
+            <label>Activity type (for children aged 5-10)</label>
             <select id="type" required>
                 <option value="">-- Choose an option --</option>
                 <option value="knutselen">Knutselen</option>
@@ -366,7 +366,7 @@ setTimeout(() => {
     form.style.display = "block";
 
     if (!userId) {
-        statusText.textContent = "You are not logged in. Je kunt alvast kiezen; bij genereren vragen we je om in te loggen.";
+        statusText.textContent = "You are not logged in. You can choose options now; we will ask you to sign in when you generate.";
     } else {
         statusText.style.display = "none";
     }
@@ -387,7 +387,7 @@ async function requireLoginForAction(message) {
     if (typeof window.startLoginRedirectWithNotice === 'function') {
         await window.startLoginRedirectWithNotice(message);
     } else {
-        window.location.href = '/login.html';
+        window.location.href = '/en/login.html';
     }
 
     return '';
@@ -434,7 +434,7 @@ function fileToDataUrl(file) {
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const userId = await requireLoginForAction("Log in to challenges te gebruiken.");
+    const userId = await requireLoginForAction("Log in to use challenges.");
     if (!userId) {
         return;
     }
@@ -468,13 +468,13 @@ form.addEventListener("submit", async (e) => {
 
         if (!resp.ok) {
             if(resp.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
                 }
             } else {
-                resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
+                resultaat.innerHTML = `<p style='color:red;'>Error (${resp.status}): ${text}</p>`;
             }
             return;
         }
@@ -490,7 +490,7 @@ form.addEventListener("submit", async (e) => {
         currentChallengeText = data.challenge || "";
         resultaat.innerHTML = `
             <div class="challenge-box">
-                <strong>🎯 Jouw Challenge:</strong><br><br>
+                <strong>🎯 Your Challenge:</strong><br><br>
                 ${data.challenge}
             </div>
         `;
@@ -498,7 +498,7 @@ form.addEventListener("submit", async (e) => {
         judgeResult.innerHTML = "";
         photosInput.value = "";
     } catch (err) {
-        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+        resultaat.innerHTML = `<p style='color:red;'>Error: ${err}</p>`;
         console.error("Error:", err);
     } finally {
         stopLoadingState();
@@ -507,7 +507,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 judgePhotosBtn.addEventListener("click", async (event) => {
-    const userId = await requireLoginForAction("Log in to je challenge-resultaat te laten beoordelen.");
+    const userId = await requireLoginForAction("Log in to let us review your challenge result.");
     if (!userId) {
         return;
     }
@@ -547,7 +547,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
 
         const text = await resp.text();
         if (!resp.ok) {
-            judgeResult.innerHTML = `<span style='color:#c53030;'>Fout (${resp.status}): ${text}</span>`;
+            judgeResult.innerHTML = `<span style='color:#c53030;'>Error (${resp.status}): ${text}</span>`;
             return;
         }
 
@@ -561,7 +561,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
 
         judgeResult.innerHTML = `✅ Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
-        judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
+        judgeResult.innerHTML = `<span style='color:#c53030;'>Error: ${err}</span>`;
     } finally {
         event.target.disabled = false;
     }

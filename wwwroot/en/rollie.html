@@ -263,7 +263,7 @@
 </head>
 <body>
 
-<a id="language-fab-en" href="/rollie.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/rollie.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 <div class="rain"></div>
 
 <header>
@@ -284,7 +284,7 @@
             <p>Rollie bedenkt een spel op maat op basis van het aantal spelers en het energieniveau.</p>
             <p style="max-width:700px; margin:12px auto 0;">
                 Perfect voor thuis of in de klas: snel een creatief dobbelspel met duidelijke regels,
-                een helder doel en een leuke twist die past bij jouw groep.
+                a clear goal and a fun twist that fits your group.
             </p>
         </div>
 
@@ -329,7 +329,7 @@ setTimeout(() => {
     form.style.display = 'block';
 
     if (!userId) {
-        statusText.textContent = 'You are not logged in. Vul gerust alvast in; bij genereren vragen we je om in te loggen.';
+        statusText.textContent = 'You are not logged in. You can fill in the form now; we will ask you to sign in when you generate.';
     } else {
         statusText.style.display = 'none';
     }
@@ -350,7 +350,7 @@ async function requireLoginForAction(message) {
     if (typeof window.startLoginRedirectWithNotice === 'function') {
         await window.startLoginRedirectWithNotice(message);
     } else {
-        window.location.href = '/login.html';
+        window.location.href = '/en/login.html';
     }
 
     return '';
@@ -420,7 +420,7 @@ function stopLoadingState() {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const userId = await requireLoginForAction('Log in to Rollie te gebruiken.');
+    const userId = await requireLoginForAction('Log in to use Rollie.');
     if (!userId) {
         return;
     }
@@ -441,7 +441,7 @@ form.addEventListener('submit', async (e) => {
         const text = await resp.text();
 
         if (!resp.ok) {
-            resultaat.innerHTML = `<p style='color:#dc2626;'>Fout (${resp.status}): ${text}</p>`;
+            resultaat.innerHTML = `<p style='color:#dc2626;'>Error (${resp.status}): ${text}</p>`;
             return;
         }
 
@@ -455,7 +455,7 @@ form.addEventListener('submit', async (e) => {
 
         resultaat.innerHTML = `<div class="result-box">${data.spel || 'Geen spel ontvangen.'}</div>`;
     } catch (error) {
-        resultaat.innerHTML = `<p style='color:#dc2626;'>Fout: ${error}</p>`;
+        resultaat.innerHTML = `<p style='color:#dc2626;'>Error: ${error}</p>`;
     } finally {
         stopLoadingState();
         submitBtn.disabled = false;

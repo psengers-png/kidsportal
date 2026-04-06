@@ -14,18 +14,18 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coloring Page AI generator | Coloring Page maken & ontwerp | Rainy Day Club</title>
-    <meta name="description" content="Maak een kleurplaat met AI met onze kleurplaat generator. Snel kleurplaat maken en kleurplaat ontwerp op maat met Driply." />
+    <meta name="description" content="Create an AI coloring page with our generator. Quickly make custom coloring-page designs with Driply." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/en/kleurplaat.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Coloring Page AI generator | Coloring Page maken" />
-    <meta property="og:description" content="Gebruik Driply als kleurplaat generator voor kleurplaat maken en kleurplaat ontwerp op maat." />
+    <meta property="og:description" content="Use Driply as a coloring-page generator for custom designs." />
     <meta property="og:url" content="https://www.rainydayclub.nl/en/kleurplaat.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Driply.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Coloring Page AI generator | Coloring Page maken" />
-    <meta name="twitter:description" content="Gebruik Driply als kleurplaat generator voor kleurplaat maken en kleurplaat ontwerp op maat." />
+    <meta name="twitter:description" content="Use Driply as a coloring-page generator for custom designs." />
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
 
@@ -272,7 +272,7 @@
 
 <body>
 
-<a id="language-fab-en" href="/kleurplaat.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/kleurplaat.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 
 <div class="rain"></div>
 
@@ -291,12 +291,12 @@
 
         <div class="agent-header">
             <img src="Images/Driply.png" alt="Driply">
-            <h2>Coloring Page AI generator: kleurplaat maken met Driply</h2>
-            <p>Beschrijf iets of upload een foto en Driply maakt er een kleurplaat van ☔🎨</p>
+            <h2>AI Coloring Page Generator with Driply</h2>
+            <p>Describe something or upload a photo and Driply will turn it into a coloring page ☔🎨</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
-                Met deze kleurplaat AI tool kun je eenvoudig een kleurplaat maken voor kinderen. Kies een onderwerp zoals dieren,
-                sprookjes of voertuigen en genereer direct een uniek kleurplaat ontwerp op maat. Deze kleurplaat generator
-                is ideaal voor thuis, op school en tijdens kinderfeestjes.
+                With this AI coloring-page tool you can easily create a coloring page for kids. Choose a topic such as animals,
+                fairy tales or vehicles and instantly generate a unique custom design. This coloring-page generator
+                is ideal for home, school, and birthday parties.
             </p>
         </div>
 
@@ -304,30 +304,30 @@
 
     <form id="kleurplaatForm" style="display:none;">
         <div class="form-section">
-            <div class="section-title">Optie 1: Beschrijving</div>
-            <label>Wie? (bijv. een aap, kat, prinses)</label>
+            <div class="section-title">Option 1: Description</div>
+            <label>Who? (e.g. a monkey, cat, princess)</label>
             <input id="wie" type="text">
 
-            <label>Waar? (bijv. in de jungle, thuis, op het kasteel)</label>
+            <label>Where? (e.g. in the jungle, at home, at the castle)</label>
             <input id="waar" type="text">
 
-            <label>Welke activiteit? (bijv. spelen, eten, vissen)</label>
+            <label>Which activity? (e.g. playing, eating, fishing)</label>
             <input id="activiteit" type="text">
         </div>
 
         <div class="form-section">
-            <div class="section-title">Optie 2: Foto Upload</div>
-            <label>Upload foto (optioneel)</label>
+            <div class="section-title">Option 2: Photo Upload</div>
+            <label>Upload photo (optional)</label>
             <input id="foto" type="file" accept="image/*">
         </div>
 
-        <button type="submit">✨ Generate kleurplaat</button>
+        <button type="submit">✨ Generate coloring page</button>
 
                 <div class="form-section" style="margin-top: 28px;">
-                    <div class="section-title">Optie 3: Tot leven brengen met Driply</div>
-                    <label>Upload je kleurplaat aan Driply en laat hem die al dansend inkleuren</label>
+                    <div class="section-title">Option 3: Bring To Life with Driply</div>
+                    <label>Upload your coloring page to Driply and let it color it while dancing</label>
                     <input id="driply_foto" type="file" accept="image/*">
-                    <button type="button" id="driplyBtn" style="margin-top: 10px;">🎨 Tot leven brengen met Driply</button>
+                    <button type="button" id="driplyBtn" style="margin-top: 10px;">🎨 Bring to life with Driply</button>
                 </div>
 
         <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
@@ -365,7 +365,7 @@ setTimeout(() => {
     form.style.display = "block";
 
     if (!userId) {
-        statusText.textContent = "You are not logged in. Je kunt alvast invullen; bij genereren vragen we je om in te loggen.";
+        statusText.textContent = "You are not logged in. You can fill in the form now; we will ask you to sign in when you generate.";
     } else {
         statusText.style.display = "none";
     }
@@ -386,7 +386,7 @@ async function requireLoginForAction(message) {
     if (typeof window.startLoginRedirectWithNotice === 'function') {
         await window.startLoginRedirectWithNotice(message);
     } else {
-        window.location.href = '/login.html';
+        window.location.href = '/en/login.html';
     }
 
     return '';
@@ -401,21 +401,21 @@ async function initFormLogic() {
     const resultaat = document.getElementById("resultaat");
     const downloadBtn = document.getElementById("downloadBtn");
     const driplyLoadingVideo = document.getElementById("driplyLoadingVideo");
-    // Functie om velden in/uit te schakelen
+    // Enable one input mode at a time.
     function updateFieldStates() {
         const hasText = wieInput.value.trim() || waarInput.value.trim() || activiteitInput.value.trim();
         const hasPhoto = fotoInput.files.length > 0;
 
-        // Als foto is geupload, disable tekstvelden
+        // Disable text fields when a photo is uploaded.
         wieInput.disabled = hasPhoto;
         waarInput.disabled = hasPhoto;
         activiteitInput.disabled = hasPhoto;
 
-        // Als tekst ingevuld, disable foto upload
+        // Disable photo upload when text is filled in.
         fotoInput.disabled = hasText;
     }
 
-    // Listeners voor real-time enable/disable
+    // Listeners for real-time enable/disable.
     wieInput.addEventListener("input", updateFieldStates);
     waarInput.addEventListener("input", updateFieldStates);
     activiteitInput.addEventListener("input", updateFieldStates);
@@ -423,7 +423,7 @@ async function initFormLogic() {
 
     function startLoadingState() {
         downloadBtn.style.display = 'none';
-        resultaat.textContent = "Coloring Page wordt aangemaakt...";
+        resultaat.textContent = "Coloring page is being created...";
         driplyLoadingVideo.style.display = "block";
         driplyLoadingVideo.currentTime = 0;
         const playPromise = driplyLoadingVideo.play();
@@ -480,16 +480,16 @@ async function initFormLogic() {
         }
     }
 
-    // Driply "Tot leven brengen" handler
+    // Driply "bring to life" handler.
     async function handleDriplyColorization() {
         const driplyFotoInput = document.getElementById("driply_foto");
         
         if (!driplyFotoInput.files.length) {
-            alert("Selecteer eerst een kleurplaat om tot leven te brengen");
+            alert("Please select a coloring page first to bring it to life");
             return;
         }
 
-        const userId = await requireLoginForAction("Log in to Driply te gebruiken.");
+        const userId = await requireLoginForAction("Log in to use Driply.");
         if (!userId) {
             return;
         }
@@ -503,7 +503,7 @@ async function initFormLogic() {
             const imageBase64 = reader.result;
 
             try {
-                // Stap 1: start video-job, krijg request_id terug
+                // Step 1: start video job and receive request_id.
                 const startResp = await postColoring PageRequest(
                     { image_base64: imageBase64, mode: 'driply_dance' },
                     userId,
@@ -514,13 +514,13 @@ async function initFormLogic() {
 
                 let startData;
                 try { startData = JSON.parse(startText); }
-                catch { throw new Error('Ongeldige response van GROK service.'); }
+                catch { throw new Error('Invalid response from GROK service.'); }
 
                 if (startData.error) throw new Error(startData.error);
                 const requestId = startData.request_id;
-                if (!requestId) throw new Error('Geen request_id ontvangen van GROK.');
+                if (!requestId) throw new Error('No request_id received from GROK.');
 
-                // Stap 2: poll status elke 4 seconden (max 90x = 6 minuten)
+                // Step 2: poll status every 4 seconds (max 90x = 6 minutes).
                 let videoUrl = null;
                 for (let attempt = 0; attempt < 90; attempt++) {
                     await new Promise(r => setTimeout(r, 4000));
@@ -538,7 +538,7 @@ async function initFormLogic() {
                     if (statusData.error) throw new Error(statusData.error);
 
                     const progress = statusData.progress ?? 0;
-                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply danst en kleurt... ${progress}%</p>`;
+                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply is dancing and coloring... ${progress}%</p>`;
 
                     if (statusData.status === 'done' && statusData.video_url) {
                         videoUrl = statusData.video_url;
@@ -546,9 +546,9 @@ async function initFormLogic() {
                     }
                 }
 
-                if (!videoUrl) throw new Error('Video generatie duurde te lang of is mislukt.');
+                if (!videoUrl) throw new Error('Video generation took too long or failed.');
 
-                // Stap 3: toon video
+                // Step 3: show video.
                 const video = document.createElement('video');
                 video.src = videoUrl;
                 video.controls = true;
@@ -565,7 +565,7 @@ async function initFormLogic() {
                 downloadBtn.onclick = () => {
                     const a = document.createElement('a');
                     a.href = videoUrl;
-                    a.download = 'driply-dans.mp4';
+                    a.download = 'driply-dance.mp4';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -579,17 +579,17 @@ async function initFormLogic() {
                     errorMessage.includes('premium');
 
                 if (isPremiumError) {
-                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Deze aanvraag gebruikt een Premium functie (GROK). Je hebt een actief maandelijks of jaarlijks abonnement nodig om door te gaan.</div>`;
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>This request uses a Premium feature (GROK). You need an active monthly or yearly subscription to continue.</div>`;
                     const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                     if (window.showSubscriptionUpgradeModal) {
                         window.showSubscriptionUpgradeModal(_upgradeUserId, {
                             mode: 'premium',
-                            featureName: 'GROK Tot Leven Brengen'
+                            featureName: 'GROK Bring To Life'
                         });
                     }
                     return;
                 }
-                resultaat.textContent = 'Fout bij tot leven brengen: ' + error.message;
+                resultaat.textContent = 'Error while bringing to life: ' + error.message;
                 console.error('Driply colorization error:', error);
             } finally {
                 stopLoadingState();
@@ -597,7 +597,7 @@ async function initFormLogic() {
         };
         
         reader.onerror = () => {
-            resultaat.textContent = 'Fout bij lezen van afbeelding';
+            resultaat.textContent = 'Error while reading image';
         };
         
         reader.readAsDataURL(file);
@@ -609,7 +609,7 @@ async function initFormLogic() {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const userId = await requireLoginForAction("Log in to kleurplaten te genereren.");
+        const userId = await requireLoginForAction("Log in to generate coloring pages.");
         if (!userId) {
             return;
         }
@@ -643,13 +643,13 @@ async function initFormLogic() {
 
             if (!resp.ok) {
                 if (resp.status === 403 && text.includes('limiet')) {
-                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
                     const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                     if (window.showSubscriptionUpgradeModal) {
                         window.showSubscriptionUpgradeModal(_upgradeUserId);
                     }
                 } else {
-                    resultaat.textContent = `Fout (${resp.status}): ${text}`;
+                    resultaat.textContent = `Error (${resp.status}): ${text}`;
                 }
                 return;
             }
@@ -671,7 +671,7 @@ async function initFormLogic() {
             downloadBtn.onclick = () => {
                 const a = document.createElement('a');
                 a.href = data.image_data_uri;
-                a.download = 'kleurplaat.png';
+                    a.download = 'coloring-page.png';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -680,8 +680,8 @@ async function initFormLogic() {
         } catch (err) {
             const isNetworkError = err instanceof TypeError || err?.name === 'AbortError';
             resultaat.textContent = isNetworkError
-                ? 'Netwerkfout bij het laden van de kleurplaat. Probeer het opnieuw.'
-                : 'Fout: ' + err;
+                ? 'Network error while loading the coloring page. Please try again.'
+                : 'Error: ' + err;
             console.error("Error:", err);
         } finally {
             stopLoadingState();

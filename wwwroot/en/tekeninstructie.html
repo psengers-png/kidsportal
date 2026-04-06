@@ -269,7 +269,7 @@
 
 <body>
 
-<a id="language-fab-en" href="/tekeninstructie.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/tekeninstructie.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 
 <div class="rain"></div>
 
@@ -296,10 +296,10 @@
 
         <form id="scetchyForm" style="display:none;">
             <div class="form-group">
-                <label for="onderwerp">Wat wil je tekenen?</label>
-                <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. krokodil">
+                <label for="onderwerp">What do you want to draw?</label>
+                <input type="text" id="onderwerp" name="onderwerp" required placeholder="e.g. crocodile">
             </div>
-            <button type="submit" id="genereerBtn">✍️ Maak tekeninstructie</button>
+            <button type="submit" id="genereerBtn">✍️ Create drawing tutorial</button>
             <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
         </form>
 
@@ -329,7 +329,7 @@ setTimeout(() => {
     form.style.display = "block";
 
     if (!userId) {
-        statusText.textContent = "You are not logged in. Je kunt alvast invullen; bij genereren vragen we je om in te loggen.";
+        statusText.textContent = "You are not logged in. You can fill in the form now; we will ask you to sign in when you generate.";
     } else {
         statusText.style.display = "none";
     }
@@ -350,7 +350,7 @@ async function requireLoginForAction(message) {
     if (typeof window.startLoginRedirectWithNotice === 'function') {
         await window.startLoginRedirectWithNotice(message);
     } else {
-        window.location.href = '/login.html';
+        window.location.href = '/en/login.html';
     }
 
     return '';
@@ -381,7 +381,7 @@ const scetchyLoadingVideo = document.getElementById("scetchyLoadingVideo");
 function startLoadingState() {
     btn.disabled = true;
     downloadBtn.style.display = 'none';
-    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">⏳ Scetchy maakt je tekeninstructie...</p>';
+    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">⏳ Scetchy is creating your drawing tutorial...</p>';
     scetchyLoadingVideo.currentTime = 0;
     const playPromise = scetchyLoadingVideo.play();
     if (playPromise && typeof playPromise.then === 'function') {
@@ -401,7 +401,7 @@ function stopLoadingState() {
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const userId = await requireLoginForAction("Log in to Scetchy te gebruiken.");
+    const userId = await requireLoginForAction("Log in to use Scetchy.");
     if (!userId) {
         return;
     }
@@ -425,13 +425,13 @@ form.addEventListener("submit", async (e) => {
         const text = await res.text();
         if (!res.ok) {
             if (res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
                 }
             } else {
-                resultaat.innerHTML = `<p style='color:red;'>Fout (${res.status}): ${text}</p>`;
+                resultaat.innerHTML = `<p style='color:red;'>Error (${res.status}): ${text}</p>`;
             }
             return;
         }
@@ -460,10 +460,10 @@ form.addEventListener("submit", async (e) => {
                 document.body.removeChild(a);
             };
         } else {
-            resultaat.innerHTML = `<p style='color:red;'>${data.error || 'Onbekende fout.'}</p>`;
+            resultaat.innerHTML = `<p style='color:red;'>${data.error || 'Unknown error.'}</p>`;
         }
     } catch (err) {
-        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+        resultaat.innerHTML = `<p style='color:red;'>Error: ${err}</p>`;
     } finally {
         stopLoadingState();
         btn.disabled = false;

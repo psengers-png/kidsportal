@@ -12,13 +12,13 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bead Pattern Generator | Strikey - Rainy Day Club</title>
-    <meta name="description" content="Maak met Strikey in een paar seconden een vrolijk strijkkraalmotief op basis van jouw onderwerp." />
+    <meta name="description" content="Use Strikey to create a cheerful fuse-bead pattern from your topic in seconds." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/en/strikey.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Bead Pattern Generator | Strikey" />
-    <meta property="og:description" content="Geef een onderwerp en Strikey maakt een voorbeeld voor een strijkkraalmotief." />
+    <meta property="og:description" content="Give a topic and Strikey creates a sample fuse-bead pattern." />
     <meta property="og:url" content="https://www.rainydayclub.nl/en/strikey.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Strikey.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -249,7 +249,7 @@
 </head>
 <body>
 
-<a id="language-fab-en" href="/strikey.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/strikey.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 <div class="rain"></div>
 
 <header>
@@ -266,16 +266,16 @@
     <div class="window">
         <div class="agent-header">
             <img src="Images/Strikey.png" alt="Strikey">
-            <h2>Bead Pattern Generator met Strikey</h2>
-            <p>Geef een onderwerp en Strikey maakt een voorbeeldmotief dat je kunt namaken met strijkkralen.</p>
+            <h2>Bead Pattern Generator with Strikey</h2>
+            <p>Give a topic and Strikey creates an example pattern you can recreate with fuse beads.</p>
         </div>
 
         <p id="statusText">Checking...</p>
 
         <form id="strikeyForm" style="display:none;">
-            <label for="onderwerp">Onderwerp (bijv. dinosaurus, eenhoorn, voetbal)</label>
+            <label for="onderwerp">Topic (e.g. dinosaur, unicorn, football)</label>
             <input id="onderwerp" type="text" maxlength="100" required>
-            <button id="generateBtn" type="submit">✨ Generate strijkkraalmotief</button>
+            <button id="generateBtn" type="submit">✨ Generate bead pattern</button>
         </form>
 
         <video id="strikeyLoadingVideo" muted playsinline loop preload="auto">
@@ -302,7 +302,7 @@ setTimeout(() => {
     form.style.display = 'block';
 
     if (!userId) {
-        statusText.textContent = 'You are not logged in. Vul gerust alvast in; bij genereren vragen we je om in te loggen.';
+        statusText.textContent = 'You are not logged in. Feel free to fill in the form; we will ask you to sign in when you generate.';
     } else {
         statusText.style.display = 'none';
     }
@@ -323,7 +323,7 @@ async function requireLoginForAction(message) {
     if (typeof window.startLoginRedirectWithNotice === 'function') {
         await window.startLoginRedirectWithNotice(message);
     } else {
-        window.location.href = '/login.html';
+        window.location.href = '/en/login.html';
     }
 
     return '';
@@ -341,7 +341,7 @@ const apiRequestEndpoints = [
 ];
 let currentImage = '';
 
-function toSafeStrijkkraalOnderwerp(input) {
+function toSafeStrijkkraalTopic(input) {
     const value = (input || '').trim().toLowerCase();
     if (!value) {
         return input;
@@ -429,13 +429,13 @@ async function postApiRequest(body, userId) {
         return lastResponse;
     }
 
-    throw lastError || new Error('apiRequest endpoint niet bereikbaar');
+    throw lastError || new Error('apiRequest endpoint is not reachable');
 }
 
 function startLoadingState() {
     generateBtn.disabled = true;
     downloadBtn.style.display = 'none';
-    resultaat.innerHTML = "<p style='text-align:center; color:#2563eb;'>⏳ Strikey maakt je strijkkraalmotief...</p>";
+    resultaat.innerHTML = "<p style='text-align:center; color:#2563eb;'>⏳ Strikey is creating your bead pattern...</p>";
     strikeyLoadingVideo.currentTime = 0;
     const playPromise = strikeyLoadingVideo.play();
     if (playPromise && typeof playPromise.catch === 'function') {
@@ -456,25 +456,25 @@ function stopLoadingState() {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const userId = await requireLoginForAction('Log in to Strikey te gebruiken.');
+    const userId = await requireLoginForAction('Log in to use Strikey.');
     if (!userId) {
         return;
     }
 
     const onderwerp = onderwerpInput.value.trim();
     if (!onderwerp) {
-        resultaat.innerHTML = "<p style='color:#dc2626;'>Vul eerst een onderwerp in.</p>";
+        resultaat.innerHTML = "<p style='color:#dc2626;'>Please enter a topic first.</p>";
         return;
     }
 
     startLoadingState();
 
     try {
-        const safeOnderwerp = toSafeStrijkkraalOnderwerp(onderwerp);
-        const onderwerpIsMapped = safeOnderwerp !== onderwerp;
+        const safeTopic = toSafeStrijkkraalTopic(onderwerp);
+        const onderwerpIsMapped = safeTopic !== onderwerp;
         let response = await postApiRequest({
             type: 'strikey',
-            payload: { onderwerp: safeOnderwerp }
+            payload: { onderwerp: safeTopic }
         }, userId);
 
         let text = await response.text();
@@ -483,7 +483,7 @@ form.addEventListener('submit', async (e) => {
         try {
             data = JSON.parse(text);
         } catch {
-            resultaat.innerHTML = `<p style='color:#dc2626;'>Kon antwoord niet lezen: ${text}</p>`;
+            resultaat.innerHTML = `<p style='color:#dc2626;'>Could not read response: ${text}</p>`;
             return;
         }
 
@@ -492,24 +492,24 @@ form.addEventListener('submit', async (e) => {
                 data?.details?.error ||
                 data?.details ||
                 data?.error ||
-                'Er ging iets mis.';
+                'Something went wrong.';
             resultaat.innerHTML = `<p style='color:#dc2626;'>${detailedError}</p>`;
             return;
         }
 
         currentImage = data.image_data_uri || '';
         if (!currentImage) {
-            resultaat.innerHTML = "<p style='color:#dc2626;'>Geen afbeelding ontvangen.</p>";
+            resultaat.innerHTML = "<p style='color:#dc2626;'>No image received.</p>";
             return;
         }
 
         const currentMessage = onderwerpIsMapped
-            ? "<p style='color:#0f766e; font-weight:600; margin-bottom:10px;'>Tip: dit onderwerp is automatisch iets neutraler omschreven om een resultaat te kunnen maken.</p>"
+            ? "<p style='color:#0f766e; font-weight:600; margin-bottom:10px;'>Tip: this topic was automatically rewritten in a safer way to generate a result.</p>"
             : '';
         resultaat.innerHTML = `${currentMessage}<img src="${currentImage}" alt="Bead Pattern">`;
         downloadBtn.style.display = 'inline-block';
     } catch (err) {
-        resultaat.innerHTML = `<p style='color:#dc2626;'>Fout: ${err}</p>`;
+        resultaat.innerHTML = `<p style='color:#dc2626;'>Error: ${err}</p>`;
     } finally {
         stopLoadingState();
     }
@@ -522,7 +522,7 @@ downloadBtn.addEventListener('click', () => {
 
     const a = document.createElement('a');
     a.href = currentImage;
-    a.download = 'strijkkraalmotief.png';
+    a.download = 'bead-pattern.png';
     a.click();
 });
 </script>

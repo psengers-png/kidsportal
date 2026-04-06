@@ -263,7 +263,7 @@
 
 <body>
 
-<a id="language-fab-en" href="/moppen.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<a id="language-fab-en" href="/moppen.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Dutch</a>
 
 <div class="rain"></div>
 
@@ -282,29 +282,29 @@
 
         <div class="agent-header">
             <img src="Images/Giggly.png" alt="Giggly">
-            <h2>Giggly – De Joke Generator</h2>
-            <p>Giggly tapt flauwe grappen, raadsels en woordgrappen om je dag op te fleuren ☁️😂</p>
+            <h2>Giggly - The Joke Generator</h2>
+            <p>Giggly creates silly jokes, riddles, and wordplay to brighten your day ☁️😂</p>
         </div>
 
         <p id="statusText">Checking...</p>
 
         <form id="mopForm" style="display:none;">
             <div class="form-group">
-                <label for="onderwerp">Onderwerp</label>
-                <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. dieren">
+                <label for="onderwerp">Topic</label>
+                <input type="text" id="onderwerp" name="onderwerp" required placeholder="e.g. animals">
             </div>
             <div class="form-group">
-                <label for="mopType">Type mop</label>
+                <label for="mopType">Joke type</label>
                 <select id="mopType" name="mopType" required>
                     <option value="">Choose a type</option>
-                    <option value="flauwe mop">Flauwe mop</option>
-                    <option value="raadsel">Raadsel</option>
-                    <option value="woordgrap">Woordgrap</option>
+                    <option value="flauwe mop">Silly joke</option>
+                    <option value="raadsel">Riddle</option>
+                    <option value="woordgrap">Wordplay</option>
                     <option value="anti-mop">Anti-mop</option>
-                    <option value="verhaalmop">Verhaalmop</option>
+                    <option value="verhaalmop">Story joke</option>
                 </select>
             </div>
-            <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
+            <button type="submit" id="genereerBtn">🎲 Generate a joke!</button>
         </form>
 
         <video id="gigglyLoadingVideo" muted playsinline loop preload="auto">
@@ -336,7 +336,7 @@ setTimeout(() => {
     form.style.display = "block";
 
     if (!userId) {
-        statusText.textContent = "You are not logged in. Vul gerust alvast in; bij tappen van een mop vragen we je om in te loggen.";
+        statusText.textContent = "You are not logged in. You can fill in the form now; we will ask you to sign in when generating a joke.";
     } else {
         statusText.style.display = "none";
     }
@@ -357,7 +357,7 @@ async function requireLoginForAction(message) {
     if (typeof window.startLoginRedirectWithNotice === 'function') {
         await window.startLoginRedirectWithNotice(message);
     } else {
-        window.location.href = '/login.html';
+        window.location.href = '/en/login.html';
     }
 
     return '';
@@ -370,7 +370,7 @@ const gigglyLoadingVideo = document.getElementById("gigglyLoadingVideo");
 
 function startLoadingState() {
     btn.disabled = true;
-    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
+    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Generating joke...</p>';
     gigglyLoadingVideo.currentTime = 0;
     const playPromise = gigglyLoadingVideo.play();
     if (playPromise && typeof playPromise.then === 'function') {
@@ -390,7 +390,7 @@ function stopLoadingState() {
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const userId = await requireLoginForAction("Log in to moppen te tappen.");
+    const userId = await requireLoginForAction("Log in to generate jokes.");
     if (!userId) {
         return;
     }
@@ -416,13 +416,13 @@ form.addEventListener("submit", async (e) => {
         console.log("Response text:", text);
         if (!res.ok) {
             if(res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
                 }
             } else {
-                resultaat.innerHTML = '<p style="color:red;">Fout (' + res.status + '): ' + text + '</p>';
+                resultaat.innerHTML = '<p style="color:red;">Error (' + res.status + '): ' + text + '</p>';
             }
             return;
         }
@@ -434,12 +434,12 @@ form.addEventListener("submit", async (e) => {
             return;
         }
         if (data.mop) {
-            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Jouw Mop:</strong><br><br>' + data.mop + '</div>';
+            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Your Joke:</strong><br><br>' + data.mop + '</div>';
         } else {
-            resultaat.innerHTML = '<p style="color:red;">' + (data.error || 'Onbekende fout.') + '</p>';
+            resultaat.innerHTML = '<p style="color:red;">' + (data.error || 'Unknown error.') + '</p>';
         }
     } catch (err) {
-        resultaat.innerHTML = '<p style="color:red;">Fout: ' + err + '</p>';
+        resultaat.innerHTML = '<p style="color:red;">Error: ' + err + '</p>';
         console.error("Error:", err);
     } finally {
         stopLoadingState();
