@@ -352,7 +352,6 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
-import { msalInstance } from '/JS/auth.js';
 
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
@@ -360,17 +359,35 @@ setTimeout(() => {
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("kleurplaatForm");
 
+    form.style.display = "block";
+
     if (!userId) {
-        statusText.textContent = "Log in om kleurplaten te maken.";
-        window.refreshHeaderAccountMenu?.();
-        return;
+        statusText.textContent = "Je bent niet ingelogd. Je kunt alvast invullen; bij genereren vragen we je om in te loggen.";
+    } else {
+        statusText.style.display = "none";
     }
 
-    // Wel ingelogd, toon form
-    statusText.style.display = "none";
-    form.style.display = "block";
     window.refreshHeaderAccountMenu?.();
 }, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
 
 async function initFormLogic() {
     const wieInput = document.getElementById("wie");
@@ -468,6 +485,11 @@ async function initFormLogic() {
             alert("Selecteer eerst een kleurplaat om tot leven te brengen");
             return;
         }
+
+        const userId = await requireLoginForAction("Log in om Driply te gebruiken.");
+        if (!userId) {
+            return;
+        }
         
         const file = driplyFotoInput.files[0];
         const reader = new FileReader();
@@ -476,7 +498,6 @@ async function initFormLogic() {
             startLoadingState();
             resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply gaat aan de slag... even geduld!</p>';
             const imageBase64 = reader.result;
-            const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || 'unknown-user';
 
             try {
                 // Stap 1: start video-job, krijg request_id terug
@@ -584,6 +605,12 @@ async function initFormLogic() {
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        const userId = await requireLoginForAction("Log in om kleurplaten te genereren.");
+        if (!userId) {
+            return;
+        }
+
         startLoadingState();
 
         const wie = wieInput.value;
@@ -605,8 +632,6 @@ async function initFormLogic() {
         if (foto_base64) payload.foto_base64 = foto_base64;
 
         try {
-            const userId = localStorage.getItem('userId') || localStorage.getItem('user-id') || 'unknown-user';
-
             const resp = await postKleurplaatRequest(payload, userId);
 
             const text = await resp.text();

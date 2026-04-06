@@ -324,26 +324,41 @@
 <script type="module" src="/JS/auth.js"></script>
 
 <script type="module">
-import { msalInstance } from '/JS/auth.js';
-import { startStripeCheckout } from '/JS/abonnement.js';
-
 // Wacht tot auth.js klaar is en checkt inlogstatus
 setTimeout(() => {
     const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
     const statusText = document.getElementById("statusText");
     const form = document.getElementById("mopForm");
 
+    form.style.display = "block";
+
     if (!userId) {
-        statusText.textContent = "Log in om moppen te gebruiken.";
-        window.refreshHeaderAccountMenu?.();
-        return;
+        statusText.textContent = "Je bent niet ingelogd. Vul gerust alvast in; bij tappen van een mop vragen we je om in te loggen.";
+    } else {
+        statusText.style.display = "none";
     }
 
-    // Wel ingelogd, toon form
-    statusText.style.display = "none";
-    form.style.display = "block";
     window.refreshHeaderAccountMenu?.();
 }, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
 
 const form = document.getElementById("mopForm");
 const resultaat = document.getElementById("resultaat");
@@ -371,16 +386,22 @@ function stopLoadingState() {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const userId = await requireLoginForAction("Log in om moppen te tappen.");
+    if (!userId) {
+        return;
+    }
+
     startLoadingState();
     const onderwerp = form.onderwerp.value.trim();
     const mopType = form.mopType.value;
-    console.log("Debug: userId before fetch:", localStorage.getItem('userId'));
+    console.log("Debug: userId before fetch:", userId);
     try {
         const res = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'user-id': localStorage.getItem('userId') || ''
+                'user-id': userId
             },
             body: JSON.stringify({
                 type: 'moppen',
