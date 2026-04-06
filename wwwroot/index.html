@@ -23,9 +23,26 @@
     <meta property="og:url" content="https://www.rainydayclub.nl/" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta http-equiv="refresh" content="0; url=/home.html">
     <script>
-        window.location.replace('/home.html');
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const queryLang = (params.get('lang') || '').toLowerCase();
+            const storedLang = (localStorage.getItem('rdc-lang') || '').toLowerCase();
+            const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+
+            let lang = 'nl';
+            if (queryLang === 'en' || queryLang === 'nl') {
+                lang = queryLang;
+                localStorage.setItem('rdc-lang', lang);
+            } else if (storedLang === 'en' || storedLang === 'nl') {
+                lang = storedLang;
+            } else if (browserLang.startsWith('en')) {
+                lang = 'en';
+            }
+
+            const destination = lang === 'en' ? '/en/home.html' : '/home.html';
+            window.location.replace(destination);
+        })();
     </script>
 
     <style>
