@@ -11,11 +11,6 @@
       "statusCode": 200
     },
     {
-      "route": "/en/",
-      "serve": "/en/home.html",
-      "statusCode": 200
-    },
-    {
       "route": "/cancelSubscription",
       "rewrite": "/api/cancelSubscription"
     },
