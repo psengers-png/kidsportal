@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set environment variables
         run: |
@@ -25,5 +25,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "wwwroot"
-          api_location: "api"
+          # Frontend-only deploy keeps static site updates unblocked by API build issues.
+          api_location: ""
           output_location: ""
