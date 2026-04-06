@@ -149,11 +149,13 @@
             margin-bottom: 8px;
         }
 
-        input {
+        input,
+        select {
             width: 100%;
             padding: 12px;
             border-radius: 12px;
             border: 2px solid #e0e7ff;
+            background: #fff;
         }
 
         button {
@@ -276,6 +278,17 @@
         <form id="strikeyForm" style="display:none;">
             <label for="onderwerp">Topic (e.g. dinosaur, unicorn, football)</label>
             <input id="onderwerp" type="text" maxlength="100" required>
+
+            <label for="bordVormGrootte" style="margin-top:14px;">Board shape and size</label>
+            <select id="bordVormGrootte" required>
+                <option value="rond_15">Round diameter 15</option>
+                <option value="rond_20">Round diameter 20</option>
+                <option value="rond_30">Round diameter 30</option>
+                <option value="vierkant_15x15">Square 15x15</option>
+                <option value="vierkant_20x20" selected>Square 20x20</option>
+                <option value="vierkant_30x30">Square 30x30</option>
+            </select>
+
             <button id="generateBtn" type="submit">✨ Generate bead pattern</button>
         </form>
 
@@ -332,6 +345,7 @@ async function requireLoginForAction(message) {
 
 const form = document.getElementById('strikeyForm');
 const onderwerpInput = document.getElementById('onderwerp');
+const bordVormGrootteInput = document.getElementById('bordVormGrootte');
 const resultaat = document.getElementById('resultaat');
 const generateBtn = document.getElementById('generateBtn');
 const downloadBtn = document.getElementById('downloadBtn');
@@ -472,10 +486,14 @@ form.addEventListener('submit', async (e) => {
 
     try {
         const safeTopic = toSafeStrijkkraalTopic(onderwerp);
+        const bordVormGrootte = (bordVormGrootteInput?.value || 'vierkant_20x20').trim();
         const onderwerpIsMapped = safeTopic !== onderwerp;
         let response = await postApiRequest({
             type: 'strikey',
-            payload: { onderwerp: safeTopic }
+            payload: {
+                onderwerp: safeTopic,
+                bord_vorm_grootte: bordVormGrootte
+            }
         }, userId);
 
         let text = await response.text();
