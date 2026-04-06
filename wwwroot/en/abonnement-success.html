@@ -165,28 +165,28 @@
             <div class="agent-header">
                 <img src="Images/Giggly.png" alt="Giggly">
                 <h2>Subscription Successful</h2>
-                <p>Welkom bij onbeperkt plezier in de RainyDayClub ☁️✨</p>
+                <p>Welcome to unlimited fun in RainyDayClub ☁️✨</p>
             </div>
 
             <div class="status-box">
-                <strong>Bedankt voor je aankoop!</strong><br><br>
-                Your subscription has been activated successfully. You can nu onbeperkt gebruik maken van alle functies van RainyDayClub.
+                <strong>Thanks for your purchase!</strong><br><br>
+                Your subscription has been activated successfully. You can now enjoy unlimited access to all RainyDayClub features.
             </div>
 
             <a href="/en/home.html">Back to the homepage</a>
         </div>
     </main>
     <script>
-        // Controleer of de gebruiker terugkomt van Stripe
+        // Check whether the user returned from Stripe
         if (window.location.search.includes("stripeSuccess=true")) {
             const userId = localStorage.getItem("userId");
             if (userId) {
-                console.log("Sessie actief voor gebruiker:", userId);
-                // Update de status in de UI
-                document.querySelector("main").innerHTML += '<p>Status: Onbeperkt</p>';
+                console.log("Active session for user:", userId);
+                // Update status in the UI.
+                document.querySelector("main").innerHTML += '<p>Status: Unlimited</p>';
             } else {
-                console.error("Geen actieve sessie gevonden. Gebruiker moet opnieuw inloggen.");
-                window.location.href = "/login.html";
+                console.error("No active session found. User must sign in again.");
+                window.location.href = "/en/login.html";
             }
         }
     </script>
@@ -209,3 +209,6 @@
 </script>
 </body>
 </html>
+
+
+

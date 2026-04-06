@@ -283,6 +283,7 @@
         <h1>Rainy Day Club</h1>
     </div>
     <div class="header-right">
+        <a class="header-btn" href="/en/home.html">Home</a>
         <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
     </div>
 </header>
@@ -292,11 +293,11 @@
 
         <div class="agent-header">
             <img src="Images/Questy.png" alt="Questy">
-            <h2>Challenge generator for kids met Questy</h2>
-            <p>Questy bedenkt leuke opdrachten voor regenachtige dagen ☁️🎯</p>
+            <h2>Challenge Generator for Kids with Questy</h2>
+            <p>Questy creates fun activities for rainy days ☁️🎯</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
                 Questy is a challenge generator for kids that quickly creates fun and educational activities.
-                Choose an energy level en type activiteit en ontvang direct challenge ideeën die passen bij kinderen
+                Choose an energy level and activity type and get challenge ideas instantly
                 for children aged 5 to 10, at home or in the classroom.
             </p>
         </div>
@@ -304,15 +305,15 @@
     <p id="statusText">Checking...</p>
 
     <form id="challengeForm" style="display:none;">
-        <!-- Leeftijdsveld verwijderd. De categorie is altijd voor kinderen van 5-10 jaar. -->
+        <!-- Age field removed. Category is fixed for children aged 5-10. -->
 
         <div class="form-group">
-            <label>Energie-niveau</label>
+            <label>Energy level</label>
             <select id="energie" required>
                 <option value="">-- Choose an option --</option>
-                <option value="laag">Laag (rustig, ontspannen)</option>
-                <option value="gemiddeld">Gemiddeld (normaal)</option>
-                <option value="hoog">Hoog (energiek, actief)</option>
+                <option value="laag">Low (calm, relaxed)</option>
+                <option value="gemiddeld">Medium (normal)</option>
+                <option value="hoog">High (energetic, active)</option>
             </select>
         </div>
 
@@ -320,12 +321,12 @@
             <label>Activity type (for children aged 5-10)</label>
             <select id="type" required>
                 <option value="">-- Choose an option --</option>
-                <option value="knutselen">Knutselen</option>
-                <option value="kleuren">Kleuren</option>
-                <option value="puzzel">Puzzel</option>
-                <option value="kennis">Kennis</option>
-                <option value="buiten">Buiten</option>
-                <option value="natuur">Natuur</option>
+                <option value="knutselen">Crafting</option>
+                <option value="kleuren">Coloring</option>
+                <option value="puzzel">Puzzle</option>
+                <option value="kennis">Knowledge</option>
+                <option value="buiten">Outdoor</option>
+                <option value="natuur">Nature</option>
             </select>
         </div>
 
@@ -342,10 +343,10 @@
 
     <div id="resultaat"></div>
     <div id="uploadSection" class="judge-box" style="display:none;">
-        <strong>📸 Upload 1 foto van alle resultaten</strong><br><br>
+        <strong>📸 Upload 1 photo of all results</strong><br><br>
         <input id="challengePhotos" type="file" accept="image/*" multiple>
         <br><br>
-        <button id="judgePhotosBtn" type="button">🏆 Laat Questy beoordelen</button>
+        <button id="judgePhotosBtn" type="button">🏆 Let Questy judge</button>
         <div id="judgeResult"></div>
     </div>
 
@@ -588,3 +589,6 @@ judgePhotosBtn.addEventListener("click", async (event) => {
 </script>
 </body>
 </html>
+
+
+

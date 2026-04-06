@@ -272,6 +272,7 @@
         <h1>Rainy Day Club</h1>
     </div>
     <div class="header-right">
+        <a class="header-btn" href="/en/home.html">Home</a>
         <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
     </div>
 </header>
@@ -280,10 +281,10 @@
     <div class="window">
         <div class="agent-header">
             <img src="Images/Rollie.png" alt="Rollie">
-            <h2>Dice Game Generator met Rollie</h2>
-            <p>Rollie bedenkt een spel op maat op basis van het aantal spelers en het energieniveau.</p>
+            <h2>Dice Game Generator with Rollie</h2>
+            <p>Rollie creates a custom game based on the number of players and energy level.</p>
             <p style="max-width:700px; margin:12px auto 0;">
-                Perfect voor thuis of in de klas: snel een creatief dobbelspel met duidelijke regels,
+                Perfect for home or classroom use: quickly create a fun dice game with clear rules,
                 a clear goal and a fun twist that fits your group.
             </p>
         </div>
@@ -292,21 +293,21 @@
 
         <form id="rollieForm" style="display:none;">
             <div class="form-group">
-                <label for="aantal_spelers">Aantal spelers</label>
+                <label for="aantal_spelers">Number of players</label>
                 <input id="aantal_spelers" type="number" min="1" max="20" required>
             </div>
 
             <div class="form-group">
-                <label for="energie_niveau">Energie niveau</label>
+                <label for="energie_niveau">Energy level</label>
                 <select id="energie_niveau" required>
                     <option value="">-- Choose an option --</option>
-                    <option value="laag">Laag</option>
-                    <option value="gemiddeld">Gemiddeld</option>
-                    <option value="hoog">Hoog</option>
+                    <option value="laag">Low</option>
+                    <option value="gemiddeld">Medium</option>
+                    <option value="hoog">High</option>
                 </select>
             </div>
 
-            <button class="submit-btn" type="submit">🚀 Bedenk een spel</button>
+            <button class="submit-btn" type="submit">🚀 Generate a game</button>
         </form>
 
         <video id="rollieLoadingVideo" muted playsinline loop preload="auto">
@@ -453,7 +454,7 @@ form.addEventListener('submit', async (e) => {
             return;
         }
 
-        resultaat.innerHTML = `<div class="result-box">${data.spel || 'Geen spel ontvangen.'}</div>`;
+        resultaat.innerHTML = `<div class="result-box">${data.spel || 'No game received.'}</div>`;
     } catch (error) {
         resultaat.innerHTML = `<p style='color:#dc2626;'>Error: ${error}</p>`;
     } finally {
@@ -481,3 +482,6 @@ form.addEventListener('submit', async (e) => {
 </script>
 </body>
 </html>
+
+
+

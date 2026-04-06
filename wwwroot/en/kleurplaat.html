@@ -282,6 +282,7 @@
         <h1>Rainy Day Club</h1>
     </div>
     <div class="header-right">
+        <a class="header-btn" href="/en/home.html">Home</a>
         <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
     </div>
 </header>
@@ -438,7 +439,7 @@ async function initFormLogic() {
         driplyLoadingVideo.style.display = "none";
     }
 
-    async function postColoring PageRequest(payload, userId, type = 'kleurplaat') {
+    async function postColoringPageRequest(payload, userId, type = 'kleurplaat') {
         const endpoint = 'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest';
         const maxAttempts = 2;
 
@@ -499,12 +500,12 @@ async function initFormLogic() {
         
         reader.onload = async () => {
             startLoadingState();
-            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply gaat aan de slag... even geduld!</p>';
+            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply is working on it... please wait!</p>';
             const imageBase64 = reader.result;
 
             try {
                 // Step 1: start video job and receive request_id.
-                const startResp = await postColoring PageRequest(
+                const startResp = await postColoringPageRequest(
                     { image_base64: imageBase64, mode: 'driply_dance' },
                     userId,
                     'grok_kleurplaat'
@@ -525,7 +526,7 @@ async function initFormLogic() {
                 for (let attempt = 0; attempt < 90; attempt++) {
                     await new Promise(r => setTimeout(r, 4000));
 
-                    const statusResp = await postColoring PageRequest(
+                    const statusResp = await postColoringPageRequest(
                         { mode: 'driply_status', request_id: requestId },
                         userId,
                         'driply_status'
@@ -635,7 +636,7 @@ async function initFormLogic() {
         if (foto_base64) payload.foto_base64 = foto_base64;
 
         try {
-            const resp = await postColoring PageRequest(payload, userId);
+            const resp = await postColoringPageRequest(payload, userId);
 
             const text = await resp.text();
             console.log("Response status:", resp.status);
@@ -711,3 +712,5 @@ initFormLogic();
 </script>
 </body>
 </html>
+
+
