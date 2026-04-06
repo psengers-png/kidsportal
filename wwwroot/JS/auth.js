@@ -1077,7 +1077,26 @@ function hasPilotAccess(userStatus) {
 
 function isPublicPage() {
     const path = (window.location.pathname || "").toLowerCase();
-    return path === "/" || path.endsWith("/home.html") || path.endsWith("/index.html");
+    const publicPageSuffixes = [
+        "/home.html",
+        "/index.html",
+        "/kleurplaat.html",
+        "/moppen.html",
+        "/challenge.html",
+        "/liedjes.html",
+        "/rollie.html",
+        "/tekeninstructie.html",
+        "/strikey.html",
+        "/privacy.html",
+        "/terms.html",
+        "/cookies.html",
+        "/abonnement-success.html",
+        "/abonnement-cancel.html",
+        "/login.html",
+        "/signup.html"
+    ];
+
+    return path === "/" || publicPageSuffixes.some((suffix) => path.endsWith(suffix));
 }
 
 function normalizeUserId(rawUserId) {
