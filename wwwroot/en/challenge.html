@@ -559,7 +559,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
             return;
         }
 
-        judgeResult.innerHTML = `✅ Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
+        judgeResult.innerHTML = `✅ Questy picks: <strong>${data.winner_name || "Unknown"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Error: ${err}</span>`;
     } finally {
