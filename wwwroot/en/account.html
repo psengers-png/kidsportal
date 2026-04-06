@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage account - Rainy Day Club</title>
+    <meta name="description" content="Beheer je Rainy Day Club account, abonnement en maandelijkse gratis creaties." />
+    <meta name="robots" content="noindex, nofollow" />
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            height: 56px;
+            width: auto;
+            display: block;
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .header-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 999px;
+            background: #e2e8f0;
+            color: #1f2d3d;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        main {
+            max-width: 860px;
+            margin: 28px auto;
+            padding: 0 16px 24px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.92);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 14px 34px rgba(0,0,0,0.12);
+            margin-bottom: 14px;
+        }
+
+        .status-banner {
+            display: none;
+            margin-bottom: 14px;
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+        }
+
+        .status-banner.show {
+            display: block;
+        }
+
+        .status-banner-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .status-banner-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 1.45rem;
+        }
+
+        .muted {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .status-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .status-item .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .status-item .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1f2937;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .info-list {
+            margin: 0;
+            padding-left: 18px;
+            color: #475569;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .notice {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #334155;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+    </style>
+</head>
+<body>
+
+<a id="language-fab-en" href="/account.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<header>
+    <div class="header-left">
+        <a href="/en/home.html"><img class="header-logo" src="Images/Logo Rainydayclub.png" alt="Rainy Day Club"></a>
+        <h1>Manage account</h1>
+    </div>
+    <div class="header-right">
+        <a class="header-btn" href="/en/home.html">← Home</a>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
+    </div>
+</header>
+
+<main>
+    <div class="status-banner" id="subscriptionBanner">
+        <div class="status-banner-title" id="subscriptionBannerTitle">Status laden...</div>
+        <div class="status-banner-text" id="subscriptionBannerText"></div>
+    </div>
+
+    <div class="card">
+        <h2>Jouw account</h2>
+        <div class="muted">Hier zie je je huidige plan, gebruik en wat je kunt doen als je wilt upgraden of opzeggen.</div>
+
+        <div class="status-grid">
+            <div class="status-item">
+                <div class="label">Status</div>
+                <div class="value" id="statusValue">Laden...</div>
+            </div>
+            <div class="status-item">
+                <div class="label">Huidig plan</div>
+                <div class="value" id="planValue">Laden...</div>
+            </div>
+            <div class="status-item">
+                <div class="label">Gratis creaties</div>
+                <div class="value" id="usageValue">Laden...</div>
+            </div>
+            <div class="status-item">
+                <div class="label">Volgende stap</div>
+                <div class="value" id="nextStepValue">Laden...</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" id="upgradeBtn">Upgrade subscription</button>
+            <button class="btn btn-danger" id="cancelBtn">Subscription opzeggen</button>
+            <button class="btn btn-secondary" id="refreshBtn">Refresh status</button>
+        </div>
+
+        <div class="notice" id="statusNotice">Status wordt opgehaald...</div>
+    </div>
+
+    <div class="card">
+        <h2>How does it work?</h2>
+        <ul class="info-list">
+            <li>Elke ingelogde gebruiker krijgt <strong>10 gratis creaties per maand</strong>.</li>
+            <li>Heb je de 10 gratis creaties gebruikt? Dan verschijnt automatisch een upgrade-pop-up.</li>
+            <li>Je kunt kiezen uit <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.</li>
+            <li>Bij opzeggen blijft je toegang actief tot het einde van je huidige factuurperiode.</li>
+            <li>Je account blijft altijd bestaan; je kunt later opnieuw upgraden.</li>
+        </ul>
+    </div>
+
+    <button id="abonnementBtn" style="display:none;"></button>
+</main>
+
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script type="module" src="/JS/auth.js"></script>
+<script>
+    function getStoredUserId() {
+        return (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+    }
+
+    function formatDateNl(value) {
+        if (!value) return null;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return null;
+        return new Intl.DateTimeFormat('nl-NL', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(date);
+    }
+
+    function readablePlan(status) {
+        const isActive = Boolean(status?.isActive);
+        if (!isActive) return 'Geen actief abonnement (gratis plan)';
+
+        const planType = (status?.planType || '').toLowerCase();
+        const preferred = (status?.preferredPlanType || '').toLowerCase();
+        const candidate = planType || preferred;
+
+        if (candidate === 'jaarlijks') return 'Jaarabonnement (€12,99/jaar)';
+        if (candidate === 'particulier') return 'Maandabonnement (€2,99/mnd)';
+        if (candidate === 'pilot') return 'Pilot access';
+        return 'Actief abonnement';
+    }
+
+    async function fetchUserStatus(userId) {
+        const response = await fetch(`https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/getUserStatus?t=${Date.now()}`, {
+            method: 'GET',
+            headers: {
+                'user-id': userId,
+                'Cache-Control': 'no-cache'
+            },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Status ophalen mislukt (${response.status})`);
+        }
+
+        return response.json();
+    }
+
+    function renderStatus(status) {
+        const isActive = Boolean(status?.isActive);
+        const isCanceling = (status?.planStatus || '').toLowerCase() === 'cancel_at_period_end' || Boolean(status?.subscriptionCanceledAt);
+        const endsAt = formatDateNl(status?.subscriptionEndsAt);
+        const totalUsed = Number(status?.totalRequestsUsed || 0);
+        const maxRequests = Number(status?.maxRequests || 10);
+        const banner = document.getElementById('subscriptionBanner');
+        const bannerTitle = document.getElementById('subscriptionBannerTitle');
+        const bannerText = document.getElementById('subscriptionBannerText');
+
+        banner.classList.add('show');
+
+        if (isCanceling) {
+            banner.style.background = '#fff7ed';
+            banner.style.border = '1px solid #fdba74';
+            bannerTitle.style.color = '#9a3412';
+            bannerText.style.color = '#7c2d12';
+            bannerTitle.textContent = endsAt ? `Opgezegd — loopt af op ${endsAt}` : 'Opgezegd — nog tijdelijk actief';
+            bannerText.textContent = endsAt
+                ? `Je abonnement is opgezegd, maar blijft geldig tot ${endsAt}. Daarna stopt het automatisch en val je terug op het gratis plan.`
+                : 'Je abonnement is opgezegd, maar blijft actief tot het einde van je huidige factuurperiode.';
+        } else if (isActive) {
+            banner.style.background = '#ecfdf5';
+            banner.style.border = '1px solid #86efac';
+            bannerTitle.style.color = '#166534';
+            bannerText.style.color = '#166534';
+            bannerTitle.textContent = 'Actief abonnement';
+            bannerText.textContent = `Je hebt momenteel ${readablePlan(status)} en onbeperkte toegang tot alle functies.`;
+        } else {
+            banner.style.background = '#eff6ff';
+            banner.style.border = '1px solid #93c5fd';
+            bannerTitle.style.color = '#1d4ed8';
+            bannerText.style.color = '#1e3a8a';
+            bannerTitle.textContent = 'Gratis plan actief';
+            bannerText.textContent = `Je kunt ${Math.max(0, maxRequests - totalUsed)} gratis creaties deze maand gebruiken voordat je een abonnement nodig hebt.`;
+        }
+
+        document.getElementById('statusValue').textContent = isCanceling
+            ? 'Opgezegd, nog actief'
+            : (isActive ? 'Actief' : 'Niet actief');
+        document.getElementById('statusValue').style.color = isCanceling
+            ? '#9a3412'
+            : (isActive ? '#166534' : '#b91c1c');
+        document.getElementById('planValue').textContent = readablePlan(status);
+        document.getElementById('usageValue').textContent = `${totalUsed} / ${maxRequests}`;
+
+        const nextStep = isCanceling
+            ? (endsAt ? `Geldig t/m ${endsAt}` : 'Geldig tot einde factuurperiode')
+            : (isActive
+                ? 'Je hebt onbeperkte toegang'
+                : (totalUsed >= maxRequests ? 'Upgrade nodig om door te gaan' : 'Je kunt nog gratis gebruiken'));
+        document.getElementById('nextStepValue').textContent = nextStep;
+
+        document.getElementById('statusNotice').textContent = isCanceling
+            ? (endsAt
+                ? `Je abonnement is opgezegd en blijft geldig tot ${endsAt}. Daarna stopt het automatisch.`
+                : 'Je abonnement is opgezegd en blijft actief tot het einde van je factuurperiode.')
+            : (isActive
+                ? 'Je abonnement is actief. Je kunt opzeggen wanneer je wilt.'
+                : (totalUsed >= maxRequests
+                    ? 'Je gratis limiet is bereikt. Upgrade om onbeperkt verder te gaan.'
+                    : 'Je account is actief op het gratis plan.'));
+
+        const cancelBtn = document.getElementById('cancelBtn');
+        cancelBtn.disabled = !isActive || isCanceling;
+        cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
+        cancelBtn.textContent = isCanceling ? 'Al opgezegd' : 'Subscription opzeggen';
+    }
+
+    async function refreshStatus() {
+        const notice = document.getElementById('statusNotice');
+        const userId = getStoredUserId();
+        if (!userId) {
+            window.location.href = '/login.html';
+            return null;
+        }
+
+        try {
+            notice.textContent = 'Status wordt vernieuwd...';
+            const status = await fetchUserStatus(userId);
+            renderStatus(status);
+            return status;
+        } catch (error) {
+            notice.textContent = error.message || 'Er ging iets mis bij het ophalen van je status.';
+            throw error;
+        }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+        try { await refreshStatus(); } catch (_) {}
+    });
+
+    document.getElementById('upgradeBtn').addEventListener('click', async () => {
+        const userId = getStoredUserId();
+        if (!userId) {
+            window.location.href = '/login.html';
+            return;
+        }
+
+        if (window.showSubscriptionUpgradeModal) {
+            window.showSubscriptionUpgradeModal(userId);
+            return;
+        }
+
+        alert('Upgrade-popup is niet beschikbaar.');
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', async () => {
+        const userId = getStoredUserId();
+        if (!userId) {
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const latestStatus = await refreshStatus();
+            if (!latestStatus?.isActive) {
+                alert('Je hebt geen actief abonnement om op te zeggen.');
+                return;
+            }
+
+            const shouldCancel = window.showSubscriptionManageModal
+                ? await window.showSubscriptionManageModal(latestStatus)
+                : confirm('Weet je zeker dat je wilt opzeggen?');
+
+            if (!shouldCancel) {
+                return;
+            }
+
+            const response = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/cancelsubscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                }
+            });
+
+            if (response.ok) {
+                alert('Subscription opgezegd. Je behoudt toegang tot het einde van je huidige factuurperiode.');
+                await refreshStatus();
+            } else {
+                alert('Opzeggen is niet gelukt. Probeer opnieuw.');
+            }
+        } catch (error) {
+            console.error('Cancel error:', error);
+            alert('Er ging iets mis bij het opzeggen.');
+        }
+    });
+
+    window.addEventListener('load', async () => {
+        try { await refreshStatus(); } catch (_) {}
+    });
+</script>
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = (params.get('lang') || '').toLowerCase();
+  if (q === 'nl' || q === 'en') {
+    localStorage.setItem('rdc-lang', q);
+  } else {
+    localStorage.setItem('rdc-lang', 'en');
+  }
+  const btn = document.getElementById('language-fab-en');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'nl');
+    });
+  }
+})();
+</script>
+</body>
+</html>

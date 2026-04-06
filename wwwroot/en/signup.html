@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-M9MF9YBFN0');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try for Free - RainyDay Club</title>
+    <meta name="description" content="Maak een account aan bij Rainy Day Club." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://www.rainydayclub.nl/en/signup.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rainy Day Club" />
+    <meta property="og:title" content="Try for Free | Rainy Day Club" />
+    <meta property="og:description" content="Maak een Rainy Day Club account aan." />
+    <meta property="og:url" content="https://www.rainydayclub.nl/en/signup.html" />
+    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
+    <meta name="twitter:card" content="summary" />
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        @keyframes rain {
+            from { transform: translateY(0); }
+            to { transform: translateY(12px); }
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            height: 72px;
+            width: auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 16px;
+            }
+
+            .header-logo {
+                height: 52px;
+            }
+
+            .header-left h1 {
+                font-size: 1.2rem;
+            }
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: #e5e7eb;
+            text-decoration: none;
+            color: #1f2d3d;
+            display: inline-block;
+        }
+
+        section {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-container {
+            background: rgba(255,255,255,0.9);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            color: #1f2d3d;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f0f4f8;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .consent-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .consent-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .consent-group label {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 400;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .consent-group a {
+            color: #1f2d3d;
+            font-weight: 600;
+        }
+
+        .consent-group.optional {
+            margin-top: -6px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background: #ffd966;
+            color: #1f2d3d;
+        }
+
+        .btn-primary:hover {
+            background: #facc15;
+        }
+
+        .btn-primary:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            padding: 12px;
+            background: #fef2f2;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #dc2626;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #1f2d3d;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .back-link a {
+            color: #1f2d3d;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 40px 40px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+<a id="language-fab-en" href="/signup.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+    <div class="rain"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="/en/home.html"><img class="header-logo" src="Images/Logo Rainydayclub.png" alt="RainyDay Club Logo"></a>
+            <h1>Rainy Day Club</h1>
+        </div>
+        <div class="header-right">
+        </div>
+    </header>
+
+    <section>
+    <div class="login-container">
+        <div class="logo">
+            <h1>Try for Free</h1>
+            <p>Start met 10 gratis aanvragen per maand 🚀</p>
+        </div>
+
+        <div id="emailError" class="error-message"></div>
+
+        <div class="info-text">
+            <strong>🎉 Nieuw account = 10 gratis API-aanvragen per maand.</strong><br>
+            Zodra je maandlimiet op is, krijg je automatisch een upgrade-popup met 2 keuzes:<br>
+            <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.<br><br>
+            Maak een account aan en ontdek wat onze kindvriendelijke AI-agents voor jou kunnen doen — van kleurplaten tot liedjes, moppen en meer.<br><br>
+            We gebruiken je e-mailadres alleen om in te loggen en voor belangrijke berichten over je account.
+        </div>
+
+        <div class="form-group">
+            <label for="emailInput">Email address</label>
+            <input
+                type="email"
+                id="emailInput"
+                placeholder="your@email.com"
+                autocomplete="email"
+            >
+        </div>
+
+        <div class="consent-group">
+            <input type="checkbox" id="termsConsent" aria-label="Akkoord met voorwaarden en privacyverklaring">
+            <label for="termsConsent">
+                I agree to the <a href="/en/terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a> en de <a href="/en/privacy.html" target="_blank" rel="noopener noreferrer">privacyverklaring</a>.
+            </label>
+        </div>
+
+        <div class="consent-group optional">
+            <input type="checkbox" id="marketingConsent" aria-label="Ja, ik wil nieuws en vragen ontvangen">
+            <label for="marketingConsent">
+                Ja, ik ontvang graag updates over de pilot, nieuwe agents en andere nieuwtjes. Je kunt je altijd uitschrijven.
+            </label>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" id="createAccountBtn" onclick="handleCreateAccount()">
+                Try for Free
+            </button>
+        </div>
+
+        <div class="back-link">
+            <a href="/en/login.html">Heb je al een account? Log in →</a>
+        </div>
+    </div>
+    </section>
+
+    <footer>
+        © 2026 Rainy Day Club — Van binnen is het altijd zonnig 🌈
+    </footer>
+
+    <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+    <script>
+        const msalConfig = {
+            auth: {
+                clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
+                authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
+                redirectUri: window.location.origin + "/home.html",
+                postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
+                knownAuthorities: ["kidsportal2.ciamlogin.com"],
+                navigateToLoginRequestUrl: false
+            },
+            cache: { cacheLocation: "localStorage" }
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        function normalizeUserId(rawUserId) {
+            if (!rawUserId) {
+                return "";
+            }
+            return rawUserId.split('.')[0];
+        }
+
+        async function bootstrapCiamLogin() {
+            try {
+                await msalInstance.initialize();
+                await msalInstance.handleRedirectPromise();
+
+                const loginInProgress = sessionStorage.getItem("ciamLoginInProgress") === "1";
+                const hasAuthResponse = window.location.hash.includes("id_token")
+                    || window.location.hash.includes("code=")
+                    || window.location.search.includes("code=")
+                    || window.location.search.includes("state=");
+
+                if (!loginInProgress && !hasAuthResponse) {
+                    return;
+                }
+
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length > 0) {
+                    const account = accounts[0];
+                    const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+                    const userId = normalizeUserId(rawUserId);
+                    const email = account.username || "";
+
+                    if (userId) {
+                        localStorage.setItem("userId", userId);
+                        localStorage.setItem("user-id", userId);
+                    }
+                    if (email) {
+                        localStorage.setItem("userEmail", email);
+                    }
+
+                    sessionStorage.removeItem("ciamLoginInProgress");
+
+                    window.location.href = "/home.html";
+                }
+            } catch (error) {
+                console.error("CIAM signup bootstrap failed:", error);
+                sessionStorage.removeItem("ciamLoginInProgress");
+                const emailError = document.getElementById("emailError");
+                if (emailError) {
+                    emailError.textContent = "Account aanmaken kon niet worden afgerond. Probeer opnieuw.";
+                    emailError.classList.add("show");
+                }
+            }
+        }
+
+        async function handleCreateAccount() {
+            const emailHint = (document.getElementById("emailInput")?.value || "").trim();
+            const hasConsent = document.getElementById("termsConsent")?.checked;
+            const hasMarketingConsent = document.getElementById("marketingConsent")?.checked === true;
+            const emailError = document.getElementById("emailError");
+            const createAccountBtn = document.getElementById("createAccountBtn");
+
+            emailError.classList.remove("show");
+
+            if (!emailHint || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailHint)) {
+                emailError.textContent = "Voer alstublieft een geldig e-mailadres in.";
+                emailError.classList.add("show");
+                return;
+            }
+
+            if (!hasConsent) {
+                emailError.textContent = "Je moet akkoord gaan met de voorwaarden om een account aan te maken.";
+                emailError.classList.add("show");
+                return;
+            }
+
+            try {
+                createAccountBtn.disabled = true;
+                createAccountBtn.innerHTML = '<span class="loading"></span>Try for Free...';
+
+                sessionStorage.setItem("ciamLoginInProgress", "1");
+                localStorage.setItem("pendingSignupEmail", emailHint);
+                localStorage.setItem("marketingConsent", hasMarketingConsent ? "true" : "false");
+                if (hasMarketingConsent) {
+                    localStorage.setItem("marketingConsentAt", new Date().toISOString());
+                } else {
+                    localStorage.removeItem("marketingConsentAt");
+                }
+
+                await msalInstance.loginRedirect({
+                    scopes: ["openid", "profile", "offline_access"],
+                    redirectUri: window.location.origin + "/home.html"
+                });
+            } catch (error) {
+                console.error("Create account redirect failed:", error);
+                sessionStorage.removeItem("ciamLoginInProgress");
+                emailError.textContent = "Account aanmaken is mislukt. Probeer opnieuw.";
+                emailError.classList.add("show");
+                createAccountBtn.disabled = false;
+                createAccountBtn.innerHTML = "Try for Free";
+            }
+        }
+
+        document.getElementById("emailInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                handleCreateAccount();
+            }
+        });
+
+        bootstrapCiamLogin();
+    </script>
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = (params.get('lang') || '').toLowerCase();
+  if (q === 'nl' || q === 'en') {
+    localStorage.setItem('rdc-lang', q);
+  } else {
+    localStorage.setItem('rdc-lang', 'en');
+  }
+  const btn = document.getElementById('language-fab-en');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'nl');
+    });
+  }
+})();
+</script>
+</body>
+</html>

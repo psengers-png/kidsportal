@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+    <base href="/">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-M9MF9YBFN0');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookie Policy | RainyDayCLub</title>
+  <meta name="description" content="Lees het cookiebeleid van Rainy Day Club en hoe functionele opslag en externe diensten worden gebruikt." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.rainydayclub.nl/en/cookies.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Rainy Day Club" />
+  <meta property="og:title" content="Cookie Policy | Rainy Day Club" />
+  <meta property="og:description" content="Bekijk hoe Rainy Day Club cookies en opslag gebruikt." />
+  <meta property="og:url" content="https://www.rainydayclub.nl/en/cookies.html" />
+  <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
+  <meta name="twitter:card" content="summary" />
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; }
+    .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 8px 24px rgba(15,23,42,.08); }
+    h1, h2 { margin-top: 0; }
+    h2 { margin-top: 28px; }
+    p, li { line-height: 1.6; }
+    a { color: #1d4ed8; }
+    .muted { color: #475569; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<a id="language-fab-en" href="/cookies.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+  <main class="container">
+    <h1>Cookie Policy – RainyDayClub</h1>
+    <p class="muted">Ingangsdatum: 24 februari 2026</p>
+
+    <p>
+      Dit cookiebeleid legt uit welke cookies en vergelijkbare technieken we gebruiken binnen <strong></strong>RainyDayClub</strong>.
+    </p>
+
+    <h2>1. Functionele opslag</h2>
+    <p>
+      We gebruiken functionele opslag (zoals localStorage en sessiegegevens) voor inloggen, sessiebeheer en
+      het correct laten werken van de dienst.
+    </p>
+
+    <h2>2. Security en prestaties</h2>
+    <p>
+      We kunnen technische loggegevens verwerken om storingen op te lossen, misbruik te voorkomen en de
+      prestaties van de dienst te verbeteren.
+    </p>
+
+    <h2>3. Derde partijen</h2>
+    <p>
+      Voor authenticatie en betalingen maken we gebruik van externe partijen (zoals Microsoft en Stripe).
+      Deze partijen kunnen eigen cookies of vergelijkbare technieken gebruiken volgens hun eigen beleid.
+    </p>
+
+    <h2>4. Beheer van cookies</h2>
+    <p>
+      Je kunt cookies beheren of verwijderen via je browserinstellingen. Houd er rekening mee dat onderdelen
+      van de dienst dan mogelijk niet goed functioneren.
+    </p>
+
+    <h2>5. Contact</h2>
+    <p>
+      Vragen over dit beleid? Mail naar <a href="mailto:Info@rainydayclub.nl">Info@rainydayclub.nl</a>.
+    </p>
+  </main>
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = (params.get('lang') || '').toLowerCase();
+  if (q === 'nl' || q === 'en') {
+    localStorage.setItem('rdc-lang', q);
+  } else {
+    localStorage.setItem('rdc-lang', 'en');
+  }
+  const btn = document.getElementById('language-fab-en');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'nl');
+    });
+  }
+})();
+</script>
+</body>
+</html>

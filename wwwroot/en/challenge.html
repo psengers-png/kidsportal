@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-M9MF9YBFN0');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge generator for kids | Questy – Rainy Day Club</title>
+    <meta name="description" content="Gebruik Questy als challenge generator voor kinderen en krijg direct leuke, leerzame challenges voor thuis of in de klas." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.rainydayclub.nl/en/challenge.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rainy Day Club" />
+    <meta property="og:title" content="Challenge generator for kids | Questy" />
+    <meta property="og:description" content="Generate leuke en leerzame challenges voor kinderen met Questy." />
+    <meta property="og:url" content="https://www.rainydayclub.nl/en/challenge.html" />
+    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Questy.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Challenge generator for kids | Questy" />
+    <meta name="twitter:description" content="Generate leuke en leerzame challenges voor kinderen met Questy." />
+
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .header-left img {
+            height: 150px;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+
+        .header-btn:hover {
+            background: #e2e8f0;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .window {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .agent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .agent-header img {
+            height: 250px;
+        }
+
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        #statusText {
+            text-align: center;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .challenge-box {
+            background: #f1f5f9;
+            border-left: 6px solid #3b82f6;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .judge-box {
+            margin-top: 18px;
+            padding: 16px;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            background: #eff6ff;
+        }
+
+        #judgeResult {
+            margin-top: 12px;
+            color: #1f2d3d;
+            font-weight: 600;
+        }
+
+        #questyLoadingVideo {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 auto 16px;
+            display: none;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 12px 14px;
+            }
+
+            .header-left img {
+                height: 48px;
+            }
+
+            .header-left h1 {
+                margin: 0;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 45vw;
+            }
+
+            .header-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            main {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .window {
+                border-radius: 20px;
+                padding: 20px 16px;
+            }
+
+            .agent-header img {
+                height: 165px;
+                max-width: 100%;
+                object-fit: contain;
+            }
+
+            .agent-header h2 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<a id="language-fab-en" href="/challenge.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+<div class="rain"></div>
+
+<header>
+    <div class="header-left">
+        <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
+        <h1>Rainy Day Club</h1>
+    </div>
+    <div class="header-right">
+        <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
+    </div>
+</header>
+
+<main>
+    <div class="window">
+
+        <div class="agent-header">
+            <img src="Images/Questy.png" alt="Questy">
+            <h2>Challenge generator for kids met Questy</h2>
+            <p>Questy bedenkt leuke opdrachten voor regenachtige dagen ☁️🎯</p>
+            <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
+                Questy is een challenge generator voor kinderen waarmee je snel leuke en leerzame opdrachten maakt.
+                Choose an energy level en type activiteit en ontvang direct challenge ideeën die passen bij kinderen
+                van 5 tot 10 jaar, thuis of in de klas.
+            </p>
+        </div>
+
+    <p id="statusText">Checking...</p>
+
+    <form id="challengeForm" style="display:none;">
+        <!-- Leeftijdsveld verwijderd. De categorie is altijd voor kinderen van 5-10 jaar. -->
+
+        <div class="form-group">
+            <label>Energie-niveau</label>
+            <select id="energie" required>
+                <option value="">-- Choose an option --</option>
+                <option value="laag">Laag (rustig, ontspannen)</option>
+                <option value="gemiddeld">Gemiddeld (normaal)</option>
+                <option value="hoog">Hoog (energiek, actief)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Type activiteit (voor kinderen van 5-10 jaar)</label>
+            <select id="type" required>
+                <option value="">-- Choose an option --</option>
+                <option value="knutselen">Knutselen</option>
+                <option value="kleuren">Kleuren</option>
+                <option value="puzzel">Puzzel</option>
+                <option value="kennis">Kennis</option>
+                <option value="buiten">Buiten</option>
+                <option value="natuur">Natuur</option>
+            </select>
+        </div>
+
+        <button type="submit">🚀 Generate Challenge</button>
+    </form>
+
+    <video id="questyLoadingVideo" muted playsinline loop preload="auto">
+        <source src="/Images/Vid Questy.mp4" type="video/mp4">
+        <source src="/Images/Questy.mp4" type="video/mp4">
+        <source src="/Images/questy.mp4" type="video/mp4">
+        <source src="/Images/Questy.webm" type="video/webm">
+        <source src="/Images/questy.webm" type="video/webm">
+    </video>
+
+    <div id="resultaat"></div>
+    <div id="uploadSection" class="judge-box" style="display:none;">
+        <strong>📸 Upload 1 foto van alle resultaten</strong><br><br>
+        <input id="challengePhotos" type="file" accept="image/*" multiple>
+        <br><br>
+        <button id="judgePhotosBtn" type="button">🏆 Laat Questy beoordelen</button>
+        <div id="judgeResult"></div>
+    </div>
+
+</main>
+
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module" src="/JS/auth.js"></script>
+
+<script type="module">
+// Wacht tot auth.js klaar is en checkt inlogstatus
+setTimeout(() => {
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
+    const statusText = document.getElementById("statusText");
+    const form = document.getElementById("challengeForm");
+
+    form.style.display = "block";
+
+    if (!userId) {
+        statusText.textContent = "You are not logged in. Je kunt alvast kiezen; bij genereren vragen we je om in te loggen.";
+    } else {
+        statusText.style.display = "none";
+    }
+
+    window.refreshHeaderAccountMenu?.();
+}, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
+
+const form = document.getElementById("challengeForm");
+const resultaat = document.getElementById("resultaat");
+const questyLoadingVideo = document.getElementById("questyLoadingVideo");
+const submitBtn = form.querySelector('button[type="submit"]');
+const uploadSection = document.getElementById("uploadSection");
+const photosInput = document.getElementById("challengePhotos");
+const judgePhotosBtn = document.getElementById("judgePhotosBtn");
+const judgeResult = document.getElementById("judgeResult");
+let currentChallengeText = "";
+
+function startLoadingState() {
+    submitBtn.disabled = true;
+    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
+    questyLoadingVideo.currentTime = 0;
+    const playPromise = questyLoadingVideo.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.catch(() => {
+            questyLoadingVideo.style.display = "none";
+        });
+    }
+    questyLoadingVideo.style.display = "block";
+}
+
+function stopLoadingState() {
+    questyLoadingVideo.pause();
+    questyLoadingVideo.currentTime = 0;
+    questyLoadingVideo.style.display = "none";
+}
+
+function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Kon foto niet lezen"));
+        reader.readAsDataURL(file);
+    });
+}
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const userId = await requireLoginForAction("Log in to challenges te gebruiken.");
+    if (!userId) {
+        return;
+    }
+
+    startLoadingState();
+
+    const energie = document.getElementById("energie").value;
+    const activiteit_type = document.getElementById("type").value;
+
+    const payload = {
+        energie: energie,
+        type: activiteit_type
+    };
+
+    try {
+        console.log("Debug: userId before fetch:", userId);
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({
+                type: 'challenge',
+                payload: payload
+            })
+        });
+        const text = await resp.text();
+        console.log("Response status:", resp.status);
+        console.log("Response text:", text);
+
+        if (!resp.ok) {
+            if(resp.status === 403 && text.includes('limiet')) {
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                if (window.showSubscriptionUpgradeModal) {
+                    window.showSubscriptionUpgradeModal(_upgradeUserId);
+                }
+            } else {
+                resultaat.innerHTML = `<p style='color:red;'>Fout (${resp.status}): ${text}</p>`;
+            }
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            resultaat.innerHTML = `<p style='color:red;'>JSON parsing error: ${text}</p>`;
+            return;
+        }
+
+        currentChallengeText = data.challenge || "";
+        resultaat.innerHTML = `
+            <div class="challenge-box">
+                <strong>🎯 Jouw Challenge:</strong><br><br>
+                ${data.challenge}
+            </div>
+        `;
+        uploadSection.style.display = "block";
+        judgeResult.innerHTML = "";
+        photosInput.value = "";
+    } catch (err) {
+        resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
+        console.error("Error:", err);
+    } finally {
+        stopLoadingState();
+        submitBtn.disabled = false;
+    }
+});
+
+judgePhotosBtn.addEventListener("click", async (event) => {
+    const userId = await requireLoginForAction("Log in to je challenge-resultaat te laten beoordelen.");
+    if (!userId) {
+        return;
+    }
+
+    const files = Array.from(photosInput.files || []);
+    if (files.length < 1) {
+        judgeResult.innerHTML = "<span style='color:#c53030;'>Upload minimaal 1 foto.</span>";
+        return;
+    }
+
+    event.target.disabled = true;
+    judgeResult.textContent = "⏳ Questy kijkt wie het mooist heeft getekend...";
+
+    try {
+        const submissions = await Promise.all(
+            files.map(async (file, index) => ({
+                name: `Deelnemer ${index + 1}`,
+                image: await fileToDataUrl(file)
+            }))
+        );
+
+        const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({
+                type: 'challenge',
+                payload: {
+                    action: 'judge_results',
+                    challenge: currentChallengeText,
+                    submissions
+                }
+            })
+        });
+
+        const text = await resp.text();
+        if (!resp.ok) {
+            judgeResult.innerHTML = `<span style='color:#c53030;'>Fout (${resp.status}): ${text}</span>`;
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            judgeResult.innerHTML = `<span style='color:#c53030;'>Kon beoordeling niet lezen: ${text}</span>`;
+            return;
+        }
+
+        judgeResult.innerHTML = `✅ Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
+    } catch (err) {
+        judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
+    } finally {
+        event.target.disabled = false;
+    }
+});
+</script>
+
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = (params.get('lang') || '').toLowerCase();
+  if (q === 'nl' || q === 'en') {
+    localStorage.setItem('rdc-lang', q);
+  } else {
+    localStorage.setItem('rdc-lang', 'en');
+  }
+  const btn = document.getElementById('language-fab-en');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'nl');
+    });
+  }
+})();
+</script>
+</body>
+</html>

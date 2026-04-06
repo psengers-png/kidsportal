@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-M9MF9YBFN0');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Canceled</title>
+    <meta name="description" content="Annuleringspagina voor abonnement bij Rainy Day Club." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://www.rainydayclub.nl/en/abonnement-cancel.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rainy Day Club" />
+    <meta property="og:title" content="Subscription geannuleerd | Rainy Day Club" />
+    <meta property="og:description" content="Je abonnement is geannuleerd of niet afgerond." />
+    <meta property="og:url" content="https://www.rainydayclub.nl/en/abonnement-cancel.html" />
+    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
+    <meta name="twitter:card" content="summary" />
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+        }
+
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .header-left img {
+            height: 150px;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: #e5e7eb;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .window {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .agent-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .agent-header img {
+            height: 250px;
+        }
+
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
+        }
+
+        .status-box {
+            background: #f1f5f9;
+            border-left: 6px solid #ef4444;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        a:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+<a id="language-fab-en" href="/abonnement-cancel.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+    <div class="rain"></div>
+
+    <header>
+        <div class="header-left">
+            <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
+            <h1>Rainy Day Club</h1>
+        </div>
+        <div class="header-right">
+        </div>
+    </header>
+
+    <main>
+        <div class="window">
+            <div class="agent-header">
+                <img src="Images/Giggly.png" alt="Giggly">
+                <h2>Subscription Canceled</h2>
+                <p>Geen probleem, je kunt het altijd opnieuw proberen ☁️🧡</p>
+            </div>
+
+            <div class="status-box">
+                <strong>Subscription niet afgerond</strong><br><br>
+                Je hebt het afrekenen geannuleerd. Je kunt altijd opnieuw een abonnement afsluiten via de RainyDayClub.
+            </div>
+
+            <a href="/en/home.html">Terug naar de startpagina</a>
+        </div>
+    </main>
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = (params.get('lang') || '').toLowerCase();
+  if (q === 'nl' || q === 'en') {
+    localStorage.setItem('rdc-lang', q);
+  } else {
+    localStorage.setItem('rdc-lang', 'en');
+  }
+  const btn = document.getElementById('language-fab-en');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'nl');
+    });
+  }
+})();
+</script>
+</body>
+</html>

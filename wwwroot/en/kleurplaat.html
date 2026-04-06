@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-M9MF9YBFN0');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coloring Page AI generator | Coloring Page maken & ontwerp | Rainy Day Club</title>
+    <meta name="description" content="Maak een kleurplaat met AI met onze kleurplaat generator. Snel kleurplaat maken en kleurplaat ontwerp op maat met Driply." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.rainydayclub.nl/en/kleurplaat.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rainy Day Club" />
+    <meta property="og:title" content="Coloring Page AI generator | Coloring Page maken" />
+    <meta property="og:description" content="Gebruik Driply als kleurplaat generator voor kleurplaat maken en kleurplaat ontwerp op maat." />
+    <meta property="og:url" content="https://www.rainydayclub.nl/en/kleurplaat.html" />
+    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Driply.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Coloring Page AI generator | Coloring Page maken" />
+    <meta name="twitter:description" content="Gebruik Driply als kleurplaat generator voor kleurplaat maken en kleurplaat ontwerp op maat." />
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .header-left img {
+            height: 150px;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+
+        .header-btn:hover {
+            background: #e2e8f0;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .window {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .agent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .agent-header img {
+            height: 250px;
+        }
+
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #dbeafe;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+            margin-top: 6px;
+        }
+
+        input:disabled {
+            background: #f1f5f9;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        #resultaat {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #driplyLoadingVideo {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 14px auto 0;
+            display: none;
+        }
+
+        #resultaat img {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #statusText {
+            text-align: center;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 12px 14px;
+            }
+
+            .header-left img {
+                height: 48px;
+            }
+
+            .header-left h1 {
+                margin: 0;
+                font-size: 1.1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 45vw;
+            }
+
+            .header-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            main {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .window {
+                border-radius: 20px;
+                padding: 20px 16px;
+            }
+
+            .agent-header img {
+                height: 165px;
+                max-width: 100%;
+                object-fit: contain;
+            }
+
+            .agent-header h2 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<a id="language-fab-en" href="/kleurplaat.html" data-lang="nl" style="position:fixed;top:14px;right:14px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;background:#0f172a;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 10px 24px rgba(15,23,42,.35);">Nederlands</a>
+
+<div class="rain"></div>
+
+<header>
+    <div class="header-left">
+        <img src="Images/Logo Rainydayclub.png" alt="Rainy Day Club">
+        <h1>Rainy Day Club</h1>
+    </div>
+    <div class="header-right">
+        <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
+    </div>
+</header>
+
+<main>
+    <div class="window">
+
+        <div class="agent-header">
+            <img src="Images/Driply.png" alt="Driply">
+            <h2>Coloring Page AI generator: kleurplaat maken met Driply</h2>
+            <p>Beschrijf iets of upload een foto en Driply maakt er een kleurplaat van ☔🎨</p>
+            <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
+                Met deze kleurplaat AI tool kun je eenvoudig een kleurplaat maken voor kinderen. Kies een onderwerp zoals dieren,
+                sprookjes of voertuigen en genereer direct een uniek kleurplaat ontwerp op maat. Deze kleurplaat generator
+                is ideaal voor thuis, op school en tijdens kinderfeestjes.
+            </p>
+        </div>
+
+    <p id="statusText">Checking...</p>
+
+    <form id="kleurplaatForm" style="display:none;">
+        <div class="form-section">
+            <div class="section-title">Optie 1: Beschrijving</div>
+            <label>Wie? (bijv. een aap, kat, prinses)</label>
+            <input id="wie" type="text">
+
+            <label>Waar? (bijv. in de jungle, thuis, op het kasteel)</label>
+            <input id="waar" type="text">
+
+            <label>Welke activiteit? (bijv. spelen, eten, vissen)</label>
+            <input id="activiteit" type="text">
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">Optie 2: Foto Upload</div>
+            <label>Upload foto (optioneel)</label>
+            <input id="foto" type="file" accept="image/*">
+        </div>
+
+        <button type="submit">✨ Generate kleurplaat</button>
+
+                <div class="form-section" style="margin-top: 28px;">
+                    <div class="section-title">Optie 3: Tot leven brengen met Driply</div>
+                    <label>Upload je kleurplaat aan Driply en laat hem die al dansend inkleuren</label>
+                    <input id="driply_foto" type="file" accept="image/*">
+                    <button type="button" id="driplyBtn" style="margin-top: 10px;">🎨 Tot leven brengen met Driply</button>
+                </div>
+
+        <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
+    </form>
+
+    <div id="resultaat"></div>
+    <video id="driplyLoadingVideo" muted playsinline loop preload="auto">
+        <source src="/Images/Vid Diply.mp4" type="video/mp4">
+        <source src="/Images/Vid Driply.mp4" type="video/mp4">
+        <source src="/Images/Driply.mp4" type="video/mp4">
+        <source src="/Images/driply.mp4" type="video/mp4">
+        <source src="/Images/Driply.webm" type="video/webm">
+        <source src="/Images/driply.webm" type="video/webm">
+    </video>
+
+    </div>
+
+</main>
+
+
+<!-- Scripts -->
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module" src="/JS/abonnement.js"></script>
+<script type="module" src="/JS/auth.js"></script>
+
+<script type="module">
+
+// Wacht tot auth.js klaar is en checkt inlogstatus
+setTimeout(() => {
+    const userId = localStorage.getItem('userId') || localStorage.getItem('user-id');
+    const statusText = document.getElementById("statusText");
+    const form = document.getElementById("kleurplaatForm");
+
+    form.style.display = "block";
+
+    if (!userId) {
+        statusText.textContent = "You are not logged in. Je kunt alvast invullen; bij genereren vragen we je om in te loggen.";
+    } else {
+        statusText.style.display = "none";
+    }
+
+    window.refreshHeaderAccountMenu?.();
+}, 1000);
+
+function getStoredUserId() {
+    return localStorage.getItem('userId') || localStorage.getItem('user-id') || '';
+}
+
+async function requireLoginForAction(message) {
+    const userId = getStoredUserId();
+    if (userId) {
+        return userId;
+    }
+
+    if (typeof window.startLoginRedirectWithNotice === 'function') {
+        await window.startLoginRedirectWithNotice(message);
+    } else {
+        window.location.href = '/login.html';
+    }
+
+    return '';
+}
+
+async function initFormLogic() {
+    const wieInput = document.getElementById("wie");
+    const waarInput = document.getElementById("waar");
+    const activiteitInput = document.getElementById("activiteit");
+    const fotoInput = document.getElementById("foto");
+    const form = document.getElementById("kleurplaatForm");
+    const resultaat = document.getElementById("resultaat");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const driplyLoadingVideo = document.getElementById("driplyLoadingVideo");
+    // Functie om velden in/uit te schakelen
+    function updateFieldStates() {
+        const hasText = wieInput.value.trim() || waarInput.value.trim() || activiteitInput.value.trim();
+        const hasPhoto = fotoInput.files.length > 0;
+
+        // Als foto is geupload, disable tekstvelden
+        wieInput.disabled = hasPhoto;
+        waarInput.disabled = hasPhoto;
+        activiteitInput.disabled = hasPhoto;
+
+        // Als tekst ingevuld, disable foto upload
+        fotoInput.disabled = hasText;
+    }
+
+    // Listeners voor real-time enable/disable
+    wieInput.addEventListener("input", updateFieldStates);
+    waarInput.addEventListener("input", updateFieldStates);
+    activiteitInput.addEventListener("input", updateFieldStates);
+    fotoInput.addEventListener("change", updateFieldStates);
+
+    function startLoadingState() {
+        downloadBtn.style.display = 'none';
+        resultaat.textContent = "Coloring Page wordt aangemaakt...";
+        driplyLoadingVideo.style.display = "block";
+        driplyLoadingVideo.currentTime = 0;
+        const playPromise = driplyLoadingVideo.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
+    }
+
+    function stopLoadingState() {
+        driplyLoadingVideo.pause();
+        driplyLoadingVideo.currentTime = 0;
+        driplyLoadingVideo.style.display = "none";
+    }
+
+    async function postColoring PageRequest(payload, userId, type = 'kleurplaat') {
+        const endpoint = 'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest';
+        const maxAttempts = 2;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timeoutId = controller
+                ? setTimeout(() => controller.abort(), 180000)
+                : null;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'user-id': userId
+                    },
+                    body: JSON.stringify({ type, payload }),
+                    cache: 'no-store',
+                    signal: controller ? controller.signal : undefined
+                });
+
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+
+                return response;
+            } catch (error) {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+
+                const isNetworkError = error instanceof TypeError || error?.name === 'AbortError';
+                if (!isNetworkError || attempt === maxAttempts) {
+                    throw error;
+                }
+
+                await new Promise((resolve) => setTimeout(resolve, 1200));
+            }
+        }
+    }
+
+    // Driply "Tot leven brengen" handler
+    async function handleDriplyColorization() {
+        const driplyFotoInput = document.getElementById("driply_foto");
+        
+        if (!driplyFotoInput.files.length) {
+            alert("Selecteer eerst een kleurplaat om tot leven te brengen");
+            return;
+        }
+
+        const userId = await requireLoginForAction("Log in to Driply te gebruiken.");
+        if (!userId) {
+            return;
+        }
+        
+        const file = driplyFotoInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = async () => {
+            startLoadingState();
+            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply gaat aan de slag... even geduld!</p>';
+            const imageBase64 = reader.result;
+
+            try {
+                // Stap 1: start video-job, krijg request_id terug
+                const startResp = await postColoring PageRequest(
+                    { image_base64: imageBase64, mode: 'driply_dance' },
+                    userId,
+                    'grok_kleurplaat'
+                );
+                const startText = await startResp.text();
+                if (!startResp.ok) throw new Error(startText || `HTTP ${startResp.status}`);
+
+                let startData;
+                try { startData = JSON.parse(startText); }
+                catch { throw new Error('Ongeldige response van GROK service.'); }
+
+                if (startData.error) throw new Error(startData.error);
+                const requestId = startData.request_id;
+                if (!requestId) throw new Error('Geen request_id ontvangen van GROK.');
+
+                // Stap 2: poll status elke 4 seconden (max 90x = 6 minuten)
+                let videoUrl = null;
+                for (let attempt = 0; attempt < 90; attempt++) {
+                    await new Promise(r => setTimeout(r, 4000));
+
+                    const statusResp = await postColoring PageRequest(
+                        { mode: 'driply_status', request_id: requestId },
+                        userId,
+                        'driply_status'
+                    );
+                    const statusText = await statusResp.text();
+                    let statusData;
+                    try { statusData = JSON.parse(statusText); }
+                    catch { continue; }
+
+                    if (statusData.error) throw new Error(statusData.error);
+
+                    const progress = statusData.progress ?? 0;
+                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply danst en kleurt... ${progress}%</p>`;
+
+                    if (statusData.status === 'done' && statusData.video_url) {
+                        videoUrl = statusData.video_url;
+                        break;
+                    }
+                }
+
+                if (!videoUrl) throw new Error('Video generatie duurde te lang of is mislukt.');
+
+                // Stap 3: toon video
+                const video = document.createElement('video');
+                video.src = videoUrl;
+                video.controls = true;
+                video.autoplay = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.style.maxWidth = '100%';
+                video.style.borderRadius = '20px';
+                video.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+                resultaat.innerHTML = '';
+                resultaat.appendChild(video);
+
+                downloadBtn.style.display = 'inline-block';
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = videoUrl;
+                    a.download = 'driply-dans.mp4';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+
+            } catch (error) {
+                const errorMessage = (error?.message || '').toLowerCase();
+                const isPremiumError =
+                    errorMessage.includes('grok functie') ||
+                    errorMessage.includes('actief maandelijks of jaarlijks abonnement') ||
+                    errorMessage.includes('premium');
+
+                if (isPremiumError) {
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Deze aanvraag gebruikt een Premium functie (GROK). Je hebt een actief maandelijks of jaarlijks abonnement nodig om door te gaan.</div>`;
+                    const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                    if (window.showSubscriptionUpgradeModal) {
+                        window.showSubscriptionUpgradeModal(_upgradeUserId, {
+                            mode: 'premium',
+                            featureName: 'GROK Tot Leven Brengen'
+                        });
+                    }
+                    return;
+                }
+                resultaat.textContent = 'Fout bij tot leven brengen: ' + error.message;
+                console.error('Driply colorization error:', error);
+            } finally {
+                stopLoadingState();
+            }
+        };
+        
+        reader.onerror = () => {
+            resultaat.textContent = 'Fout bij lezen van afbeelding';
+        };
+        
+        reader.readAsDataURL(file);
+    }
+
+    // Driply button event listener
+    document.getElementById("driplyBtn").addEventListener("click", handleDriplyColorization);
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const userId = await requireLoginForAction("Log in to kleurplaten te genereren.");
+        if (!userId) {
+            return;
+        }
+
+        startLoadingState();
+
+        const wie = wieInput.value;
+        const waar = waarInput.value;
+        const activiteit = activiteitInput.value;
+
+        let foto_base64 = null;
+        if (fotoInput.files.length > 0) {
+            const file = fotoInput.files[0];
+            foto_base64 = await new Promise((res, rej) => {
+                const reader = new FileReader();
+                reader.onload = () => res(reader.result);
+                reader.onerror = () => rej('read-error');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const payload = { wie, waar, activiteit };
+        if (foto_base64) payload.foto_base64 = foto_base64;
+
+        try {
+            const resp = await postColoring PageRequest(payload, userId);
+
+            const text = await resp.text();
+            console.log("Response status:", resp.status);
+            console.log("Response text:", text);
+
+            if (!resp.ok) {
+                if (resp.status === 403 && text.includes('limiet')) {
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                    const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
+                    if (window.showSubscriptionUpgradeModal) {
+                        window.showSubscriptionUpgradeModal(_upgradeUserId);
+                    }
+                } else {
+                    resultaat.textContent = `Fout (${resp.status}): ${text}`;
+                }
+                return;
+            }
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                resultaat.textContent = `JSON parsing error: ${text}`;
+                return;
+            }
+
+            const img = document.createElement('img');
+            img.src = data.image_data_uri;
+            resultaat.innerHTML = '';
+            resultaat.appendChild(img);
+
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = data.image_data_uri;
+                a.download = 'kleurplaat.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+
+        } catch (err) {
+            const isNetworkError = err instanceof TypeError || err?.name === 'AbortError';
+            resultaat.textContent = isNetworkError
+                ? 'Netwerkfout bij het laden van de kleurplaat. Probeer het opnieuw.'
+                : 'Fout: ' + err;
+            console.error("Error:", err);
+        } finally {
+            stopLoadingState();
+        }
+    });
+}
+
+initFormLogic();
+</script>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = (params.get('lang') || '').toLowerCase();
+  if (q === 'nl' || q === 'en') {
+    localStorage.setItem('rdc-lang', q);
+  } else {
+    localStorage.setItem('rdc-lang', 'en');
+  }
+  const btn = document.getElementById('language-fab-en');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'nl');
+    });
+  }
+})();
+</script>
+</body>
+</html>
