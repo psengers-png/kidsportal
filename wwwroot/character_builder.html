@@ -5,53 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karakter Bouwer</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at 15% 20%, #ffe082 0%, transparent 45%),
-                        radial-gradient(circle at 85% 10%, #80deea 0%, transparent 40%),
-                        linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #0b3b2f 100%);
-            color: #f8fafc;
             min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
         }
         header {
+            position: relative;
+            z-index: 2;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 18px;
-            background: rgba(2, 6, 23, 0.45);
-            backdrop-filter: blur(6px);
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .agent-mark {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
         }
         .header-right { display: flex; gap: 8px; }
         .header-btn {
-            border: none;
-            background: #fef08a;
-            color: #1f2937;
-            font-weight: 700;
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
             cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
         }
+        .header-btn:hover { background: #e2e8f0; }
         main {
-            max-width: 900px;
-            margin: 18px auto;
-            padding: 0 14px 24px;
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
         }
         .panel {
-            background: rgba(15, 23, 42, 0.72);
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+        .agent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
         }
         .step-title {
             margin: 0 0 8px;
             font-size: 1.35rem;
+            color: #1f2d3d;
         }
         .step-sub {
             margin: 0 0 16px;
-            color: #cbd5e1;
+            color: #475569;
             font-size: 0.95rem;
         }
         .choices {
@@ -61,10 +127,10 @@
             margin-bottom: 12px;
         }
         .choice {
-            border: 2px solid #475569;
-            background: #1e293b;
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
             border-radius: 12px;
-            color: #e2e8f0;
+            color: #1f2d3d;
             padding: 10px;
             text-align: center;
             cursor: pointer;
@@ -77,9 +143,9 @@
         }
         .choice .emoji { font-size: 1.5rem; }
         .choice.selected {
-            border-color: #22d3ee;
-            background: #0f766e;
-            color: #ecfeff;
+            border-color: #3b82f6;
+            background: #dbeafe;
+            color: #1d4ed8;
             transform: translateY(-2px);
         }
         .row {
@@ -89,14 +155,14 @@
             margin-bottom: 12px;
         }
         .group {
-            border: 1px solid #334155;
+            border: 1px solid #bfdbfe;
             border-radius: 12px;
             padding: 10px;
-            background: rgba(15, 23, 42, 0.55);
+            background: #eff6ff;
         }
         .group h4 {
             margin: 0 0 8px;
-            color: #e2e8f0;
+            color: #1d4ed8;
         }
         .chip-row {
             display: flex;
@@ -104,18 +170,18 @@
             gap: 6px;
         }
         .chip {
-            border: 1px solid #64748b;
+            border: 1px solid #93c5fd;
             border-radius: 999px;
-            background: #1e293b;
-            color: #e2e8f0;
+            background: #ffffff;
+            color: #1f2d3d;
             padding: 6px 10px;
             font-size: 0.85rem;
             cursor: pointer;
         }
         .chip.selected {
-            border-color: #fb7185;
-            background: #9f1239;
-            color: #ffe4e6;
+            border-color: #3b82f6;
+            background: #dbeafe;
+            color: #1d4ed8;
         }
         .actions {
             margin-top: 16px;
@@ -130,50 +196,70 @@
             font-weight: 700;
             cursor: pointer;
         }
-        .secondary { background: #334155; color: #e2e8f0; }
-        .primary { background: #f43f5e; color: white; }
+        .secondary { background: #e2e8f0; color: #1f2d3d; }
+        .primary { background: #3b82f6; color: white; }
+        .primary:hover { background: #2563eb; }
         input[type="text"] {
             width: 100%;
-            border: 1px solid #64748b;
+            border: 2px solid #e0e7ff;
             border-radius: 10px;
             padding: 10px;
-            background: #0f172a;
-            color: #e2e8f0;
+            background: #ffffff;
+            color: #1f2d3d;
             font-size: 0.95rem;
         }
-        .status { color: #bae6fd; min-height: 20px; margin: 0 0 10px; }
+        .status { color: #2563eb; min-height: 20px; margin: 0 0 10px; font-weight: 600; }
         .result {
             margin-top: 16px;
-            border: 1px solid #334155;
+            border: 1px solid #bfdbfe;
             border-radius: 12px;
-            background: rgba(2, 6, 23, 0.55);
+            background: #eff6ff;
             padding: 12px;
             display: none;
         }
         .result pre {
             white-space: pre-wrap;
             margin: 0;
-            color: #e2e8f0;
+            color: #1f2d3d;
             font-size: 0.9rem;
         }
         .progress {
             margin-bottom: 12px;
             font-size: 0.9rem;
-            color: #fde68a;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        @keyframes rain {
+            from { background-position: 0 0; }
+            to { background-position: 0 20px; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 10px 16px; }
+            .panel { padding: 24px; border-radius: 22px; }
+            .agent-mark { width: 50px; height: 50px; font-size: 30px; }
+            .agent-header h2 { font-size: 1.7rem; }
         }
     </style>
 </head>
 <body>
 <header>
-    <strong>🛠️ Karakter Bouwer</strong>
+    <div class="header-left">
+        <div class="agent-mark">?</div>
+        <strong>🛠️ Karakter Bouwer</strong>
+    </div>
     <div class="header-right">
         <button class="header-btn" id="homeBtn">← Home</button>
         <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
     </div>
 </header>
 
+<div class="rain"></div>
+
 <main>
     <div class="panel">
+        <div class="agent-header">
+            <h2>Bouw je eigen karakter</h2>
+        </div>
         <p class="progress" id="progressText">Stap 1 van 6</p>
         <h2 class="step-title" id="stepTitle">Laden...</h2>
         <p class="step-sub" id="stepSub"></p>
