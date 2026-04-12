@@ -243,6 +243,16 @@
             box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
             background: #000;
         }
+        .result .coloring-image {
+            display: none;
+            width: 100%;
+            max-width: 360px;
+            margin: 14px auto 0;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+            background: #fff;
+        }
         .life-actions {
             margin-top: 12px;
             display: flex;
@@ -341,7 +351,12 @@
             <img id="resultImage" alt="Gegenereerd karakter">
             <p class="status life-status" id="lifeStatus"></p>
             <div class="life-actions">
+                <button class="secondary" id="makeColoringBtn" type="button" disabled>🎨 Maak een kleurplaat</button>
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Breng tot leven</button>
+            </div>
+            <img id="resultColoringImage" class="coloring-image" alt="Gegenereerde kleurplaat">
+            <div class="life-actions">
+                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">⬇️ Download kleurplaat</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -361,6 +376,9 @@ const nextBtn = document.getElementById('nextBtn');
 const resultBox = document.getElementById('resultBox');
 const resultText = document.getElementById('resultText');
 const resultImage = document.getElementById('resultImage');
+const resultColoringImage = document.getElementById('resultColoringImage');
+const downloadColoringBtn = document.getElementById('downloadColoringBtn');
+const makeColoringBtn = document.getElementById('makeColoringBtn');
 const bringToLifeBtn = document.getElementById('bringToLifeBtn');
 const videoNameSuggestBtn = document.getElementById('videoNameSuggestBtn');
 const finalNameInput = document.getElementById('finalNameInput');
@@ -526,6 +544,48 @@ function updateBringToLifeAvailability() {
     const hasImage = !!builtCharacter?.image_data_uri;
     const hasName = !!(builtCharacter?.name && builtCharacter.name.trim());
     bringToLifeBtn.disabled = !(hasImage && hasName);
+    makeColoringBtn.disabled = !hasImage;
+}
+
+async function makeColoringPageFromCharacter() {
+    if (!builtCharacter?.image_data_uri) {
+        setLifeStatus('Maak eerst een karakter met afbeelding.');
+        return;
+    }
+
+    makeColoringBtn.disabled = true;
+    try {
+        setLifeStatus('JE agent wordt omgezet naar een kleurplaat...');
+        const profile = builtCharacter?.character_profile || {};
+        const resp = await callApiRequest('kleurplaat', {
+            wie: builtCharacter?.name || profile.type || 'agent',
+            waar: profile.world || 'fantasiewereld',
+            activiteit: `gebruikt ${Array.isArray(profile.powers) && profile.powers.length ? profile.powers.join(', ') : 'krachten'}`,
+            foto_base64: builtCharacter.image_data_uri
+        });
+
+        if (!resp?.image_data_uri) {
+            throw new Error('Geen kleurplaat ontvangen.');
+        }
+
+        resultColoringImage.src = resp.image_data_uri;
+        resultColoringImage.style.display = 'block';
+        downloadColoringBtn.style.display = 'inline-block';
+        downloadColoringBtn.onclick = () => {
+            const link = document.createElement('a');
+            link.href = resp.image_data_uri;
+            link.download = 'agent-kleurplaat.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        setLifeStatus('Kleurplaat klaar! Je kunt hem nu downloaden.');
+    } catch (err) {
+        setLifeStatus(err.message || 'Kleurplaat maken is mislukt.');
+    } finally {
+        updateBringToLifeAvailability();
+    }
 }
 
 function setChosenName(name) {
@@ -880,6 +940,9 @@ async function buildCharacter() {
     resultVideo.pause();
     resultVideo.removeAttribute('src');
     resultVideo.style.display = 'none';
+    resultColoringImage.removeAttribute('src');
+    resultColoringImage.style.display = 'none';
+    downloadColoringBtn.style.display = 'none';
     setLifeStatus('');
 
     if (data.image_error) {
@@ -901,6 +964,7 @@ prevBtn.onclick = () => {
 };
 
 bringToLifeBtn.onclick = bringCharacterToLife;
+makeColoringBtn.onclick = makeColoringPageFromCharacter;
 videoNameSuggestBtn.onclick = suggestNamesAfterVideo;
 applyNameBtn.onclick = () => setChosenName(finalNameInput.value);
 
