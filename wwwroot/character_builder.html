@@ -271,6 +271,11 @@
             .name-choice-row .chip {
                 font-weight: 700;
             }
+            .life-status {
+                margin-top: 8px;
+                margin-bottom: 0;
+                text-align: center;
+            }
         .progress {
             margin-bottom: 12px;
             font-size: 0.9rem;
@@ -334,6 +339,7 @@
             </div>
             <div id="nameChoiceRow" class="name-choice-row"></div>
             <img id="resultImage" alt="Gegenereerd karakter">
+            <p class="status life-status" id="lifeStatus"></p>
             <div class="life-actions">
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Breng tot leven</button>
             </div>
@@ -361,6 +367,7 @@ const finalNameInput = document.getElementById('finalNameInput');
 const applyNameBtn = document.getElementById('applyNameBtn');
 const nameChoiceRow = document.getElementById('nameChoiceRow');
 const resultVideo = document.getElementById('resultVideo');
+const lifeStatus = document.getElementById('lifeStatus');
 
 const logoutBtn = document.getElementById('logoutBtn');
 
@@ -389,6 +396,10 @@ const state = {
 
 function setStatus(msg) {
     statusText.textContent = msg || '';
+}
+
+function setLifeStatus(msg) {
+    lifeStatus.textContent = msg || '';
 }
 
 function getUserId() {
@@ -591,6 +602,7 @@ async function bringCharacterToLife() {
     }
 
     bringToLifeBtn.disabled = true;
+    setLifeStatus('JE agent wordt tot leven gebracht');
     resultVideo.pause();
     resultVideo.removeAttribute('src');
     resultVideo.style.display = 'none';
@@ -615,7 +627,7 @@ async function bringCharacterToLife() {
                 resultVideo.src = poll.video_url;
                 resultVideo.style.display = 'block';
                 videoNameSuggestBtn.disabled = false;
-                setStatus('Je karakter is tot leven gebracht!');
+                setLifeStatus('Je agent is tot leven gebracht!');
                 return;
             }
 
@@ -623,12 +635,12 @@ async function bringCharacterToLife() {
                 throw new Error(poll.error);
             }
 
-            setStatus('Video wordt gemaakt...');
+            setLifeStatus('Video wordt gemaakt...');
         }
 
         throw new Error('Video duurt langer dan verwacht. Probeer het opnieuw.');
     } catch (err) {
-        setStatus(err.message || 'Tot leven brengen is mislukt.');
+        setLifeStatus(err.message || 'Tot leven brengen is mislukt.');
     } finally {
         updateBringToLifeAvailability();
     }
@@ -868,6 +880,7 @@ async function buildCharacter() {
     resultVideo.pause();
     resultVideo.removeAttribute('src');
     resultVideo.style.display = 'none';
+    setLifeStatus('');
 
     if (data.image_error) {
         setStatus('Karakter klaar, maar afbeelding kon niet worden gemaakt.');
