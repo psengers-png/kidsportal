@@ -545,14 +545,18 @@ homeBtn.onclick = () => window.location.href = '/home.html';
 
 setTimeout(() => {
     const accounts = window.msalInstance ? msalInstance.getAllAccounts() : [];
-    if (!accounts.length) {
+    const hasLocalUserId = Boolean(localStorage.getItem('userId') || localStorage.getItem('user-id'));
+
+    if (!accounts.length && !hasLocalUserId) {
         window.location.href = '/home.html';
         return;
     }
 
-    logoutBtn.style.display = 'inline-block';
-    logoutBtn.onclick = () => msalInstance.logoutRedirect();
-}, 800);
+    if (accounts.length && window.msalInstance) {
+        logoutBtn.style.display = 'inline-block';
+        logoutBtn.onclick = () => msalInstance.logoutRedirect();
+    }
+}, 1200);
 
 (async function init() {
     try {
