@@ -444,6 +444,21 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function buildCharacterLifePayload() {
+    const profile = builtCharacter?.character_profile || {};
+    return {
+        mode: 'character_life',
+        image_base64: builtCharacter.image_data_uri,
+        character_name: builtCharacter?.name || '',
+        character_type: profile.type || '',
+        powers: Array.isArray(profile.powers) ? profile.powers : [],
+        personality: Array.isArray(profile.personality) ? profile.personality : [],
+        world: profile.world || '',
+        story_seed: builtCharacter?.story_seed || '',
+        character_video_prompt: `Laat het karakter exact overeenkomen met de afbeelding. Het karakter zegt: Ik ben ${builtCharacter?.name || 'mijn karakter'} en ik gebruik mijn krachten om te helpen.`
+    };
+}
+
 async function bringCharacterToLife() {
     if (!builtCharacter || !builtCharacter.image_data_uri) {
         setStatus('Maak eerst een karakter met afbeelding.');
@@ -457,10 +472,7 @@ async function bringCharacterToLife() {
 
     try {
         setStatus('Driply brengt je karakter tot leven...');
-        const start = await callApiRequest('grok_kleurplaat', {
-            mode: 'driply_dance',
-            image_base64: builtCharacter.image_data_uri
-        });
+        const start = await callApiRequest('grok_kleurplaat', buildCharacterLifePayload());
 
         const requestId = start.request_id;
         if (!requestId) {
