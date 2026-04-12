@@ -680,6 +680,11 @@ function validateStep(step) {
             return 'Typ je zelf verzonnen karakter.';
         }
     }
+    if (step.id === 'uiterlijk') {
+        if (!state.appearance.kleur.length) return 'Kies een kleur.';
+        if (!state.appearance.bouw.length) return 'Kies een bouw.';
+        if (!state.appearance.ogen.length) return 'Kies een type ogen.';
+    }
     if (step.id === 'krachten' && state.powers.length < 1) return 'Kies minimaal 1 kracht.';
     if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Kies precies 2 eigenschappen.';
     if (step.id === 'wereld' && !state.world) return 'Kies een wereld.';
