@@ -435,8 +435,7 @@ async function callApiRequest(type, payload) {
 
     let lastError = null;
 
-    const action = String(payload?.action || '').toLowerCase();
-    const timeoutMs = action === 'build_character' ? 180000 : 30000;
+    const timeoutMs = 180000;
     const maxAttempts = 2;
 
     for (const endpoint of API_REQUEST_ENDPOINTS) {
