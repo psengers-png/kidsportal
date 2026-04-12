@@ -576,7 +576,7 @@ function buildCharacterLifePayload() {
         personality: Array.isArray(profile.personality) ? profile.personality : [],
         world: profile.world || '',
         story_seed: builtCharacter?.story_seed || '',
-        character_video_prompt: `Keep the video character identical to the image. The character says: I am ${chosenName} and I use ${powersText} to help in ${worldText}.`
+        character_video_prompt: `Keep the video character identical to the image. Let the character introduce itself based on these values: name=${chosenName}, powers=${powersText}, world=${worldText}. Use these variables clearly in the spoken line, but phrase it naturally and child-friendly.`
     };
 }
 

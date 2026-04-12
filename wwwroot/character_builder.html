@@ -575,7 +575,7 @@ function buildCharacterLifePayload() {
         personality: Array.isArray(profile.personality) ? profile.personality : [],
         world: profile.world || '',
         story_seed: builtCharacter?.story_seed || '',
-        character_video_prompt: `Laat het karakter exact overeenkomen met de afbeelding. Het karakter zegt: Ik ben ${chosenName} en ik gebruik ${powersText} om te helpen in ${worldText}.`
+        character_video_prompt: `Laat het karakter exact overeenkomen met de afbeelding. Laat het karakter zichzelf kort voorstellen op basis van deze gegevens: naam=${chosenName}, krachten=${powersText}, wereld=${worldText}. Gebruik deze variabelen duidelijk in de gesproken tekst, maar formuleer de zin natuurlijk en kindvriendelijk.`
     };
 }
 
