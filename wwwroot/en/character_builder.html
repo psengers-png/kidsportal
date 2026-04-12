@@ -796,11 +796,18 @@ function renderCurrentStep() {
 }
 
 function validateStep(step) {
+    if (!step) return 'Step not found. Please reload the page.';
+
     if (step.id === 'soort') {
         if (!state.character_type) return 'Choose a character type first.';
         if (state.character_type === 'zelf_verzonnen' && !state.custom_type.trim()) {
             return 'Type your custom character.';
         }
+    }
+    if (step.id === 'uiterlijk') {
+        if (state.appearance.kleur.length < 1) return 'Pick 1 color in appearance.';
+        if (state.appearance.bouw.length < 1) return 'Pick 1 build option in appearance.';
+        if (state.appearance.ogen.length < 1) return 'Pick 1 eye option in appearance.';
     }
     if (step.id === 'krachten' && state.powers.length < 1) return 'Choose at least 1 power.';
     if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Choose exactly 2 personality traits.';
