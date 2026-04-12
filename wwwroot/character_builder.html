@@ -377,9 +377,12 @@ async function callApiRequest(type, payload) {
 
     let lastError = null;
 
+    const action = String(payload?.action || '').toLowerCase();
+    const timeoutMs = action === 'build_character' ? 90000 : 25000;
+
     for (const endpoint of API_REQUEST_ENDPOINTS) {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
             const response = await fetch(endpoint, {
@@ -417,7 +420,7 @@ async function callApiRequest(type, payload) {
     }
 
     if (lastError && lastError.name === 'AbortError') {
-        throw new Error('De server reageert te langzaam. Probeer het opnieuw.');
+        throw new Error('De server reageert te langzaam voor deze stap. Probeer het opnieuw.');
     }
     throw lastError || new Error('apiRequest endpoint niet bereikbaar');
 }
