@@ -310,7 +310,7 @@
             <img id="resultImage" alt="Generated character">
             <div class="life-actions">
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Bring to life</button>
-                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Name suggestions after video</button>
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Pick name for video</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -459,6 +459,14 @@ function updateNameSuggestionsInResult(suggestions) {
     }
 }
 
+function updateCharacterNameInResult(name) {
+    const text = resultText.textContent || '';
+    const line = `Name: ${name || '-'}`;
+    if (/Name:.*/.test(text)) {
+        resultText.textContent = text.replace(/Name:.*/, line);
+    }
+}
+
 async function suggestNamesAfterVideo() {
     if (!builtCharacter) {
         setStatus('Create a character first.');
@@ -480,8 +488,12 @@ async function suggestNamesAfterVideo() {
 
         const suggestions = data.name_suggestions || [];
         builtCharacter.name_suggestions = suggestions;
+        if (suggestions.length > 0) {
+            builtCharacter.name = suggestions[0];
+            updateCharacterNameInResult(suggestions[0]);
+        }
         updateNameSuggestionsInResult(suggestions);
-        setStatus('New name suggestions: ' + suggestions.join(', '));
+        setStatus('New name selected for video: ' + (builtCharacter.name || '-'));
     } catch (err) {
         setStatus(err.message || 'Failed to fetch name suggestions.');
     } finally {
@@ -794,12 +806,12 @@ async function buildCharacter() {
         resultImage.src = data.image_data_uri;
         resultImage.style.display = 'block';
         bringToLifeBtn.disabled = false;
-        videoNameSuggestBtn.disabled = true;
+        videoNameSuggestBtn.disabled = false;
     } else {
         resultImage.removeAttribute('src');
         resultImage.style.display = 'none';
         bringToLifeBtn.disabled = true;
-        videoNameSuggestBtn.disabled = true;
+        videoNameSuggestBtn.disabled = false;
     }
 
     resultVideo.pause();

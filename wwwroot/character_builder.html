@@ -309,7 +309,7 @@
             <img id="resultImage" alt="Gegenereerd karakter">
             <div class="life-actions">
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Breng tot leven</button>
-                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Naam-suggesties na video</button>
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Naam kiezen voor filmpje</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -458,6 +458,14 @@ function updateNameSuggestionsInResult(suggestions) {
     }
 }
 
+function updateCharacterNameInResult(name) {
+    const text = resultText.textContent || '';
+    const line = `Naam: ${name || '-'}`;
+    if (/Naam:.*/.test(text)) {
+        resultText.textContent = text.replace(/Naam:.*/, line);
+    }
+}
+
 async function suggestNamesAfterVideo() {
     if (!builtCharacter) {
         setStatus('Maak eerst een karakter.');
@@ -479,8 +487,12 @@ async function suggestNamesAfterVideo() {
 
         const suggestions = data.name_suggestions || [];
         builtCharacter.name_suggestions = suggestions;
+        if (suggestions.length > 0) {
+            builtCharacter.name = suggestions[0];
+            updateCharacterNameInResult(suggestions[0]);
+        }
         updateNameSuggestionsInResult(suggestions);
-        setStatus('Nieuwe naam-suggesties: ' + suggestions.join(', '));
+        setStatus('Nieuwe naam gekozen voor filmpje: ' + (builtCharacter.name || '-'));
     } catch (err) {
         setStatus(err.message || 'Naam-suggesties ophalen mislukt.');
     } finally {
@@ -793,12 +805,12 @@ async function buildCharacter() {
         resultImage.src = data.image_data_uri;
         resultImage.style.display = 'block';
         bringToLifeBtn.disabled = false;
-        videoNameSuggestBtn.disabled = true;
+        videoNameSuggestBtn.disabled = false;
     } else {
         resultImage.removeAttribute('src');
         resultImage.style.display = 'none';
         bringToLifeBtn.disabled = true;
-        videoNameSuggestBtn.disabled = true;
+        videoNameSuggestBtn.disabled = false;
     }
 
     resultVideo.pause();
