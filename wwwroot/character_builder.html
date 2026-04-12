@@ -336,51 +336,65 @@ const API_REQUEST_ENDPOINTS = [
 ];
 
 let flow = null;
-let currentStep = 0;
-let builtCharacter = null;
-
-const state = {
-    character_type: '',
-    custom_type: '',
-    appearance: {
-        kleur: [],
-        bouw: [],
-        ogen: [],
-        accessoires: []
-    },
-    powers: [],
-    personality: [],
-    world: '',
-    name: ''
-};
-
-function setStatus(msg) {
-    statusText.textContent = msg || '';
-}
-
-function getUserId() {
-    return localStorage.getItem('userId')
-        || localStorage.getItem('user-id')
-        || (window.msalInstance && msalInstance.getAllAccounts()[0]?.username)
-        || '';
-}
-
-async function callAgent(payload) {
-    return callApiRequest('character_builder', payload);
-}
-
-async function callApiRequest(type, payload) {
-    const userId = getUserId();
-    if (!userId) {
-        throw new Error('Geen user-id gevonden. Log opnieuw in.');
-    }
-
     let lastError = null;
-
     const action = String(payload?.action || '').toLowerCase();
-    const timeoutMs = action === 'build_character' ? 90000 : 25000;
+    const timeoutMs = action === 'build_character' ? 180000 : 30000;
+    const maxAttempts = 2;
 
     for (const endpoint of API_REQUEST_ENDPOINTS) {
+        for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'user-id': userId
+                    },
+                    body: JSON.stringify({
+                        type: 'character_builder',
+                        payload
+                    }),
+                    signal: controller ? controller.signal : undefined,
+                    cache: 'no-store'
+                });
+
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+
+                const text = await response.text();
+                let data = {};
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    throw new Error('Kon response niet lezen: ' + text);
+                }
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.details || ('Serverfout ' + response.status));
+                }
+
+                return data;
+            } catch (err) {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                lastError = err;
+
+                const isNetworkError = err instanceof TypeError || err?.name === 'AbortError';
+                if (!isNetworkError || attempt === maxAttempts) {
+                    break;
+                }
+
+                await new Promise((resolve) => setTimeout(resolve, 1200));
+            }
+        }
+    }
+
+    if (lastError && lastError.name === 'AbortError') {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
