@@ -580,6 +580,11 @@ async function bringCharacterToLife() {
         return;
     }
 
+    if (!builtCharacter.name || !builtCharacter.name.trim()) {
+        setStatus('Kies eerst een naam voor je filmpje.');
+        return;
+    }
+
     bringToLifeBtn.disabled = true;
     resultVideo.pause();
     resultVideo.removeAttribute('src');

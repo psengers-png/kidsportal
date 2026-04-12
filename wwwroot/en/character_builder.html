@@ -581,6 +581,11 @@ async function bringCharacterToLife() {
         return;
     }
 
+    if (!builtCharacter.name || !builtCharacter.name.trim()) {
+        setStatus('Choose a name for your video first.');
+        return;
+    }
+
     bringToLifeBtn.disabled = true;
     resultVideo.pause();
     resultVideo.removeAttribute('src');
