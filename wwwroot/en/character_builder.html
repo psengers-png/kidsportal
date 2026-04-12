@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Builder</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+            color: #1f2d3d;
+            overflow-x: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 620px 420px;
+            opacity: 0.72;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='460' viewBox='0 0 680 460'%3E%3Cg fill='none' stroke='%233b82f6' stroke-width='2.8' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M42 98 C92 52 154 148 208 98 C260 50 324 148 382 102'/%3E%3Cpath d='M428 80 C470 46 522 122 568 88 C604 62 638 104 664 90'/%3E%3Cpath d='M118 388 C162 336 226 430 280 380 C328 336 392 422 454 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ec4899' stroke-width='2.2' stroke-linecap='round' opacity='0.32'%3E%3Cpath d='M74 206 C112 180 140 240 174 212 C206 186 238 240 272 214'/%3E%3Cpath d='M490 214 C526 184 558 246 592 218 C618 198 636 220 654 210'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 680px 460px;
+            opacity: 0.56;
+        }
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 12px
+            );
+            animation: rain 0.6s linear infinite;
+            opacity: 0.4;
+            z-index: 1;
+        }
+        header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .agent-mark {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+        }
+        .header-right { display: flex; gap: 8px; }
+        .header-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+            color: #1f2d3d;
+        }
+        .header-btn:hover { background: #e2e8f0; }
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .panel {
+            background: rgba(255,255,255,0.92);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+        .agent-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .agent-header h2 {
+            margin: 10px 0 0;
+            font-size: 2.2rem;
+        }
+        .step-title {
+            margin: 0 0 8px;
+            font-size: 1.35rem;
+            color: #1f2d3d;
+        }
+        .step-sub {
+            margin: 0 0 16px;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .choice {
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            border-radius: 12px;
+            color: #1f2d3d;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            min-height: 84px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 700;
+        }
+        .choice .emoji { font-size: 1.5rem; }
+        .choice.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            color: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .group {
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 10px;
+            background: #eff6ff;
+        }
+        .group h4 {
+            margin: 0 0 8px;
+            color: #1d4ed8;
+        }
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .chip {
+            border: 1px solid #93c5fd;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #1f2d3d;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .chip.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .actions button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .secondary { background: #e2e8f0; color: #1f2d3d; }
+        .primary { background: #3b82f6; color: white; }
+        .primary:hover { background: #2563eb; }
+        input[type="text"] {
+            width: 100%;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            padding: 10px;
+            background: #ffffff;
+            color: #1f2d3d;
+            font-size: 0.95rem;
+        }
+        .status { color: #2563eb; min-height: 20px; margin: 0 0 10px; font-weight: 600; }
+        .result {
+            margin-top: 16px;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            background: #eff6ff;
+            padding: 12px;
+            display: none;
+        }
+        .result pre {
+            white-space: pre-wrap;
+            margin: 0;
+            color: #1f2d3d;
+            font-size: 0.9rem;
+        }
+        .progress {
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        @keyframes rain {
+            from { background-position: 0 0; }
+            to { background-position: 0 20px; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 10px 16px; }
+            .panel { padding: 24px; border-radius: 22px; }
+            .agent-mark { width: 50px; height: 50px; font-size: 30px; }
+            .agent-header h2 { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <div class="agent-mark">?</div>
+        <strong>🛠️ Character Builder</strong>
+    </div>
+    <div class="header-right">
+        <button class="header-btn" id="homeBtn">← Home</button>
+        <button class="header-btn" id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+</header>
+
+<div class="rain"></div>
+
+<main>
+    <div class="panel">
+        <div class="agent-header">
+            <h2>Build your own character</h2>
+        </div>
+        <p class="progress" id="progressText">Step 1 of 6</p>
+        <h2 class="step-title" id="stepTitle">Loading...</h2>
+        <p class="step-sub" id="stepSub"></p>
+        <p class="status" id="statusText"></p>
+
+        <div id="stepContainer"></div>
+
+        <div class="actions">
+            <button class="secondary" id="prevBtn">Previous</button>
+            <button class="primary" id="nextBtn">Next</button>
+        </div>
+
+        <div class="result" id="resultBox">
+            <h3 style="margin-top:0;">Your Character</h3>
+            <pre id="resultText"></pre>
+        </div>
+    </div>
+</main>
+
+<script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+<script src="/JS/auth.js"></script>
+<script>
+const stepContainer = document.getElementById('stepContainer');
+const stepTitle = document.getElementById('stepTitle');
+const stepSub = document.getElementById('stepSub');
+const progressText = document.getElementById('progressText');
+const statusText = document.getElementById('statusText');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const resultBox = document.getElementById('resultBox');
+const resultText = document.getElementById('resultText');
+
+const homeBtn = document.getElementById('homeBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+let flow = null;
+let currentStep = 0;
+let builtCharacter = null;
+
+const state = {
+    character_type: '',
+    custom_type: '',
+    appearance: {
+        kleur: [],
+        bouw: [],
+        ogen: [],
+        accessoires: []
+    },
+    powers: [],
+    personality: [],
+    world: '',
+    name: ''
+};
+
+function setStatus(msg) {
+    statusText.textContent = msg || '';
+}
+
+function getUserId() {
+    return localStorage.getItem('userId')
+        || localStorage.getItem('user-id')
+        || (window.msalInstance && msalInstance.getAllAccounts()[0]?.username)
+        || '';
+}
+
+async function callAgent(payload) {
+    const userId = getUserId();
+    if (!userId) {
+        throw new Error('No user ID found. Please log in again.');
+    }
+
+    const response = await fetch('https://sengfam1.azurewebsites.net/apiRequest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'user-id': userId
+        },
+        body: JSON.stringify({
+            type: 'character_builder',
+            payload
+        })
+    });
+
+    const text = await response.text();
+    let data = {};
+    try {
+        data = JSON.parse(text);
+    } catch (err) {
+        throw new Error('Could not parse response: ' + text);
+    }
+
+    if (!response.ok) {
+        throw new Error(data.error || data.details || ('Server error ' + response.status));
+    }
+
+    return data;
+}
+
+function renderChoiceButton(choice, isSelected, onClick) {
+    const btn = document.createElement('button');
+    btn.className = 'choice' + (isSelected ? ' selected' : '');
+    btn.type = 'button';
+    btn.innerHTML = `<span class="emoji">${choice.emoji || '✨'}</span><span>${choice.label}</span>`;
+    btn.onclick = onClick;
+    return btn;
+}
+
+function toggleSingle(key, value) {
+    state[key] = state[key] === value ? '' : value;
+    renderCurrentStep();
+}
+
+function toggleMultiArray(arr, value, max) {
+    const index = arr.indexOf(value);
+    if (index >= 0) {
+        arr.splice(index, 1);
+    } else if (arr.length < max) {
+        arr.push(value);
+    }
+}
+
+function renderStepType(step) {
+    const box = document.createElement('div');
+    box.className = 'choices';
+
+    step.options.forEach(option => {
+        const selected = state.character_type === option.id;
+        box.appendChild(renderChoiceButton(option, selected, () => {
+            state.character_type = option.id;
+            if (option.id !== 'zelf_verzonnen') {
+                state.custom_type = '';
+            }
+            renderCurrentStep();
+        }));
+    });
+
+    if (step.allow_custom) {
+        const customBtn = renderChoiceButton({ label: 'Custom', emoji: '🧠' }, state.character_type === 'zelf_verzonnen', () => {
+            state.character_type = 'zelf_verzonnen';
+            renderCurrentStep();
+        });
+        box.appendChild(customBtn);
+    }
+
+    stepContainer.appendChild(box);
+
+    if (state.character_type === 'zelf_verzonnen') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'For example: space pirate, ninja cat...';
+        input.value = state.custom_type;
+        input.oninput = (e) => { state.custom_type = e.target.value; };
+        stepContainer.appendChild(input);
+    }
+}
+
+function renderStepAppearance(step) {
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    Object.keys(step.groups).forEach(groupKey => {
+        const group = step.groups[groupKey];
+        const box = document.createElement('div');
+        box.className = 'group';
+
+        const title = document.createElement('h4');
+        title.textContent = groupKey.charAt(0).toUpperCase() + groupKey.slice(1);
+        box.appendChild(title);
+
+        const chipRow = document.createElement('div');
+        chipRow.className = 'chip-row';
+
+        group.options.forEach(option => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            const selected = state.appearance[groupKey].includes(option.id);
+            chip.className = 'chip' + (selected ? ' selected' : '');
+            chip.textContent = option.label;
+            chip.onclick = () => {
+                toggleMultiArray(state.appearance[groupKey], option.id, group.max);
+                renderCurrentStep();
+            };
+            chipRow.appendChild(chip);
+        });
+
+        box.appendChild(chipRow);
+        row.appendChild(box);
+    });
+
+    stepContainer.appendChild(row);
+}
+
+function renderStepMulti(step, stateKey) {
+    const box = document.createElement('div');
+    box.className = 'choices';
+
+    step.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const selected = state[stateKey].includes(option.id);
+        btn.className = 'choice' + (selected ? ' selected' : '');
+        btn.innerHTML = `<span class="emoji">✨</span><span>${option.label}</span>`;
+        btn.onclick = () => {
+            toggleMultiArray(state[stateKey], option.id, step.max);
+            renderCurrentStep();
+        };
+        box.appendChild(btn);
+    });
+
+    stepContainer.appendChild(box);
+}
+
+function renderStepWorld(step) {
+    const box = document.createElement('div');
+    box.className = 'choices';
+
+    step.options.forEach(option => {
+        const selected = state.world === option.id;
+        box.appendChild(renderChoiceButton({ label: option.label, emoji: '🌍' }, selected, () => {
+            toggleSingle('world', option.id);
+        }));
+    });
+
+    stepContainer.appendChild(box);
+}
+
+function renderStepName() {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Type your own name (or leave empty for suggestions)';
+    input.value = state.name;
+    input.oninput = (e) => { state.name = e.target.value; };
+
+    const suggestBtn = document.createElement('button');
+    suggestBtn.type = 'button';
+    suggestBtn.className = 'secondary';
+    suggestBtn.textContent = '🎲 Suggest 3 names';
+    suggestBtn.style.marginTop = '10px';
+    suggestBtn.onclick = async () => {
+        try {
+            setStatus('Generating names...');
+            const data = await callAgent({
+                action: 'suggest_names',
+                character_type: state.character_type,
+                world: state.world,
+                personality: state.personality,
+                powers: state.powers,
+                name: state.name
+            });
+            setStatus('Name suggestions: ' + (data.name_suggestions || []).join(', '));
+        } catch (err) {
+            setStatus(err.message);
+        }
+    };
+
+    stepContainer.appendChild(input);
+    stepContainer.appendChild(suggestBtn);
+}
+
+function renderCurrentStep() {
+    if (!flow || !flow.steps || !flow.steps.length) {
+        return;
+    }
+
+    resultBox.style.display = 'none';
+    stepContainer.innerHTML = '';
+    const step = flow.steps[currentStep];
+
+    stepTitle.textContent = step.title;
+    stepSub.textContent = step.ui_hint || '';
+    progressText.textContent = `Step ${currentStep + 1} of ${flow.steps.length}`;
+
+    prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+    nextBtn.textContent = currentStep === flow.steps.length - 1 ? 'Create character' : 'Next';
+
+    if (step.id === 'soort') {
+        renderStepType(step);
+    } else if (step.id === 'uiterlijk') {
+        renderStepAppearance(step);
+    } else if (step.id === 'krachten') {
+        renderStepMulti(step, 'powers');
+    } else if (step.id === 'persoonlijkheid') {
+        renderStepMulti(step, 'personality');
+    } else if (step.id === 'wereld') {
+        renderStepWorld(step);
+    } else if (step.id === 'naam') {
+        renderStepName();
+    }
+}
+
+function validateStep(step) {
+    if (step.id === 'soort') {
+        if (!state.character_type) return 'Choose a character type first.';
+        if (state.character_type === 'zelf_verzonnen' && !state.custom_type.trim()) {
+            return 'Type your custom character.';
+        }
+    }
+    if (step.id === 'krachten' && state.powers.length < 1) return 'Choose at least 1 power.';
+    if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Choose exactly 2 personality traits.';
+    if (step.id === 'wereld' && !state.world) return 'Choose a world.';
+    return '';
+}
+
+async function buildCharacter() {
+    setStatus('Building your character...');
+    const payload = {
+        action: 'build_character',
+        character_type: state.character_type,
+        custom_type: state.custom_type,
+        appearance: state.appearance,
+        powers: state.powers,
+        personality: state.personality,
+        world: state.world,
+        name: state.name
+    };
+
+    const data = await callAgent(payload);
+    builtCharacter = data;
+
+    const profile = data.character_profile || {};
+    const lines = [
+        `Name: ${data.name || '-'}`,
+        `Type: ${profile.type || '-'}`,
+        `Powers: ${(profile.powers || []).join(', ') || '-'}`,
+        `Personality: ${(profile.personality || []).join(', ') || '-'}`,
+        `World: ${profile.world || '-'}`,
+        '',
+        `Story starter: ${data.story_seed || '-'}`,
+        '',
+        'Name suggestions: ' + (data.name_suggestions || []).join(', ')
+    ];
+
+    resultText.textContent = lines.join('\n');
+    resultBox.style.display = 'block';
+    setStatus('Done! Your character is ready.');
+}
+
+prevBtn.onclick = () => {
+    if (currentStep > 0) {
+        currentStep -= 1;
+        setStatus('');
+        renderCurrentStep();
+    }
+};
+
+nextBtn.onclick = async () => {
+    const step = flow.steps[currentStep];
+    const error = validateStep(step);
+    if (error) {
+        setStatus(error);
+        return;
+    }
+
+    if (currentStep < flow.steps.length - 1) {
+        currentStep += 1;
+        setStatus('');
+        renderCurrentStep();
+        return;
+    }
+
+    try {
+        await buildCharacter();
+    } catch (err) {
+        setStatus(err.message);
+    }
+};
+
+homeBtn.onclick = () => window.location.href = '/en/home.html';
+
+setTimeout(() => {
+    const accounts = window.msalInstance ? msalInstance.getAllAccounts() : [];
+    const hasLocalUserId = Boolean(localStorage.getItem('userId') || localStorage.getItem('user-id'));
+
+    if (!accounts.length && !hasLocalUserId) {
+        window.location.href = '/en/home.html';
+        return;
+    }
+
+    if (accounts.length && window.msalInstance) {
+        logoutBtn.style.display = 'inline-block';
+        logoutBtn.onclick = () => msalInstance.logoutRedirect();
+    }
+}, 1200);
+
+(async function init() {
+    try {
+        setStatus('Loading flow...');
+        const data = await callAgent({ action: 'get_flow' });
+        flow = data.flow;
+        currentStep = 0;
+        setStatus('');
+        renderCurrentStep();
+    } catch (err) {
+        setStatus('Could not load flow: ' + err.message);
+    }
+})();
+</script>
+</body>
+</html>
