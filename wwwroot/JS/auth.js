@@ -1714,8 +1714,6 @@ async function startStripeCheckout(userId, planType = "particulier") {
     console.log("startStripeCheckout execution completed.");
 }
 
-export { msalInstance };
-
 // Voeg een functie toe om de status "Onbeperkt" te tonen na terugkomst van Stripe
 function updateSubscriptionStatus() {
     const statusField = document.getElementById("subscriptionStatus");
