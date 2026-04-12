@@ -233,6 +233,21 @@
             border: 1px solid #bfdbfe;
             box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
         }
+        .result video {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            margin: 14px auto 0;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+            background: #000;
+        }
+        .life-actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+        }
         .progress {
             margin-bottom: 12px;
             font-size: 0.9rem;
@@ -291,6 +306,10 @@
             <h3 style="margin-top:0;">Your Character</h3>
             <pre id="resultText"></pre>
             <img id="resultImage" alt="Generated character">
+            <div class="life-actions">
+                <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Bring to life</button>
+            </div>
+            <video id="resultVideo" controls playsinline></video>
         </div>
     </div>
 </main>
@@ -308,6 +327,8 @@ const nextBtn = document.getElementById('nextBtn');
 const resultBox = document.getElementById('resultBox');
 const resultText = document.getElementById('resultText');
 const resultImage = document.getElementById('resultImage');
+const bringToLifeBtn = document.getElementById('bringToLifeBtn');
+const resultVideo = document.getElementById('resultVideo');
 
 const logoutBtn = document.getElementById('logoutBtn');
 
@@ -347,6 +368,10 @@ function getUserId() {
 }
 
 async function callAgent(payload) {
+    return callApiRequest('character_builder', payload);
+}
+
+async function callApiRequest(type, payload) {
     const userId = getUserId();
     if (!userId) {
         throw new Error('No user ID found. Please log in again.');
@@ -366,7 +391,7 @@ async function callAgent(payload) {
                     'user-id': userId
                 },
                 body: JSON.stringify({
-                    type: 'character_builder',
+                    type,
                     payload
                 }),
                 signal: controller.signal
@@ -397,6 +422,62 @@ async function callAgent(payload) {
         throw new Error('The server is taking too long to respond. Please try again.');
     }
     throw lastError || new Error('apiRequest endpoint not reachable');
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function bringCharacterToLife() {
+    if (!builtCharacter || !builtCharacter.image_data_uri) {
+        setStatus('Create a character image first.');
+        return;
+    }
+
+    bringToLifeBtn.disabled = true;
+    resultVideo.pause();
+    resultVideo.removeAttribute('src');
+    resultVideo.style.display = 'none';
+
+    try {
+        setStatus('Driply is bringing your character to life...');
+        const start = await callApiRequest('grok_kleurplaat', {
+            mode: 'driply_dance',
+            image_base64: builtCharacter.image_data_uri
+        });
+
+        const requestId = start.request_id;
+        if (!requestId) {
+            throw new Error(start.error || 'No request id received for video.');
+        }
+
+        for (let i = 0; i < 40; i += 1) {
+            await sleep(3000);
+            const poll = await callApiRequest('driply_status', {
+                mode: 'driply_status',
+                request_id: requestId
+            });
+
+            if (poll.status === 'done' && poll.video_url) {
+                resultVideo.src = poll.video_url;
+                resultVideo.style.display = 'block';
+                setStatus('Your character is now alive!');
+                return;
+            }
+
+            if (poll.error) {
+                throw new Error(poll.error);
+            }
+
+            setStatus('Generating video...');
+        }
+
+        throw new Error('Video is taking longer than expected. Please try again.');
+    } catch (err) {
+        setStatus(err.message || 'Bring-to-life failed.');
+    } finally {
+        bringToLifeBtn.disabled = false;
+    }
 }
 
 function renderChoiceButton(choice, isSelected, onClick) {
@@ -638,10 +719,16 @@ async function buildCharacter() {
     if (data.image_data_uri) {
         resultImage.src = data.image_data_uri;
         resultImage.style.display = 'block';
+        bringToLifeBtn.disabled = false;
     } else {
         resultImage.removeAttribute('src');
         resultImage.style.display = 'none';
+        bringToLifeBtn.disabled = true;
     }
+
+    resultVideo.pause();
+    resultVideo.removeAttribute('src');
+    resultVideo.style.display = 'none';
 
     if (data.image_error) {
         setStatus('Character ready, but image generation failed.');
@@ -660,6 +747,8 @@ prevBtn.onclick = () => {
         renderCurrentStep();
     }
 };
+
+bringToLifeBtn.onclick = bringCharacterToLife;
 
 nextBtn.onclick = async () => {
     const step = flow.steps[currentStep];
