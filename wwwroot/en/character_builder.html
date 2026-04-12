@@ -247,6 +247,8 @@
             margin-top: 12px;
             display: flex;
             justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .progress {
             margin-bottom: 12px;
@@ -308,6 +310,7 @@
             <img id="resultImage" alt="Generated character">
             <div class="life-actions">
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Bring to life</button>
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Name suggestions after video</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -328,6 +331,7 @@ const resultBox = document.getElementById('resultBox');
 const resultText = document.getElementById('resultText');
 const resultImage = document.getElementById('resultImage');
 const bringToLifeBtn = document.getElementById('bringToLifeBtn');
+const videoNameSuggestBtn = document.getElementById('videoNameSuggestBtn');
 const resultVideo = document.getElementById('resultVideo');
 
 const logoutBtn = document.getElementById('logoutBtn');
@@ -445,6 +449,46 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function updateNameSuggestionsInResult(suggestions) {
+    const text = resultText.textContent || '';
+    const line = 'Name suggestions: ' + (suggestions || []).join(', ');
+    if (/Name suggestions:.*/.test(text)) {
+        resultText.textContent = text.replace(/Name suggestions:.*/, line);
+    } else {
+        resultText.textContent = (text ? text + '\n\n' : '') + line;
+    }
+}
+
+async function suggestNamesAfterVideo() {
+    if (!builtCharacter) {
+        setStatus('Create a character first.');
+        return;
+    }
+
+    videoNameSuggestBtn.disabled = true;
+    try {
+        setStatus('Generating new names...');
+        const profile = builtCharacter.character_profile || {};
+        const data = await callAgent({
+            action: 'suggest_names',
+            character_type: profile.type || '',
+            world: profile.world || '',
+            personality: profile.personality || [],
+            powers: profile.powers || [],
+            name: builtCharacter.name || ''
+        });
+
+        const suggestions = data.name_suggestions || [];
+        builtCharacter.name_suggestions = suggestions;
+        updateNameSuggestionsInResult(suggestions);
+        setStatus('New name suggestions: ' + suggestions.join(', '));
+    } catch (err) {
+        setStatus(err.message || 'Failed to fetch name suggestions.');
+    } finally {
+        videoNameSuggestBtn.disabled = false;
+    }
+}
+
 function buildCharacterLifePayload() {
     const profile = builtCharacter?.character_profile || {};
     return {
@@ -490,6 +534,7 @@ async function bringCharacterToLife() {
             if (poll.status === 'done' && poll.video_url) {
                 resultVideo.src = poll.video_url;
                 resultVideo.style.display = 'block';
+                videoNameSuggestBtn.disabled = false;
                 setStatus('Your character is now alive!');
                 return;
             }
@@ -749,10 +794,12 @@ async function buildCharacter() {
         resultImage.src = data.image_data_uri;
         resultImage.style.display = 'block';
         bringToLifeBtn.disabled = false;
+        videoNameSuggestBtn.disabled = true;
     } else {
         resultImage.removeAttribute('src');
         resultImage.style.display = 'none';
         bringToLifeBtn.disabled = true;
+        videoNameSuggestBtn.disabled = true;
     }
 
     resultVideo.pause();
@@ -778,6 +825,7 @@ prevBtn.onclick = () => {
 };
 
 bringToLifeBtn.onclick = bringCharacterToLife;
+videoNameSuggestBtn.onclick = suggestNamesAfterVideo;
 
 nextBtn.onclick = async () => {
     const step = flow.steps[currentStep];
