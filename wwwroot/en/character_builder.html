@@ -337,7 +337,47 @@ const API_REQUEST_ENDPOINTS = [
 ];
 
 let flow = null;
+let currentStep = 0;
+let builtCharacter = null;
+
+const state = {
+    character_type: '',
+    custom_type: '',
+    appearance: {
+        kleur: [],
+        bouw: [],
+        ogen: [],
+        accessoires: []
+    },
+    powers: [],
+    personality: [],
+    world: '',
+    name: ''
+};
+
+function setStatus(msg) {
+    statusText.textContent = msg || '';
+}
+
+function getUserId() {
+    return localStorage.getItem('userId')
+        || localStorage.getItem('user-id')
+        || (window.msalInstance && msalInstance.getAllAccounts()[0]?.username)
+        || '';
+}
+
+async function callAgent(payload) {
+    return callApiRequest('character_builder', payload);
+}
+
+async function callApiRequest(type, payload) {
+    const userId = getUserId();
+    if (!userId) {
+        throw new Error('No user ID found. Please log in again.');
+    }
+
     let lastError = null;
+
     const action = String(payload?.action || '').toLowerCase();
     const timeoutMs = action === 'build_character' ? 180000 : 30000;
     const maxAttempts = 2;
@@ -355,7 +395,7 @@ let flow = null;
                         'user-id': userId
                     },
                     body: JSON.stringify({
-                        type: 'character_builder',
+                        type,
                         payload
                     }),
                     signal: controller ? controller.signal : undefined,
@@ -390,7 +430,7 @@ let flow = null;
                     break;
                 }
 
-                await new Promise((resolve) => setTimeout(resolve, 1200));
+                await sleep(1200);
             }
         }
     }
@@ -655,11 +695,6 @@ function validateStep(step) {
         if (state.character_type === 'zelf_verzonnen' && !state.custom_type.trim()) {
             return 'Type your custom character.';
         }
-    }
-    if (step.id === 'uiterlijk') {
-        if (!state.appearance.kleur.length) return 'Choose a color.';
-        if (!state.appearance.bouw.length) return 'Choose a build.';
-        if (!state.appearance.ogen.length) return 'Choose an eye style.';
     }
     if (step.id === 'krachten' && state.powers.length < 1) return 'Choose at least 1 power.';
     if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Choose exactly 2 personality traits.';

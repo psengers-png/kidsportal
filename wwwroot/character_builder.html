@@ -336,7 +336,47 @@ const API_REQUEST_ENDPOINTS = [
 ];
 
 let flow = null;
+let currentStep = 0;
+let builtCharacter = null;
+
+const state = {
+    character_type: '',
+    custom_type: '',
+    appearance: {
+        kleur: [],
+        bouw: [],
+        ogen: [],
+        accessoires: []
+    },
+    powers: [],
+    personality: [],
+    world: '',
+    name: ''
+};
+
+function setStatus(msg) {
+    statusText.textContent = msg || '';
+}
+
+function getUserId() {
+    return localStorage.getItem('userId')
+        || localStorage.getItem('user-id')
+        || (window.msalInstance && msalInstance.getAllAccounts()[0]?.username)
+        || '';
+}
+
+async function callAgent(payload) {
+    return callApiRequest('character_builder', payload);
+}
+
+async function callApiRequest(type, payload) {
+    const userId = getUserId();
+    if (!userId) {
+        throw new Error('Geen user-id gevonden. Log opnieuw in.');
+    }
+
     let lastError = null;
+
     const action = String(payload?.action || '').toLowerCase();
     const timeoutMs = action === 'build_character' ? 180000 : 30000;
     const maxAttempts = 2;
@@ -354,7 +394,7 @@ let flow = null;
                         'user-id': userId
                     },
                     body: JSON.stringify({
-                        type: 'character_builder',
+                        type,
                         payload
                     }),
                     signal: controller ? controller.signal : undefined,
@@ -389,47 +429,8 @@ let flow = null;
                     break;
                 }
 
-                await new Promise((resolve) => setTimeout(resolve, 1200));
+                await sleep(1200);
             }
-        }
-    }
-
-    if (lastError && lastError.name === 'AbortError') {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'user-id': userId
-                },
-                body: JSON.stringify({
-                    type,
-                    payload
-                }),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            const text = await response.text();
-            let data = {};
-            try {
-                data = JSON.parse(text);
-            } catch (err) {
-                throw new Error('Kon response niet lezen: ' + text);
-            }
-
-            if (!response.ok) {
-                throw new Error(data.error || data.details || ('Serverfout ' + response.status));
-            }
-
-            return data;
-        } catch (err) {
-            clearTimeout(timeoutId);
-            lastError = err;
         }
     }
 
@@ -693,11 +694,6 @@ function validateStep(step) {
         if (state.character_type === 'zelf_verzonnen' && !state.custom_type.trim()) {
             return 'Typ je zelf verzonnen karakter.';
         }
-    }
-    if (step.id === 'uiterlijk') {
-        if (!state.appearance.kleur.length) return 'Kies een kleur.';
-        if (!state.appearance.bouw.length) return 'Kies een bouw.';
-        if (!state.appearance.ogen.length) return 'Kies een type ogen.';
     }
     if (step.id === 'krachten' && state.powers.length < 1) return 'Kies minimaal 1 kracht.';
     if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Kies precies 2 eigenschappen.';
