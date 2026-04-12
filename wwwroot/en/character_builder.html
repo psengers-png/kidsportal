@@ -250,6 +250,12 @@
             gap: 10px;
             flex-wrap: wrap;
         }
+        .name-actions {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: flex-start;
+        }
         .progress {
             margin-bottom: 12px;
             font-size: 0.9rem;
@@ -307,10 +313,12 @@
         <div class="result" id="resultBox">
             <h3 style="margin-top:0;">Your Character</h3>
             <pre id="resultText"></pre>
+            <div class="name-actions">
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Pick name for video</button>
+            </div>
             <img id="resultImage" alt="Generated character">
             <div class="life-actions">
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Bring to life</button>
-                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Pick name for video</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>

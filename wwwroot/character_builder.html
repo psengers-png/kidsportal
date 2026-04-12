@@ -250,6 +250,12 @@
             gap: 10px;
             flex-wrap: wrap;
         }
+            .name-actions {
+                margin-top: 8px;
+                margin-bottom: 8px;
+                display: flex;
+                justify-content: flex-start;
+            }
         .progress {
             margin-bottom: 12px;
             font-size: 0.9rem;
@@ -306,10 +312,12 @@
         <div class="result" id="resultBox">
             <h3 style="margin-top:0;">Jouw Karakter</h3>
             <pre id="resultText"></pre>
+            <div class="name-actions">
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Naam kiezen voor filmpje</button>
+            </div>
             <img id="resultImage" alt="Gegenereerd karakter">
             <div class="life-actions">
                 <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Breng tot leven</button>
-                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>🎲 Naam kiezen voor filmpje</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
