@@ -757,28 +757,29 @@ function renderStepWorld(step) {
     stepContainer.appendChild(box);
 }
 
-function renderStepName() {
-    const note = document.createElement('p');
-    note.className = 'step-sub';
-    note.textContent = 'De definitieve naam kies je na de samenvatting. Hier hoef je nog niets te doen.';
-    stepContainer.appendChild(note);
+function getVisibleSteps() {
+    return (flow?.steps || []).filter(step => step.id !== 'naam');
 }
 
 function renderCurrentStep() {
-    if (!flow || !flow.steps || !flow.steps.length) {
+    const steps = getVisibleSteps();
+    if (!steps.length) {
         return;
     }
 
     resultBox.style.display = 'none';
     stepContainer.innerHTML = '';
-    const step = flow.steps[currentStep];
+    const step = steps[currentStep];
+    if (!step) {
+        return;
+    }
 
     stepTitle.textContent = step.title;
     stepSub.textContent = step.ui_hint || '';
-    progressText.textContent = `Stap ${currentStep + 1} van ${flow.steps.length}`;
+    progressText.textContent = `Stap ${currentStep + 1} van ${steps.length}`;
 
     prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-    nextBtn.textContent = currentStep === flow.steps.length - 1 ? 'Karakter maken' : 'Volgende';
+    nextBtn.textContent = currentStep === steps.length - 1 ? 'Karakter maken' : 'Volgende';
 
     if (step.id === 'soort') {
         renderStepType(step);
@@ -790,8 +791,6 @@ function renderCurrentStep() {
         renderStepMulti(step, 'personality');
     } else if (step.id === 'wereld') {
         renderStepWorld(step);
-    } else if (step.id === 'naam') {
-        renderStepName();
     }
 }
 
@@ -881,14 +880,15 @@ videoNameSuggestBtn.onclick = suggestNamesAfterVideo;
 applyNameBtn.onclick = () => setChosenName(finalNameInput.value);
 
 nextBtn.onclick = async () => {
-    const step = flow.steps[currentStep];
+    const steps = getVisibleSteps();
+    const step = steps[currentStep];
     const error = validateStep(step);
     if (error) {
         setStatus(error);
         return;
     }
 
-    if (currentStep < flow.steps.length - 1) {
+    if (currentStep < steps.length - 1) {
         currentStep += 1;
         setStatus('');
         renderCurrentStep();
