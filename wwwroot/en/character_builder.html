@@ -224,6 +224,15 @@
             color: #1f2d3d;
             font-size: 0.9rem;
         }
+        .result img {
+            display: none;
+            width: 100%;
+            max-width: 360px;
+            margin: 14px auto 0;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+        }
         .progress {
             margin-bottom: 12px;
             font-size: 0.9rem;
@@ -281,6 +290,7 @@
         <div class="result" id="resultBox">
             <h3 style="margin-top:0;">Your Character</h3>
             <pre id="resultText"></pre>
+            <img id="resultImage" alt="Generated character">
         </div>
     </div>
 </main>
@@ -297,6 +307,7 @@ const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const resultBox = document.getElementById('resultBox');
 const resultText = document.getElementById('resultText');
+const resultImage = document.getElementById('resultImage');
 
 const logoutBtn = document.getElementById('logoutBtn');
 
@@ -623,8 +634,23 @@ async function buildCharacter() {
     ];
 
     resultText.textContent = lines.join('\n');
+
+    if (data.image_data_uri) {
+        resultImage.src = data.image_data_uri;
+        resultImage.style.display = 'block';
+    } else {
+        resultImage.removeAttribute('src');
+        resultImage.style.display = 'none';
+    }
+
+    if (data.image_error) {
+        setStatus('Character ready, but image generation failed.');
+    }
+
     resultBox.style.display = 'block';
-    setStatus('Done! Your character is ready.');
+    if (!data.image_error) {
+        setStatus('Done! Your character and image are ready.');
+    }
 }
 
 prevBtn.onclick = () => {
