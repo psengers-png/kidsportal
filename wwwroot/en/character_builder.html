@@ -562,6 +562,11 @@ async function suggestNamesAfterVideo() {
 
 function buildCharacterLifePayload() {
     const profile = builtCharacter?.character_profile || {};
+    const chosenName = builtCharacter?.name || 'my character';
+    const powersText = Array.isArray(profile.powers) && profile.powers.length
+        ? profile.powers.join(', ')
+        : 'my powers';
+    const worldText = profile.world || 'my world';
     return {
         mode: 'character_life',
         image_base64: builtCharacter.image_data_uri,
@@ -571,7 +576,7 @@ function buildCharacterLifePayload() {
         personality: Array.isArray(profile.personality) ? profile.personality : [],
         world: profile.world || '',
         story_seed: builtCharacter?.story_seed || '',
-        character_video_prompt: `Keep the video character identical to the image. The character says: I am ${builtCharacter?.name || 'my character'} and I use my powers to help others.`
+        character_video_prompt: `Keep the video character identical to the image. The character says: I am ${chosenName} and I use ${powersText} to help in ${worldText}.`
     };
 }
 
