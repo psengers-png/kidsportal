@@ -118,13 +118,14 @@
     .hero-media {
       margin: 0 -26px 16px;
       position: relative;
+      background: rgba(255,255,255,0.75);
     }
 
     .hero-media img {
       width: 100%;
-      height: clamp(180px, 30vw, 290px);
-      object-fit: cover;
-      object-position: center center;
+      height: clamp(220px, 40vw, 430px);
+      object-fit: contain;
+      object-position: center top;
       display: block;
     }
 
@@ -134,7 +135,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 90px;
+      height: 70px;
       background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
     }
 
@@ -315,6 +316,10 @@
 
       .hero-media {
         margin: 0 -16px 14px;
+      }
+
+      .hero-media img {
+        height: clamp(200px, 54vw, 340px);
       }
     }
   </style>
