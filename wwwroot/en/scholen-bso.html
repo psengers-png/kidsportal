@@ -59,16 +59,20 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
-    .header-left h1 { margin: 0; font-size: 1.5rem; }
-    .btn-dark {
+    .header-left h1 { margin: 0; font-size: 2rem; }
+    .header-right { display: flex; gap: 10px; }
+    .header-btn {
       display: inline-block;
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: 999px;
-      background: #000;
-      color: #fff;
+      border: none;
+      cursor: pointer;
       text-decoration: none;
       font-weight: 700;
       font-size: 0.9rem;
+      background: #000000;
+      color: #ffffff;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
     }
     main {
       position: relative;
@@ -200,8 +204,11 @@
 
   <header>
     <div class="header-left">
-      <a href="/en/index.html"><img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:60px;width:auto;" /></a>
+      <a href="/en/index.html"><img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:150px;width:auto;" /></a>
       <h1>RainyDay Club for Schools & BSO</h1>
+    </div>
+    <div class="header-right">
+      <a class="header-btn" href="/scholen-bso.html" data-lang="nl">Nederlands</a>
     </div>
   </header>
 
