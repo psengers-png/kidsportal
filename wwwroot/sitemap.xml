@@ -19,6 +19,18 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.rainydayclub.nl/scholen-bso.html</loc>
+    <lastmod>2026-04-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.rainydayclub.nl/events.html</loc>
+    <lastmod>2026-04-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://www.rainydayclub.nl/challenge.html</loc>
     <lastmod>2026-04-07</lastmod>
     <changefreq>weekly</changefreq>
