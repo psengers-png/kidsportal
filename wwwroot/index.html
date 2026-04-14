@@ -2,117 +2,531 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <!-- Google tag (gtag.js) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RainyDay Club | Creatieve AI avonturen voor kinderen</title>
+    <meta name="description" content="RainyDay Club laat kinderen van 5-10 jaar spelenderwijs verhalen, kleurplaten en challenges maken. Ontdek de ervaring voor thuis, school of events.">
+    <link rel="canonical" href="https://www.rainydayclub.nl/" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rainy Day Club" />
+    <meta property="og:title" content="RainyDay Club" />
+    <meta property="og:description" content="Creatieve AI ervaringen voor kinderen van 5-10 jaar." />
+    <meta property="og:url" content="https://www.rainydayclub.nl/" />
+    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-M9MF9YBFN0');
     </script>
-    <title>Kids Portal - Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Startpagina van Rainy Day Club." />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.rainydayclub.nl/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Rainy Day Club" />
-    <meta property="og:title" content="Rainy Day Club" />
-    <meta property="og:description" content="Creatieve activiteiten voor kinderen." />
-    <meta property="og:url" content="https://www.rainydayclub.nl/" />
-    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <script>
-        (function () {
-            const params = new URLSearchParams(window.location.search);
-            const queryLang = (params.get('lang') || '').toLowerCase();
-            const storedLang = (localStorage.getItem('rdc-lang') || '').toLowerCase();
-            const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-
-            let lang = 'nl';
-            if (queryLang === 'en' || queryLang === 'nl') {
-                lang = queryLang;
-                localStorage.setItem('rdc-lang', lang);
-            } else if (storedLang === 'en' || storedLang === 'nl') {
-                lang = storedLang;
-            } else if (browserLang.startsWith('en')) {
-                lang = 'en';
-            }
-
-            const destination = lang === 'en' ? '/en/home.html' : '/home.html';
-            window.location.replace(destination);
-        })();
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --bg-top: #f8fcff;
+            --bg-bottom: #e9f7f1;
+            --ink: #15303a;
+            --muted: #47616a;
+            --card: #ffffff;
+            --line: #dce9e4;
+            --brand: #ff7a59;
+            --brand-strong: #f25f3a;
+            --sky: #5cb4ff;
+            --mint: #43cfa0;
+            --sand: #fff4d8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            font-family: 'Nunito', 'Segoe UI', sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 15%, rgba(92, 180, 255, 0.26), transparent 33%),
+                radial-gradient(circle at 85% 9%, rgba(67, 207, 160, 0.20), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 122, 89, 0.18), transparent 32%),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            line-height: 1.45;
+        }
+
+        .page {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 24px 20px 64px;
+        }
+
+        .topbar {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
         }
-        .container {
-            background: white;
-            padding: 50px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 500px;
+
+        .brand {
+            font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
+            font-size: clamp(26px, 4vw, 36px);
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            margin: 0;
+        }
+
+        .lang-link {
+            font-weight: 700;
+            color: var(--ink);
+            text-decoration: none;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 9px 12px;
+            border-radius: 12px;
+        }
+
+        .lang-link:hover {
+            background: #ffffff;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .hero-card,
+        .showcase-card,
+        .audience-card,
+        .proof,
+        .final-cta {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: 0 12px 24px rgba(21, 48, 58, 0.08);
+        }
+
+        .hero-card {
+            padding: clamp(22px, 4vw, 38px);
+            animation: rise 0.75s ease-out both;
+        }
+
+        .kicker {
+            display: inline-block;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: #114a57;
+            background: var(--sand);
+            border-radius: 999px;
+            padding: 7px 12px;
+            margin-bottom: 12px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: clamp(34px, 5.2vw, 56px);
+            margin-bottom: 14px;
+        }
+
+        .lead {
+            color: var(--muted);
+            font-size: clamp(17px, 2.5vw, 21px);
+            margin: 0 0 24px;
+            max-width: 56ch;
+        }
+
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-primary {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+            box-shadow: 0 8px 16px rgba(242, 95, 58, 0.28);
+        }
+
+        .cta-secondary {
+            color: #0f4f6a;
+            background: #e6f4ff;
+            border-color: #b8dff7;
+        }
+
+        .cta-tertiary {
+            color: #0b5c49;
+            background: #def7ef;
+            border-color: #b6e8d8;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+        }
+
+        .showcase-card {
+            padding: 18px;
+            display: grid;
+            gap: 12px;
+            animation: rise 0.9s ease-out both;
+        }
+
+        .mini-tile {
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: grid;
+            gap: 4px;
+            min-height: 92px;
+            background: #ffffff;
+        }
+
+        .mini-tile:nth-child(1) { background: #fff1ea; }
+        .mini-tile:nth-child(2) { background: #eaf7ff; }
+        .mini-tile:nth-child(3) { background: #ebfbf5; }
+
+        .mini-title {
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        section {
+            margin-top: 26px;
+        }
+
+        .section-title {
+            font-size: clamp(30px, 4vw, 44px);
+            margin-bottom: 6px;
+        }
+
+        .section-sub {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .step {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            background: #ecf6ff;
+            color: #0f4f6a;
+            margin-bottom: 10px;
+        }
+
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .example {
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: #ffffff;
+            padding: 14px;
+            min-height: 134px;
+        }
+
+        .example h3 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .audiences {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .audience-card {
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .audience-card h3 {
+            font-size: 26px;
+        }
+
+        .tag {
+            font-weight: 800;
+            font-size: 13px;
+            display: inline-block;
+            width: fit-content;
+            border-radius: 999px;
+            padding: 5px 10px;
+            background: #f0f6ff;
+            color: #315f86;
+        }
+
+        .proof {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .quote {
+            margin: 0;
+            padding: 14px;
+            border-radius: 14px;
+            background: #fff8e8;
+            border: 1px solid #f4e2bc;
+            font-weight: 700;
+        }
+
+        .final-cta {
+            margin-top: 24px;
+            padding: clamp(20px, 4vw, 34px);
             text-align: center;
         }
-        h1 {
-            color: #667eea;
-            margin-top: 0;
-            font-size: 32px;
+
+        .fine-links {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 14px;
         }
-        p {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 20px;
+
+        .fine-links a {
+            color: #315f6f;
+            text-decoration: none;
+            font-weight: 700;
         }
-        button {
-            margin: 10px;
-            padding: 12px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            border: none;
-            background: #667eea;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s;
+
+        .fine-links a:hover {
+            text-decoration: underline;
         }
-        button:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+
+        @keyframes rise {
+            from {
+                transform: translateY(14px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 960px) {
+            .hero,
+            .proof {
+                grid-template-columns: 1fr;
+            }
+
+            .examples {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .steps,
+            .audiences,
+            .examples {
+                grid-template-columns: 1fr;
+            }
+
+            .page {
+                padding: 18px 14px 44px;
+            }
+
+            .hero-card,
+            .showcase-card,
+            .proof,
+            .final-cta,
+            .audience-card {
+                border-radius: 18px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <main class="page">
+        <header class="topbar">
+            <h1 class="brand">RainyDay Club</h1>
+            <a class="lang-link" href="/en/home.html" id="switchToEn">English</a>
+        </header>
 
-    <!-- Container voor layout -->
-    <div class="container">
-        <h1>🎨 Kids Portal</h1>
-        <p id="statusText">Log in om verder te gaan.</p>
+        <section class="hero" aria-label="Introductie RainyDay Club">
+            <article class="hero-card">
+                <span class="kicker">Creatieve AI avonturen</span>
+                <h1>Laat regenachtige middagen veranderen in grote ideeen.</h1>
+                <p class="lead">
+                    RainyDay Club helpt kinderen van 5 tot 10 jaar om met fantasie te maken, tekenen en spelen.
+                    Van gekke verhalen tot unieke kleurplaten: elk idee kan tot leven komen.
+                </p>
+                <div class="cta-row">
+                    <a class="cta cta-primary" href="/home.html">Voor ouders</a>
+                    <a class="cta cta-secondary" href="/home.html?audience=schools">Voor school en BSO</a>
+                    <a class="cta cta-tertiary" href="/home.html?audience=companies">Voor events en bedrijven</a>
+                </div>
+            </article>
 
-        <button id="loginBtn">🔐 Login</button>
-        <button id="logoutBtn" style="display:none;">Uitloggen</button>
-    </div>
+            <aside class="showcase-card" aria-label="Voorbeelden van creaties">
+                <div class="mini-tile">
+                    <span class="mini-title">Verhalen</span>
+                    <span>Een draak met rolschaatsen die een geheime schat zoekt.</span>
+                </div>
+                <div class="mini-tile">
+                    <span class="mini-title">Kleurplaten</span>
+                    <span>Een ruimte-avontuur met robots, planeten en gekke voertuigen.</span>
+                </div>
+                <div class="mini-tile">
+                    <span class="mini-title">Challenges</span>
+                    <span>Speelse opdrachten voor binnen, buiten of in de klas.</span>
+                </div>
+            </aside>
+        </section>
 
-    <!-- LET OP: dit zijn de CORRECTE script-tags -->
-    <script src="JS/msal-browser.min.js"></script>
-    <script type="module" src="JS/auth.js"></script>
+        <section aria-labelledby="how-it-works-title">
+            <h2 class="section-title" id="how-it-works-title">Hoe werkt het?</h2>
+            <p class="section-sub">Simpel, snel en vooral superleuk.</p>
+            <div class="steps">
+                <article class="step">
+                    <span class="step-number">1</span>
+                    <h3>Kies een idee</h3>
+                    <p>Kinderen kiezen een thema, personage of favoriete wereld.</p>
+                </article>
+                <article class="step">
+                    <span class="step-number">2</span>
+                    <h3>Maak samen</h3>
+                    <p>RainyDay Club zet het idee om in een speelse, creatieve ervaring.</p>
+                </article>
+                <article class="step">
+                    <span class="step-number">3</span>
+                    <h3>Deel trots</h3>
+                    <p>Bewaar de creatie, print hem uit of deel hem met familie en vrienden.</p>
+                </article>
+            </div>
+        </section>
 
-    <!-- Voeg de Stripe.js-bibliotheek toe -->
-    <script src="https://js.stripe.com/v3/"></script>
-   <script type="module" src="/JS/abonnement.js"></script>
+        <section aria-labelledby="kids-create-title">
+            <h2 class="section-title" id="kids-create-title">Wat kunnen kinderen maken?</h2>
+            <p class="section-sub">Elke klik opent weer een nieuw mini-avontuur.</p>
+            <div class="examples">
+                <article class="example">
+                    <h3>Verhaalwereld</h3>
+                    <p>Maak samen een verhaal met helden, monsters en verrassende twists.</p>
+                </article>
+                <article class="example">
+                    <h3>Kleurplaat op maat</h3>
+                    <p>Van unicorns tot ruimtepiraten: een kleurplaat die echt van hen is.</p>
+                </article>
+                <article class="example">
+                    <h3>Challenge tijd</h3>
+                    <p>Ontvang leuke opdrachten die kids meteen in actie brengen.</p>
+                </article>
+                <article class="example">
+                    <h3>Karakter bouwer</h3>
+                    <p>Bedenk een eigen karakter met stijl, talenten en een verhaal.</p>
+                </article>
+            </div>
+        </section>
 
+        <section aria-labelledby="choose-title">
+            <h2 class="section-title" id="choose-title">Kies jouw ervaring</h2>
+            <p class="section-sub">Voor thuis, in groepen of als extra wow op events.</p>
+            <div class="audiences">
+                <article class="audience-card">
+                    <span class="tag">Thuis</span>
+                    <h3>Voor ouders</h3>
+                    <p>Maak van schermtijd creatieve quality time met je kind.</p>
+                    <a class="cta cta-primary" href="/home.html">Start thuis</a>
+                </article>
+                <article class="audience-card">
+                    <span class="tag">Groepen</span>
+                    <h3>Voor school en BSO</h3>
+                    <p>Ideaal voor themaweken, creatieve middagen en speelse opdrachten in de klas.</p>
+                    <a class="cta cta-secondary" href="/home.html?audience=schools">Bekijk voor school en BSO</a>
+                </article>
+                <article class="audience-card">
+                    <span class="tag">Beleving</span>
+                    <h3>Voor bedrijven</h3>
+                    <p>Geef familiedagen en evenementen een creatieve activiteit waar kids direct in duiken.</p>
+                    <a class="cta cta-tertiary" href="/home.html?audience=companies">Bekijk voor events</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="proof" aria-label="Waarom RainyDay Club werkt">
+            <div>
+                <h2 class="section-title">Waarom families en teams hiervoor kiezen</h2>
+                <p class="section-sub">
+                    RainyDay Club maakt creativiteit laagdrempelig. Geen ingewikkelde uitleg, wel direct plezier.
+                    Kinderen zien hun eigen ideeen tot leven komen en willen steeds opnieuw aan de slag.
+                </p>
+            </div>
+            <div>
+                <p class="quote">"Mijn zoon begon met een kleurplaat en eindigde met een heel verhaal erbij. Fantastisch!"</p>
+                <p class="quote">"Onze BSO-groep was meteen enthousiast. Iedereen kon op eigen niveau meedoen."</p>
+            </div>
+        </section>
+
+        <section class="final-cta" aria-label="Laatste call to action">
+            <h2 class="section-title">Klaar om ideeen tot leven te brengen?</h2>
+            <p class="section-sub">Kies de route die bij jullie past en start vandaag nog met maken.</p>
+            <div class="cta-row" style="justify-content:center;">
+                <a class="cta cta-primary" href="/home.html">Ga naar Kids Portal</a>
+                <a class="cta cta-secondary" href="/en/home.html">Open in English</a>
+            </div>
+
+            <div class="fine-links">
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Voorwaarden</a>
+                <a href="/cookies.html">Cookies</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('switchToEn')?.addEventListener('click', function () {
+            localStorage.setItem('rdc-lang', 'en');
+        });
+    </script>
 </body>
 </html>
