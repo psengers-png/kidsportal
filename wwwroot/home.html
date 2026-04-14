@@ -232,6 +232,33 @@
       z-index: 2;
     }
 
+    .hero-media {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      margin: 0 auto 18px;
+      max-width: 1000px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.11);
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: clamp(300px, 44vw, 520px);
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+    }
+
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 70px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
+    }
+
     .hero h1 {
       font-size: 3rem;
       margin-bottom: 10px;
@@ -451,6 +478,9 @@
 </header>
 
 <div class="hero">
+  <div class="hero-media" aria-hidden="true">
+    <img src="/Images/Kinderen%20kleuren%20aan%20een%20regenachtige%20dag.png" alt="" />
+  </div>
   <h1>☔ Rainy Day Club</h1>
   <p>Waar regenachtige dagen creatieve avonturen worden met kindvriendelijke AI tools</p>
 
