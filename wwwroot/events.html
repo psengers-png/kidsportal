@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RainyDay Club voor events | AI Experience</title>
+  <meta name="description" content="RainyDay Club AI Experience voor events: interactieve creatieve beleving voor kinderen met agents, bingo en AI Creator diploma." />
+  <link rel="canonical" href="https://www.rainydayclub.nl/events.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Rainy Day Club" />
+  <meta property="og:title" content="RainyDay Club voor events" />
+  <meta property="og:description" content="Een opvallende AI experience voor familie-events en bedrijfsdagen." />
+  <meta property="og:url" content="https://www.rainydayclub.nl/events.html" />
+  <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
+
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+      color: #1f2d3d;
+      overflow-x: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 620px 420px;
+      opacity: 0.72;
+    }
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(transparent, transparent 10px, rgba(255,255,255,0.28) 12px);
+      animation: rain 0.6s linear infinite;
+      opacity: 0.4;
+      z-index: 1;
+    }
+    header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left h1 { margin: 0; font-size: 1.5rem; }
+    .btn-dark {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    main {
+      position: relative;
+      z-index: 2;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .panel {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    h2 { margin: 0 0 10px; font-size: clamp(1.7rem, 4.2vw, 2.5rem); }
+    h3 { margin: 0 0 8px; font-size: clamp(1.3rem, 3vw, 1.8rem); }
+    p { margin: 0; color: #2f4959; }
+    .lead { font-size: 1.08rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid #dce8ef;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    .card h4 { margin: 0 0 6px; font-size: 1.1rem; }
+    .cta-row { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .cta {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #1f2d3d;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    .cta-yellow { background: #ffd966; }
+    .cta-blue { background: #d6f0ff; }
+    .cta-green { background: #d9f8e8; }
+    .small { font-size: 0.95rem; margin-top: 8px; }
+    .footer-links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .footer-links a { color: #234968; text-decoration: none; font-weight: 700; }
+    .footer-links a:hover { text-decoration: underline; }
+    @keyframes rain { from { background-position: 0 0; } to { background-position: 0 20px; } }
+    @media (max-width: 840px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 680px) {
+      header { padding: 10px 12px; }
+      .header-left h1 { font-size: 1.05rem; }
+      .header-left img { height: 46px !important; }
+      .panel { border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="rain"></div>
+
+  <header>
+    <div class="header-left">
+      <img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:60px;width:auto;" />
+      <h1>RainyDay Club voor events</h1>
+    </div>
+    <a class="btn-dark" href="/">Terug naar home</a>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>RainyDay AI Experience voor events</h2>
+      <p class="lead">Een creatieve publieksactivatie voor familie-events, open dagen en bedrijfsdagen. Kinderen maken in korte tijd iets eigens en gaan met een grote glimlach naar huis.</p>
+      <div class="cta-row">
+        <a class="cta cta-yellow" href="/home.html">Start de experience</a>
+        <a class="cta cta-blue" href="/Images/rainyday_bingo.pdf" target="_blank" rel="noopener">Open bingo kaart (PDF)</a>
+        <a class="cta cta-green" href="/Images/rainyday_diploma.pdf" target="_blank" rel="noopener">Open AI Creator diploma (PDF)</a>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>Opzet op locatie</h3>
+      <div class="grid">
+        <article class="card">
+          <h4>1. Kies een agent</h4>
+          <p>Bezoekers kiezen een creatieve agent en starten direct met een eigen idee.</p>
+        </article>
+        <article class="card">
+          <h4>2. Maak je bingo vol</h4>
+          <p>Door verschillende mini-opdrachten op de vloer vullen kinderen hun bingo kaart.</p>
+        </article>
+        <article class="card">
+          <h4>3. Diploma moment</h4>
+          <p>Rond af met het AI Creator diploma als tastbare herinnering aan de experience.</p>
+        </article>
+      </div>
+      <p class="small">Geschikt voor vrije inloop en voor begeleide sessies in blokken.</p>
+    </section>
+
+    <section class="panel">
+      <h3>Waarom dit werkt op events</h3>
+      <div class="grid">
+        <article class="card">
+          <h4>Snel te begrijpen</h4>
+          <p>Kinderen en ouders snappen meteen wat ze kunnen doen en willen starten.</p>
+        </article>
+        <article class="card">
+          <h4>Hoge betrokkenheid</h4>
+          <p>Iedereen creëert iets eigens, waardoor deelnemers langer blijven hangen.</p>
+        </article>
+        <article class="card">
+          <h4>Sterke beleving</h4>
+          <p>Bingo en diploma geven een speels doel en een feestelijke afsluiting.</p>
+        </article>
+      </div>
+      <div class="cta-row">
+        <a class="cta cta-yellow" href="/home.html">Ga naar RainyDay Club</a>
+        <a class="cta cta-blue" href="/scholen-bso.html">Bekijk school/BSO</a>
+      </div>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Voorwaarden</a>
+        <a href="/cookies.html">Cookies</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
