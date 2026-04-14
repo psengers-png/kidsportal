@@ -2,12 +2,12 @@
   "routes": [
     {
       "route": "/",
-      "serve": "/home.html",
+      "serve": "/index.html",
       "statusCode": 200
     },
     {
       "route": "/en",
-      "serve": "/en/home.html",
+      "serve": "/en/index.html",
       "statusCode": 200
     },
     {
