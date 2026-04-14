@@ -110,40 +110,32 @@
       background: rgba(255,255,255,0.9);
       border-radius: 20px;
       box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-      padding: 190px 26px 26px;
+      padding: 0 26px 26px;
       margin-bottom: 20px;
-      position: relative;
       overflow: hidden;
     }
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 220px;
-      background-image: url('/Images/Kinderen%20kleuren%20aan%20een%20regenachtige%20dag.png');
-      background-size: cover;
-      background-position: center top;
-      opacity: 0.92;
-      z-index: 0;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 130px;
-      height: 130px;
-      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.95) 65%, rgba(255,255,255,1));
-      z-index: 1;
-    }
-
-    .hero > * {
+    .hero-media {
+      margin: 0 -26px 16px;
       position: relative;
-      z-index: 2;
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: clamp(180px, 30vw, 290px);
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+    }
+
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 90px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
     }
 
     .hero h2 {
@@ -318,16 +310,11 @@
       }
 
       .hero {
-        padding-top: 150px;
+        padding: 0 16px 16px;
       }
 
-      .hero::before {
-        height: 180px;
-      }
-
-      .hero::after {
-        top: 95px;
-        height: 110px;
+      .hero-media {
+        margin: 0 -16px 14px;
       }
     }
   </style>
@@ -345,6 +332,9 @@
 
   <main>
     <section class="hero">
+      <div class="hero-media" aria-hidden="true">
+        <img src="/Images/Kinderen%20kleuren%20aan%20een%20regenachtige%20dag.png" alt="" />
+      </div>
       <h2>Laat regenachtige middagen veranderen in grote ideeen.</h2>
       <p>
         RainyDay Club biedt creatieve AI ervaringen voor kinderen van 5-10 jaar.
