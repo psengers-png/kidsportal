@@ -1,532 +1,410 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>RainyDay Club | Creatieve AI avonturen voor kinderen</title>
-    <meta name="description" content="RainyDay Club laat kinderen van 5-10 jaar spelenderwijs verhalen, kleurplaten en challenges maken. Ontdek de ervaring voor thuis, school of events.">
-    <link rel="canonical" href="https://www.rainydayclub.nl/" />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Rainy Day Club" />
-    <meta property="og:title" content="RainyDay Club" />
-    <meta property="og:description" content="Creatieve AI ervaringen voor kinderen van 5-10 jaar." />
-    <meta property="og:url" content="https://www.rainydayclub.nl/" />
-    <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-M9MF9YBFN0');
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RainyDay Club | Creatieve AI avonturen voor kinderen</title>
+  <meta name="description" content="RainyDay Club laat kinderen van 5-10 jaar spelenderwijs kleurplaten, challenges, karakters en liedjes maken. Voor thuis, school/BSO en events." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.rainydayclub.nl/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Rainy Day Club" />
+  <meta property="og:title" content="RainyDay Club" />
+  <meta property="og:description" content="Creatieve AI ervaringen voor kinderen van 5-10 jaar." />
+  <meta property="og:url" content="https://www.rainydayclub.nl/" />
+  <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-    <style>
-        :root {
-            --bg-top: #f8fcff;
-            --bg-bottom: #e9f7f1;
-            --ink: #15303a;
-            --muted: #47616a;
-            --card: #ffffff;
-            --line: #dce9e4;
-            --brand: #ff7a59;
-            --brand-strong: #f25f3a;
-            --sky: #5cb4ff;
-            --mint: #43cfa0;
-            --sand: #fff4d8;
-        }
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-M9MF9YBFN0');
+  </script>
 
-        * {
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
 
-        body {
-            margin: 0;
-            font-family: 'Nunito', 'Segoe UI', sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at 12% 15%, rgba(92, 180, 255, 0.26), transparent 33%),
-                radial-gradient(circle at 85% 9%, rgba(67, 207, 160, 0.20), transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 122, 89, 0.18), transparent 32%),
-                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-            line-height: 1.45;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
+      color: #1f2d3d;
+      overflow-x: hidden;
+      position: relative;
+      isolation: isolate;
+    }
 
-        .page {
-            max-width: 1120px;
-            margin: 0 auto;
-            padding: 24px 20px 64px;
-        }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3Cg fill='none' stroke='%23f59e0b' stroke-width='3.2' stroke-linecap='round' opacity='0.62'%3E%3Cpath d='M20 300 C128 255 212 324 324 282'/%3E%3Cpath d='M350 340 C432 302 500 356 610 320'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 620px 420px;
+      opacity: 0.72;
+    }
 
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 22px;
-        }
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(transparent, transparent 10px, rgba(255,255,255,0.28) 12px);
+      animation: rain 0.6s linear infinite;
+      opacity: 0.4;
+      z-index: 1;
+    }
 
-        .brand {
-            font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
-            font-size: clamp(26px, 4vw, 36px);
-            font-weight: 800;
-            letter-spacing: 0.2px;
-            margin: 0;
-        }
+    header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
 
-        .lang-link {
-            font-weight: 700;
-            color: var(--ink);
-            text-decoration: none;
-            border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.8);
-            padding: 9px 12px;
-            border-radius: 12px;
-        }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        .lang-link:hover {
-            background: #ffffff;
-        }
+    .header-left h1 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
 
-        .hero {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 24px;
-            align-items: stretch;
-        }
+    .lang-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #000000;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
 
-        .hero-card,
-        .showcase-card,
-        .audience-card,
-        .proof,
-        .final-cta {
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            box-shadow: 0 12px 24px rgba(21, 48, 58, 0.08);
-        }
+    main {
+      position: relative;
+      z-index: 2;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
 
-        .hero-card {
-            padding: clamp(22px, 4vw, 38px);
-            animation: rise 0.75s ease-out both;
-        }
+    .hero {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      padding: 26px;
+      margin-bottom: 20px;
+    }
 
-        .kicker {
-            display: inline-block;
-            font-weight: 800;
-            font-size: 14px;
-            letter-spacing: 0.7px;
-            text-transform: uppercase;
-            color: #114a57;
-            background: var(--sand);
-            border-radius: 999px;
-            padding: 7px 12px;
-            margin-bottom: 12px;
-        }
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      line-height: 1.1;
+    }
 
-        h1, h2, h3 {
-            font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
-            line-height: 1.1;
-            margin: 0;
-        }
+    .hero p {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #2f4959;
+      max-width: 780px;
+    }
 
-        h1 {
-            font-size: clamp(34px, 5.2vw, 56px);
-            margin-bottom: 14px;
-        }
+    .cta-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-        .lead {
-            color: var(--muted);
-            font-size: clamp(17px, 2.5vw, 21px);
-            margin: 0 0 24px;
-            max-width: 56ch;
-        }
+    .cta {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #1f2d3d;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      transition: transform 0.15s ease;
+    }
 
-        .cta-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
+    .cta:hover {
+      transform: translateY(-2px);
+    }
 
-        .cta {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            border-radius: 14px;
-            padding: 12px 18px;
-            font-weight: 800;
-            border: 1px solid transparent;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+    .cta-1 { background: #ffd966; }
+    .cta-2 { background: #d6f0ff; }
+    .cta-3 { background: #d9f8e8; }
 
-        .cta-primary {
-            color: #ffffff;
-            background: linear-gradient(135deg, var(--brand), var(--brand-strong));
-            box-shadow: 0 8px 16px rgba(242, 95, 58, 0.28);
-        }
+    section {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.11);
+      padding: 22px;
+    }
 
-        .cta-secondary {
-            color: #0f4f6a;
-            background: #e6f4ff;
-            border-color: #b8dff7;
-        }
+    section h3 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 3.2vw, 2rem);
+    }
 
-        .cta-tertiary {
-            color: #0b5c49;
-            background: #def7ef;
-            border-color: #b6e8d8;
-        }
+    .section-sub {
+      margin: 0 0 14px;
+      color: #355266;
+      font-size: 1.02rem;
+    }
 
-        .cta:hover {
-            transform: translateY(-2px);
-        }
+    .grid-3,
+    .grid-4 {
+      display: grid;
+      gap: 12px;
+    }
 
-        .showcase-card {
-            padding: 18px;
-            display: grid;
-            gap: 12px;
-            animation: rise 0.9s ease-out both;
-        }
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 
-        .mini-tile {
-            border-radius: 16px;
-            padding: 14px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            display: grid;
-            gap: 4px;
-            min-height: 92px;
-            background: #ffffff;
-        }
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 
-        .mini-tile:nth-child(1) { background: #fff1ea; }
-        .mini-tile:nth-child(2) { background: #eaf7ff; }
-        .mini-tile:nth-child(3) { background: #ebfbf5; }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid #dce8ef;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
 
-        .mini-title {
-            font-weight: 800;
-            font-size: 18px;
-        }
+    .card h4 {
+      margin: 0 0 6px;
+      font-size: 1.15rem;
+    }
 
-        section {
-            margin-top: 26px;
-        }
+    .card p {
+      margin: 0;
+      color: #355266;
+      font-size: 0.98rem;
+    }
 
-        .section-title {
-            font-size: clamp(30px, 4vw, 44px);
-            margin-bottom: 6px;
-        }
+    .audience-tag {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      background: #edf6ff;
+      color: #234968;
+      padding: 4px 9px;
+      margin-bottom: 8px;
+    }
 
-        .section-sub {
-            margin: 0 0 16px;
-            color: var(--muted);
-            font-size: 17px;
-        }
+    .quote {
+      margin: 0;
+      background: #fff8e8;
+      border: 1px solid #f4e2bc;
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 700;
+    }
 
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-        }
+    .quote + .quote {
+      margin-top: 10px;
+    }
 
-        .step {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            padding: 16px;
-        }
+    .footer-links {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      font-size: 0.92rem;
+    }
 
-        .step-number {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            background: #ecf6ff;
-            color: #0f4f6a;
-            margin-bottom: 10px;
-        }
+    .footer-links a {
+      color: #234968;
+      text-decoration: none;
+      font-weight: 700;
+    }
 
-        .examples {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-        }
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
 
-        .example {
-            border-radius: 18px;
-            border: 1px solid var(--line);
-            background: #ffffff;
-            padding: 14px;
-            min-height: 134px;
-        }
+    @keyframes rain {
+      from { background-position: 0 0; }
+      to { background-position: 0 20px; }
+    }
 
-        .example h3 {
-            font-size: 22px;
-            margin-bottom: 6px;
-        }
+    @media (max-width: 920px) {
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
 
-        .audiences {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-        }
+    @media (max-width: 680px) {
+      header {
+        padding: 10px 12px;
+      }
 
-        .audience-card {
-            padding: 16px;
-            display: grid;
-            gap: 10px;
-        }
+      .header-left h1 {
+        font-size: 1.1rem;
+      }
 
-        .audience-card h3 {
-            font-size: 26px;
-        }
+      .header-left img {
+        height: 46px !important;
+      }
 
-        .tag {
-            font-weight: 800;
-            font-size: 13px;
-            display: inline-block;
-            width: fit-content;
-            border-radius: 999px;
-            padding: 5px 10px;
-            background: #f0f6ff;
-            color: #315f86;
-        }
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
 
-        .proof {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .quote {
-            margin: 0;
-            padding: 14px;
-            border-radius: 14px;
-            background: #fff8e8;
-            border: 1px solid #f4e2bc;
-            font-weight: 700;
-        }
-
-        .final-cta {
-            margin-top: 24px;
-            padding: clamp(20px, 4vw, 34px);
-            text-align: center;
-        }
-
-        .fine-links {
-            margin-top: 18px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            font-size: 14px;
-        }
-
-        .fine-links a {
-            color: #315f6f;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        .fine-links a:hover {
-            text-decoration: underline;
-        }
-
-        @keyframes rise {
-            from {
-                transform: translateY(14px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 960px) {
-            .hero,
-            .proof {
-                grid-template-columns: 1fr;
-            }
-
-            .examples {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 760px) {
-            .steps,
-            .audiences,
-            .examples {
-                grid-template-columns: 1fr;
-            }
-
-            .page {
-                padding: 18px 14px 44px;
-            }
-
-            .hero-card,
-            .showcase-card,
-            .proof,
-            .final-cta,
-            .audience-card {
-                border-radius: 18px;
-            }
-        }
-    </style>
+      .hero,
+      section {
+        border-radius: 16px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <main class="page">
-        <header class="topbar">
-            <h1 class="brand">RainyDay Club</h1>
-            <a class="lang-link" href="/en/home.html" id="switchToEn">English</a>
-        </header>
+  <div class="rain"></div>
 
-        <section class="hero" aria-label="Introductie RainyDay Club">
-            <article class="hero-card">
-                <span class="kicker">Creatieve AI avonturen</span>
-                <h1>Laat regenachtige middagen veranderen in grote ideeen.</h1>
-                <p class="lead">
-                    RainyDay Club helpt kinderen van 5 tot 10 jaar om met fantasie te maken, tekenen en spelen.
-                    Van gekke verhalen tot unieke kleurplaten: elk idee kan tot leven komen.
-                </p>
-                <div class="cta-row">
-                    <a class="cta cta-primary" href="/home.html">Voor ouders</a>
-                    <a class="cta cta-secondary" href="/home.html?audience=schools">Voor school en BSO</a>
-                    <a class="cta cta-tertiary" href="/home.html?audience=companies">Voor events en bedrijven</a>
-                </div>
-            </article>
+  <header>
+    <div class="header-left">
+      <img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:60px;width:auto;" />
+      <h1>RainyDay Club</h1>
+    </div>
+    <a class="lang-btn" href="/en/home.html" id="switchToEn">English</a>
+  </header>
 
-            <aside class="showcase-card" aria-label="Voorbeelden van creaties">
-                <div class="mini-tile">
-                    <span class="mini-title">Verhalen</span>
-                    <span>Een draak met rolschaatsen die een geheime schat zoekt.</span>
-                </div>
-                <div class="mini-tile">
-                    <span class="mini-title">Kleurplaten</span>
-                    <span>Een ruimte-avontuur met robots, planeten en gekke voertuigen.</span>
-                </div>
-                <div class="mini-tile">
-                    <span class="mini-title">Challenges</span>
-                    <span>Speelse opdrachten voor binnen, buiten of in de klas.</span>
-                </div>
-            </aside>
-        </section>
+  <main>
+    <section class="hero">
+      <h2>Laat regenachtige middagen veranderen in grote ideeen.</h2>
+      <p>
+        RainyDay Club biedt creatieve AI ervaringen voor kinderen van 5-10 jaar.
+        Van kleurplaten tot challenges en liedjes: speels, vrolijk en makkelijk te starten.
+      </p>
+      <div class="cta-row">
+        <a class="cta cta-1" href="/home.html">Voor ouders</a>
+        <a class="cta cta-2" href="/home.html?audience=schools">Voor school en BSO</a>
+        <a class="cta cta-3" href="/home.html?audience=companies">Voor events en bedrijven</a>
+      </div>
+    </section>
 
-        <section aria-labelledby="how-it-works-title">
-            <h2 class="section-title" id="how-it-works-title">Hoe werkt het?</h2>
-            <p class="section-sub">Simpel, snel en vooral superleuk.</p>
-            <div class="steps">
-                <article class="step">
-                    <span class="step-number">1</span>
-                    <h3>Kies een idee</h3>
-                    <p>Kinderen kiezen een thema, personage of favoriete wereld.</p>
-                </article>
-                <article class="step">
-                    <span class="step-number">2</span>
-                    <h3>Maak samen</h3>
-                    <p>RainyDay Club zet het idee om in een speelse, creatieve ervaring.</p>
-                </article>
-                <article class="step">
-                    <span class="step-number">3</span>
-                    <h3>Deel trots</h3>
-                    <p>Bewaar de creatie, print hem uit of deel hem met familie en vrienden.</p>
-                </article>
-            </div>
-        </section>
+    <section>
+      <h3>Hoe werkt het?</h3>
+      <p class="section-sub">In drie simpele stappen zijn kinderen direct creatief bezig.</p>
+      <div class="grid-3">
+        <article class="card">
+          <h4>1. Kies een agent</h4>
+          <p>Kies wie je vandaag helpt: kleurplaat, challenge, karakterbouwer of liedjesmaker.</p>
+        </article>
+        <article class="card">
+          <h4>2. Maak samen</h4>
+          <p>Kinderen voeren een idee in en zien meteen hoe het tot leven komt.</p>
+        </article>
+        <article class="card">
+          <h4>3. Deel en speel verder</h4>
+          <p>Bewaar de creatie, print hem uit of maak meteen een nieuwe versie.</p>
+        </article>
+      </div>
+    </section>
 
-        <section aria-labelledby="kids-create-title">
-            <h2 class="section-title" id="kids-create-title">Wat kunnen kinderen maken?</h2>
-            <p class="section-sub">Elke klik opent weer een nieuw mini-avontuur.</p>
-            <div class="examples">
-                <article class="example">
-                    <h3>Verhaalwereld</h3>
-                    <p>Maak samen een verhaal met helden, monsters en verrassende twists.</p>
-                </article>
-                <article class="example">
-                    <h3>Kleurplaat op maat</h3>
-                    <p>Van unicorns tot ruimtepiraten: een kleurplaat die echt van hen is.</p>
-                </article>
-                <article class="example">
-                    <h3>Challenge tijd</h3>
-                    <p>Ontvang leuke opdrachten die kids meteen in actie brengen.</p>
-                </article>
-                <article class="example">
-                    <h3>Karakter bouwer</h3>
-                    <p>Bedenk een eigen karakter met stijl, talenten en een verhaal.</p>
-                </article>
-            </div>
-        </section>
+    <section>
+      <h3>Wat kunnen kinderen maken?</h3>
+      <p class="section-sub">Elke tool voelt als een mini-avontuur met een eigen stijl.</p>
+      <div class="grid-4">
+        <article class="card">
+          <h4>Kleurplaat op maat</h4>
+          <p>Van ruimtehelden tot dino's: een unieke kleurplaat die ze zelf bedenken.</p>
+        </article>
+        <article class="card">
+          <h4>Challenge tijd</h4>
+          <p>Korte, leuke opdrachten die kinderen in beweging en in fantasie brengen.</p>
+        </article>
+        <article class="card">
+          <h4>Karakter bouwer</h4>
+          <p>Maak een eigen karakter met talenten, look en een uniek verhaal.</p>
+        </article>
+        <article class="card">
+          <h4>Liedjes</h4>
+          <p>Laat kinderen een eigen liedje maken rondom hun thema of favoriete onderwerp.</p>
+        </article>
+      </div>
+    </section>
 
-        <section aria-labelledby="choose-title">
-            <h2 class="section-title" id="choose-title">Kies jouw ervaring</h2>
-            <p class="section-sub">Voor thuis, in groepen of als extra wow op events.</p>
-            <div class="audiences">
-                <article class="audience-card">
-                    <span class="tag">Thuis</span>
-                    <h3>Voor ouders</h3>
-                    <p>Maak van schermtijd creatieve quality time met je kind.</p>
-                    <a class="cta cta-primary" href="/home.html">Start thuis</a>
-                </article>
-                <article class="audience-card">
-                    <span class="tag">Groepen</span>
-                    <h3>Voor school en BSO</h3>
-                    <p>Ideaal voor themaweken, creatieve middagen en speelse opdrachten in de klas.</p>
-                    <a class="cta cta-secondary" href="/home.html?audience=schools">Bekijk voor school en BSO</a>
-                </article>
-                <article class="audience-card">
-                    <span class="tag">Beleving</span>
-                    <h3>Voor bedrijven</h3>
-                    <p>Geef familiedagen en evenementen een creatieve activiteit waar kids direct in duiken.</p>
-                    <a class="cta cta-tertiary" href="/home.html?audience=companies">Bekijk voor events</a>
-                </article>
-            </div>
-        </section>
+    <section>
+      <h3>Kies jouw ervaring</h3>
+      <p class="section-sub">RainyDay Club werkt thuis, in groepen en op events.</p>
+      <div class="grid-3">
+        <article class="card">
+          <span class="audience-tag">Thuis</span>
+          <h4>Voor ouders</h4>
+          <p>Maak van schermtijd een creatief moment dat je samen beleeft.</p>
+          <div class="cta-row"><a class="cta cta-1" href="/home.html">Start thuis</a></div>
+        </article>
+        <article class="card">
+          <span class="audience-tag">Groepen</span>
+          <h4>Voor school en BSO</h4>
+          <p>Ideaal voor themaweken, creatieve middagen en speelse opdrachten.</p>
+          <div class="cta-row"><a class="cta cta-2" href="/home.html?audience=schools">Bekijk voor school/BSO</a></div>
+        </article>
+        <article class="card">
+          <span class="audience-tag">Events</span>
+          <h4>Voor bedrijven</h4>
+          <p>Voeg een creatieve kids-activiteit toe aan familiedagen en evenementen.</p>
+          <div class="cta-row"><a class="cta cta-3" href="/home.html?audience=companies">Bekijk voor events</a></div>
+        </article>
+      </div>
+    </section>
 
-        <section class="proof" aria-label="Waarom RainyDay Club werkt">
-            <div>
-                <h2 class="section-title">Waarom families en teams hiervoor kiezen</h2>
-                <p class="section-sub">
-                    RainyDay Club maakt creativiteit laagdrempelig. Geen ingewikkelde uitleg, wel direct plezier.
-                    Kinderen zien hun eigen ideeen tot leven komen en willen steeds opnieuw aan de slag.
-                </p>
-            </div>
-            <div>
-                <p class="quote">"Mijn zoon begon met een kleurplaat en eindigde met een heel verhaal erbij. Fantastisch!"</p>
-                <p class="quote">"Onze BSO-groep was meteen enthousiast. Iedereen kon op eigen niveau meedoen."</p>
-            </div>
-        </section>
+    <section>
+      <h3>Waarom families en teams hiervoor kiezen</h3>
+      <p class="section-sub">Niet technisch, wel direct leuk. Kinderen zien hun ideeen meteen terug in een eigen creatie.</p>
+      <p class="quote">"Mijn kind begon met een kleurplaat en maakte daarna zelf nog een challenge erbij."</p>
+      <p class="quote">"In de BSO kon iedereen op zijn eigen manier meedoen. Super toegankelijk."</p>
+    </section>
 
-        <section class="final-cta" aria-label="Laatste call to action">
-            <h2 class="section-title">Klaar om ideeen tot leven te brengen?</h2>
-            <p class="section-sub">Kies de route die bij jullie past en start vandaag nog met maken.</p>
-            <div class="cta-row" style="justify-content:center;">
-                <a class="cta cta-primary" href="/home.html">Ga naar Kids Portal</a>
-                <a class="cta cta-secondary" href="/en/home.html">Open in English</a>
-            </div>
+    <section>
+      <h3>Klaar om te starten?</h3>
+      <p class="section-sub">Kies de route die bij jullie past en ga direct aan de slag.</p>
+      <div class="cta-row">
+        <a class="cta cta-1" href="/home.html">Ga naar Kids Portal</a>
+        <a class="cta cta-2" href="/en/home.html">Open in English</a>
+      </div>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Voorwaarden</a>
+        <a href="/cookies.html">Cookies</a>
+      </div>
+    </section>
+  </main>
 
-            <div class="fine-links">
-                <a href="/privacy.html">Privacy</a>
-                <a href="/terms.html">Voorwaarden</a>
-                <a href="/cookies.html">Cookies</a>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        document.getElementById('switchToEn')?.addEventListener('click', function () {
-            localStorage.setItem('rdc-lang', 'en');
-        });
-    </script>
+  <script>
+    document.getElementById('switchToEn')?.addEventListener('click', function () {
+      localStorage.setItem('rdc-lang', 'en');
+    });
+  </script>
 </body>
 </html>
