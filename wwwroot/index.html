@@ -87,15 +87,23 @@
       font-size: 2rem;
     }
 
-    .lang-btn {
+    .header-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-btn {
       display: inline-block;
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: 999px;
-      background: #000000;
-      color: #ffffff;
+      border: none;
+      cursor: pointer;
       text-decoration: none;
       font-weight: 700;
       font-size: 0.9rem;
+      background: #000000;
+      color: #ffffff;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
     }
 
     main {
@@ -331,10 +339,12 @@
 
   <header>
     <div class="header-left">
-      <img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:60px;width:auto;" />
+      <img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:150px;width:auto;" />
       <h1>RainyDay Club</h1>
     </div>
-    <a class="lang-btn" href="/en/index.html" id="switchToEn">English</a>
+    <div class="header-right">
+      <a class="header-btn" href="/en/index.html" id="switchToEn" data-lang="en">English</a>
+    </div>
   </header>
 
   <main>
