@@ -125,6 +125,18 @@
       height: 70px;
       background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
     }
+    .hero-panel {
+      padding: 0;
+      overflow: hidden;
+    }
+    .hero-panel .hero-media {
+      margin: 0;
+      border-radius: 20px 20px 0 0;
+      box-shadow: none;
+    }
+    .hero-copy {
+      padding: 20px 24px 24px;
+    }
     .cta-row { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
     .cta {
       display: inline-block;
@@ -194,14 +206,16 @@
   </header>
 
   <main>
-    <section class="panel">
+    <section class="panel hero-panel">
       <div class="hero-media" aria-hidden="true">
         <img src="/Images/Kinderdag%20activiteit%20in%20vergaderzaal.png" alt="" />
       </div>
-      <h2>RainyDay AI Experience voor events</h2>
-      <p class="lead">Een creatieve publieksactivatie voor familie-events, open dagen en bedrijfsdagen. Kinderen maken in korte tijd iets eigens en gaan met een grote glimlach naar huis.</p>
-      <div class="cta-row">
-        <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor meer info</a>
+      <div class="hero-copy">
+        <h2>RainyDay AI Experience voor events</h2>
+        <p class="lead">Een creatieve publieksactivatie voor familie-events, open dagen en bedrijfsdagen. Kinderen maken in korte tijd iets eigens en gaan met een grote glimlach naar huis.</p>
+        <div class="cta-row">
+          <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor meer info</a>
+        </div>
       </div>
     </section>
 

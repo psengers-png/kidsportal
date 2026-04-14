@@ -125,6 +125,18 @@
       height: 70px;
       background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
     }
+    .hero-panel {
+      padding: 0;
+      overflow: hidden;
+    }
+    .hero-panel .hero-media {
+      margin: 0;
+      border-radius: 20px 20px 0 0;
+      box-shadow: none;
+    }
+    .hero-copy {
+      padding: 20px 24px 24px;
+    }
     .cta-row { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
     .cta {
       display: inline-block;
@@ -194,14 +206,16 @@
   </header>
 
   <main>
-    <section class="panel">
+    <section class="panel hero-panel">
       <div class="hero-media" aria-hidden="true">
         <img src="/Images/Klaslokaal%20vol%20kleur%20en%20creativiteit.png" alt="" />
       </div>
-      <h2>RainyDay AI Experience for Groups</h2>
-      <p class="lead">A playful experience where children collaborate with creative AI agents, brainstorm ideas and step-by-step create their own masterpiece.</p>
-      <div class="cta-row">
-        <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Schools%20and%20BSO%20Information">Email for more info</a>
+      <div class="hero-copy">
+        <h2>RainyDay AI Experience for Groups</h2>
+        <p class="lead">A playful experience where children collaborate with creative AI agents, brainstorm ideas and step-by-step create their own masterpiece.</p>
+        <div class="cta-row">
+          <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Schools%20and%20BSO%20Information">Email for more info</a>
+        </div>
       </div>
     </section>
 

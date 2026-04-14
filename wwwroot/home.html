@@ -226,34 +226,79 @@
     }
 
     .hero {
-      text-align: center;
-      padding: 80px 20px 40px;
+      max-width: 1000px;
+      margin: 26px auto 40px;
+      padding: 0 20px;
       position: relative;
       z-index: 2;
     }
 
-
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
+    .hero-panel {
+      background: rgba(255,255,255,0.9);
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      overflow: hidden;
     }
 
-    .hero p {
-      font-size: 1.3rem;
-      opacity: 0.8;
+    .hero-media {
+      position: relative;
+      overflow: hidden;
     }
 
-    .cta a {
-      margin-top: 25px;
+    .hero-media img {
+      width: 100%;
+      height: clamp(300px, 44vw, 520px);
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 70px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
+    }
+
+    .hero-copy {
+      padding: 20px 24px 24px;
+      text-align: center;
+    }
+
+    .hero-copy h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      line-height: 1.1;
+    }
+
+    .cta-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .cta {
       display: inline-block;
-      background: #ffd966;
-      padding: 14px 28px;
-      font-size: 1.1rem;
+      padding: 12px 18px;
       border-radius: 999px;
       text-decoration: none;
+      font-weight: 700;
       color: #1f2d3d;
-      font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      transition: transform 0.15s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+    }
+
+    .cta-1 {
+      background: #ffd966;
     }
 
     section {
@@ -452,11 +497,16 @@
 </header>
 
 <div class="hero">
-  <h1>☔ Rainy Day Club</h1>
-  <p>Waar regenachtige dagen creatieve avonturen worden met kindvriendelijke AI tools</p>
-
-  <div class="cta">
-    <a href="kleurplaat.html">Probeer gratis onze kleurplaat AI generator</a>
+  <div class="hero-panel">
+    <div class="hero-media" aria-hidden="true">
+      <img src="/Images/Kinderen%20kleuren%20aan%20een%20regenachtige%20dag.png" alt="" />
+    </div>
+    <div class="hero-copy">
+      <h2>Laat regenachtige middagen veranderen in creatieve inspiratie.</h2>
+      <div class="cta-row">
+        <a class="cta cta-1" href="kleurplaat.html">Probeer gratis onze kleurplaat AI generator</a>
+      </div>
+    </div>
   </div>
 </div>
 
