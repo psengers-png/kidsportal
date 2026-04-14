@@ -2,7 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -10,7 +9,6 @@ User-agent: Googlebot
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -18,7 +16,6 @@ User-agent: Bingbot
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -26,7 +23,6 @@ User-agent: OAI-SearchBot
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -34,7 +30,6 @@ User-agent: GPTBot
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -42,7 +37,6 @@ User-agent: Google-Extended
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -50,7 +44,6 @@ User-agent: ClaudeBot
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
@@ -58,7 +51,6 @@ User-agent: PerplexityBot
 Allow: /
 Disallow: /api/
 Disallow: /login.html
-Disallow: /index.html
 Disallow: /abonnement-success.html
 Disallow: /abonnement-cancel.html
 
