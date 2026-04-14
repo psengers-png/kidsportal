@@ -110,8 +110,40 @@
       background: rgba(255,255,255,0.9);
       border-radius: 20px;
       box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-      padding: 26px;
+      padding: 190px 26px 26px;
       margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 220px;
+      background-image: url('/Images/Kinderen%20kleuren%20aan%20een%20regenachtige%20dag.png');
+      background-size: cover;
+      background-position: center top;
+      opacity: 0.92;
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 130px;
+      height: 130px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.95) 65%, rgba(255,255,255,1));
+      z-index: 1;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 2;
     }
 
     .hero h2 {
@@ -284,6 +316,19 @@
       section {
         border-radius: 16px;
       }
+
+      .hero {
+        padding-top: 150px;
+      }
+
+      .hero::before {
+        height: 180px;
+      }
+
+      .hero::after {
+        top: 95px;
+        height: 110px;
+      }
     }
   </style>
 </head>
@@ -307,8 +352,8 @@
       </p>
       <div class="cta-row">
         <a class="cta cta-1" href="/home.html">Voor ouders</a>
-        <a class="cta cta-2" href="mailto:info@rainydayclub.nl?subject=Informatie%20BSO%20en%20scholen">Voor school en BSO</a>
-        <a class="cta cta-3" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Voor events en bedrijven</a>
+        <a class="cta cta-2" href="/scholen-bso.html">Voor school en BSO</a>
+        <a class="cta cta-3" href="/events.html">Voor events en bedrijven</a>
       </div>
     </section>
 
@@ -368,13 +413,13 @@
           <span class="audience-tag">Groepen</span>
           <h4>Voor school en BSO</h4>
           <p>Ideaal voor themaweken, creatieve middagen en speelse opdrachten.</p>
-          <div class="cta-row"><a class="cta cta-2" href="mailto:info@rainydayclub.nl?subject=Informatie%20BSO%20en%20scholen">Mail voor school/BSO</a></div>
+          <div class="cta-row"><a class="cta cta-2" href="/scholen-bso.html">Bekijk voor school/BSO</a></div>
         </article>
         <article class="card">
           <span class="audience-tag">Events</span>
           <h4>Voor bedrijven</h4>
           <p>Voeg een creatieve kids-activiteit toe aan familiedagen en evenementen.</p>
-          <div class="cta-row"><a class="cta cta-3" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor events</a></div>
+          <div class="cta-row"><a class="cta cta-3" href="/events.html">Bekijk voor events</a></div>
         </article>
       </div>
     </section>
