@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -349,7 +349,7 @@
     </form>
 
     <div id="resultaat"></div>
-    <video id="driplyLoadingVideo" playsinline loop preload="auto">
+    <video id="driplyLoadingVideo" playsinline preload="auto">
         <source src="/Images/Vid Diply2.MP4" type="video/mp4">
         <source src="/Images/Vid Driply.mp4" type="video/mp4">
         <source src="/Images/Driply.mp4" type="video/mp4">
@@ -436,21 +436,38 @@ async function initFormLogic() {
     activiteitInput.addEventListener("input", updateFieldStates);
     fotoInput.addEventListener("change", updateFieldStates);
 
+    let _videoRestartTimer = null;
+
+    function startLoadingVideo(vid) {
+        if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+        vid.currentTime = 0;
+        vid.onended = function() {
+            _videoRestartTimer = setTimeout(() => {
+                vid.currentTime = 0;
+                vid.play().catch(() => {});
+            }, 10000);
+        };
+        const p = vid.play();
+        if (p && typeof p.catch === 'function') { p.catch(() => {}); }
+    }
+
+    function stopLoadingVideo(vid) {
+        if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+        vid.onended = null;
+        vid.pause();
+        vid.currentTime = 0;
+        vid.style.display = 'none';
+    }
+
     function startLoadingState() {
         downloadBtn.style.display = 'none';
         resultaat.textContent = "Kleurplaat wordt aangemaakt...";
         driplyLoadingVideo.style.display = "block";
-        driplyLoadingVideo.currentTime = 0;
-        const playPromise = driplyLoadingVideo.play();
-        if (playPromise && typeof playPromise.catch === 'function') {
-            playPromise.catch(() => {});
-        }
+        startLoadingVideo(driplyLoadingVideo);
     }
 
     function stopLoadingState() {
-        driplyLoadingVideo.pause();
-        driplyLoadingVideo.currentTime = 0;
-        driplyLoadingVideo.style.display = "none";
+        stopLoadingVideo(driplyLoadingVideo);
     }
 
     async function postKleurplaatRequest(payload, userId, type = 'kleurplaat') {

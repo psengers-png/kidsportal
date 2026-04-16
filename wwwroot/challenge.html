@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -347,7 +347,7 @@
         <button type="submit">🚀 Genereer Challenge</button>
     </form>
 
-    <video id="questyLoadingVideo" playsinline loop preload="auto">
+    <video id="questyLoadingVideo" playsinline preload="auto">
         <source src="/Images/Vid Questy2.MP4" type="video/mp4">
         <source src="/Images/Questy.mp4" type="video/mp4">
         <source src="/Images/questy.mp4" type="video/mp4">
@@ -418,23 +418,38 @@ const judgePhotosBtn = document.getElementById("judgePhotosBtn");
 const judgeResult = document.getElementById("judgeResult");
 let currentChallengeText = "";
 
+let _videoRestartTimer = null;
+
+function startLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.currentTime = 0;
+    vid.onended = function() {
+        _videoRestartTimer = setTimeout(() => {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }, 10000);
+    };
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') { p.catch(() => { vid.style.display = 'none'; }); }
+}
+
+function stopLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.onended = null;
+    vid.pause();
+    vid.currentTime = 0;
+    vid.style.display = 'none';
+}
+
 function startLoadingState() {
     submitBtn.disabled = true;
     resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
-    questyLoadingVideo.currentTime = 0;
-    const playPromise = questyLoadingVideo.play();
-    if (playPromise && typeof playPromise.then === 'function') {
-        playPromise.catch(() => {
-            questyLoadingVideo.style.display = "none";
-        });
-    }
     questyLoadingVideo.style.display = "block";
+    startLoadingVideo(questyLoadingVideo);
 }
 
 function stopLoadingState() {
-    questyLoadingVideo.pause();
-    questyLoadingVideo.currentTime = 0;
-    questyLoadingVideo.style.display = "none";
+    stopLoadingVideo(questyLoadingVideo);
 }
 
 function fileToDataUrl(file) {

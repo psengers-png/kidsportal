@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -359,7 +359,7 @@
         </form>
 
         <div id="resultaat">
-            <video id="beattyLoadingVideo" playsinline loop preload="auto">
+            <video id="beattyLoadingVideo" playsinline preload="auto">
                 <source src="/Images/Vid Beatty2.MP4" type="video/mp4">
                 <source src="/Images/Beatty.mp4" type="video/mp4">
                 <source src="/Images/beatty.mp4" type="video/mp4">
@@ -510,6 +510,29 @@ function renderResult(data) {
     }
 }
 
+let _videoRestartTimer = null;
+
+function startLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.currentTime = 0;
+    vid.onended = function() {
+        _videoRestartTimer = setTimeout(() => {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }, 10000);
+    };
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') { p.catch(() => {}); }
+}
+
+function stopLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.onended = null;
+    vid.pause();
+    vid.currentTime = 0;
+    vid.style.display = 'none';
+}
+
 function startLoadingState() {
     btn.disabled = true;
     audioPlayer.style.display = "none";
@@ -517,17 +540,11 @@ function startLoadingState() {
     lyricsBox.style.display = "block";
     lyricsBox.textContent = "Liedje wordt aangemaakt...";
     beattyLoadingVideo.style.display = "block";
-    beattyLoadingVideo.currentTime = 0;
-    const playPromise = beattyLoadingVideo.play();
-    if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {});
-    }
+    startLoadingVideo(beattyLoadingVideo);
 }
 
 function stopLoadingState() {
-    beattyLoadingVideo.pause();
-    beattyLoadingVideo.currentTime = 0;
-    beattyLoadingVideo.style.display = "none";
+    stopLoadingVideo(beattyLoadingVideo);
 }
 
 async function pollStatus(taskId, userId) {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -304,7 +304,7 @@
             <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
         </form>
 
-        <video id="scetchyLoadingVideo" playsinline loop preload="auto">
+        <video id="scetchyLoadingVideo" playsinline preload="auto">
             <source src="/Images/vid%20Sketchy.mp4" type="video/mp4">
             <source src="/Images/vid Sketchy.mp4" type="video/mp4">
         </video>
@@ -379,24 +379,39 @@ const btn = document.getElementById("genereerBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const scetchyLoadingVideo = document.getElementById("scetchyLoadingVideo");
 
+let _videoRestartTimer = null;
+
+function startLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.currentTime = 0;
+    vid.onended = function() {
+        _videoRestartTimer = setTimeout(() => {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }, 10000);
+    };
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') { p.catch(() => { vid.style.display = 'none'; }); }
+}
+
+function stopLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.onended = null;
+    vid.pause();
+    vid.currentTime = 0;
+    vid.style.display = 'none';
+}
+
 function startLoadingState() {
     btn.disabled = true;
     downloadBtn.style.display = 'none';
     resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">⏳ Scetchy is creating your drawing tutorial...</p>';
-    scetchyLoadingVideo.currentTime = 0;
-    const playPromise = scetchyLoadingVideo.play();
-    if (playPromise && typeof playPromise.then === 'function') {
-        playPromise.catch(() => {
-            scetchyLoadingVideo.style.display = "none";
-        });
-    }
     scetchyLoadingVideo.style.display = "block";
+    startLoadingVideo(scetchyLoadingVideo);
 }
 
 function stopLoadingState() {
-    scetchyLoadingVideo.pause();
-    scetchyLoadingVideo.currentTime = 0;
-    scetchyLoadingVideo.style.display = "none";
+    stopLoadingVideo(scetchyLoadingVideo);
 }
 
 form.addEventListener("submit", async (e) => {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -316,7 +316,7 @@
         </form>
 
         <div class="giggly-video-wrapper">
-        <video id="gigglyLoadingVideo" playsinline loop preload="auto">
+        <video id="gigglyLoadingVideo" playsinline preload="auto">
             <source src="/Images/Vid Gigly2.MP4?v=20260416c" type="video/mp4">
             <source src="/Images/Vid Giggly.mp4" type="video/mp4">
             <source src="/Images/Giggly.mp4" type="video/mp4">
@@ -378,23 +378,38 @@ const resultaat = document.getElementById("resultaat");
 const btn = document.getElementById("genereerBtn");
 const gigglyLoadingVideo = document.getElementById("gigglyLoadingVideo");
 
+let _videoRestartTimer = null;
+
+function startLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.currentTime = 0;
+    vid.onended = function() {
+        _videoRestartTimer = setTimeout(() => {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }, 10000);
+    };
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') { p.catch(() => { vid.style.display = 'none'; }); }
+}
+
+function stopLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.onended = null;
+    vid.pause();
+    vid.currentTime = 0;
+    vid.style.display = 'none';
+}
+
 function startLoadingState() {
     btn.disabled = true;
     resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Generating joke...</p>';
-    gigglyLoadingVideo.currentTime = 0;
-    const playPromise = gigglyLoadingVideo.play();
-    if (playPromise && typeof playPromise.then === 'function') {
-        playPromise.catch(() => {
-            gigglyLoadingVideo.style.display = "none";
-        });
-    }
     gigglyLoadingVideo.style.display = "block";
+    startLoadingVideo(gigglyLoadingVideo);
 }
 
 function stopLoadingState() {
-    gigglyLoadingVideo.pause();
-    gigglyLoadingVideo.currentTime = 0;
-    gigglyLoadingVideo.style.display = "none";
+    stopLoadingVideo(gigglyLoadingVideo);
 }
 
 form.addEventListener("submit", async (e) => {

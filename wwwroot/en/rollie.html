@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -310,7 +310,7 @@
             <button class="submit-btn" type="submit">🚀 Generate a game</button>
         </form>
 
-        <video id="rollieLoadingVideo" playsinline loop preload="auto">
+        <video id="rollieLoadingVideo" playsinline preload="auto">
             <source src="/Images/Vid Rollie2.MP4" type="video/mp4">
         </video>
 
@@ -399,23 +399,38 @@ async function postApiRequest(body, userId) {
     throw lastError || new Error('apiRequest endpoint niet bereikbaar');
 }
 
+let _videoRestartTimer = null;
+
+function startLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.currentTime = 0;
+    vid.onended = function() {
+        _videoRestartTimer = setTimeout(() => {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }, 10000);
+    };
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') { p.catch(() => { vid.style.display = 'none'; }); }
+}
+
+function stopLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.onended = null;
+    vid.pause();
+    vid.currentTime = 0;
+    vid.style.display = 'none';
+}
+
 function startLoadingState() {
     submitBtn.disabled = true;
     resultaat.innerHTML = "<p style='text-align:center; color:#2563eb;'>⏳ Rollie verzint een dobbelspel...</p>";
-    rollieLoadingVideo.currentTime = 0;
-    const playPromise = rollieLoadingVideo.play();
-    if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {
-            rollieLoadingVideo.style.display = 'none';
-        });
-    }
     rollieLoadingVideo.style.display = 'block';
+    startLoadingVideo(rollieLoadingVideo);
 }
 
 function stopLoadingState() {
-    rollieLoadingVideo.pause();
-    rollieLoadingVideo.currentTime = 0;
-    rollieLoadingVideo.style.display = 'none';
+    stopLoadingVideo(rollieLoadingVideo);
 }
 
 form.addEventListener('submit', async (e) => {

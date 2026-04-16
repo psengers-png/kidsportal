@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -292,7 +292,7 @@
             <button id="generateBtn" type="submit">✨ Generate bead pattern</button>
         </form>
 
-        <video id="strikeyLoadingVideo" playsinline loop preload="auto">
+        <video id="strikeyLoadingVideo" playsinline preload="auto">
             <source src="/Images/vid strikey2.MP4" type="video/mp4">
             <source src="/Images/Vid Strikey.mp4" type="video/mp4">
         </video>
@@ -447,24 +447,39 @@ async function postApiRequest(body, userId) {
     throw lastError || new Error('apiRequest endpoint is not reachable');
 }
 
+let _videoRestartTimer = null;
+
+function startLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.currentTime = 0;
+    vid.onended = function() {
+        _videoRestartTimer = setTimeout(() => {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }, 10000);
+    };
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') { p.catch(() => { vid.style.display = 'none'; }); }
+}
+
+function stopLoadingVideo(vid) {
+    if (_videoRestartTimer) { clearTimeout(_videoRestartTimer); _videoRestartTimer = null; }
+    vid.onended = null;
+    vid.pause();
+    vid.currentTime = 0;
+    vid.style.display = 'none';
+}
+
 function startLoadingState() {
     generateBtn.disabled = true;
     downloadBtn.style.display = 'none';
     resultaat.innerHTML = "<p style='text-align:center; color:#2563eb;'>⏳ Strikey is creating your bead pattern...</p>";
-    strikeyLoadingVideo.currentTime = 0;
-    const playPromise = strikeyLoadingVideo.play();
-    if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {
-            strikeyLoadingVideo.style.display = 'none';
-        });
-    }
     strikeyLoadingVideo.style.display = 'block';
+    startLoadingVideo(strikeyLoadingVideo);
 }
 
 function stopLoadingState() {
-    strikeyLoadingVideo.pause();
-    strikeyLoadingVideo.currentTime = 0;
-    strikeyLoadingVideo.style.display = 'none';
+    stopLoadingVideo(strikeyLoadingVideo);
     generateBtn.disabled = false;
 }
 
