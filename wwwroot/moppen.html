@@ -205,13 +205,20 @@
             line-height: 1.6;
         }
 
-        #gigglyLoadingVideo {
+        .giggly-video-wrapper {
             width: 100%;
             max-width: 360px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             margin: 0 auto 16px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #gigglyLoadingVideo {
+            width: 100%;
             display: none;
+            transform: scale(1.6);
+            transform-origin: center center;
         }
 
         @media (max-width: 720px) {
@@ -304,14 +311,16 @@
             <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
         </form>
 
+        <div class="giggly-video-wrapper">
         <video id="gigglyLoadingVideo" playsinline loop preload="auto">
-            <source src="/Images/Vid Gigly2.MP4?v=20260416b" type="video/mp4">
+            <source src="/Images/Vid Gigly2.MP4?v=20260416c" type="video/mp4">
             <source src="/Images/Vid Giggly.mp4" type="video/mp4">
             <source src="/Images/Giggly.mp4" type="video/mp4">
             <source src="/Images/giggly.mp4" type="video/mp4">
             <source src="/Images/Giggly.webm" type="video/webm">
             <source src="/Images/giggly.webm" type="video/webm">
         </video>
+        </div>
 
         <div id="resultaat"></div>
     </div>
