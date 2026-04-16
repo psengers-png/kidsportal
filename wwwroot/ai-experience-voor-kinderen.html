@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI experience voor kinderen | School, BSO en events | RainyDay Club</title>
-  <meta name="description" content="Ontdek een AI experience voor kinderen met creatieve opdrachten, kleurplaten, challenges en diploma. Geschikt voor school, BSO, thuis en events." />
+  <title>AI experience voor kinderen op school | AI voor kinderen school | RainyDay Club</title>
+  <meta name="description" content="Ontdek AI experience voor kinderen op school en AI voor kinderen school met creatieve opdrachten, kleurplaten, challenges en diploma. Geschikt voor school, BSO, thuis en events." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://www.rainydayclub.nl/ai-experience-voor-kinderen.html" />
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Rainy Day Club" />
-  <meta property="og:title" content="AI experience voor kinderen" />
+  <meta property="og:title" content="AI experience voor kinderen op school | RainyDay Club" />
   <meta property="og:description" content="Een creatieve AI experience voor kinderen op school, BSO, thuis en events." />
   <meta property="og:url" content="https://www.rainydayclub.nl/ai-experience-voor-kinderen.html" />
   <meta property="og:image" content="https://www.rainydayclub.nl/Images/Logo%20Rainydayclub.png" />
@@ -19,6 +19,14 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Wat is AI voor kinderen op school?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI voor kinderen op school betekent dat leerlingen op een veilige en speelse manier creatieve opdrachten doen met AI, zoals kleurplaten, challenges en taalactiviteiten."
+        }
+      },
       {
         "@type": "Question",
         "name": "Wat is een AI experience voor kinderen?",
@@ -51,95 +59,217 @@
     * { box-sizing: border-box; font-family: "Segoe UI", system-ui, sans-serif; }
     body {
       margin: 0;
+      min-height: 100vh;
       background: linear-gradient(to bottom, #6ec1e4, #b3e5fc);
       color: #1f2d3d;
+      overflow-x: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='420' viewBox='0 0 620 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M62 34 L68 54 L88 60 L68 67 L62 87 L56 67 L36 60 L56 54 Z'/%3E%3Cpath d='M532 46 L537 60 L551 64 L537 69 L532 84 L527 69 L512 64 L527 60 Z'/%3E%3Cpath d='M452 118 L456 128 L466 132 L456 136 L452 146 L448 136 L438 132 L448 128 Z'/%3E%3Cpath d='M126 130 L130 143 L143 148 L130 153 L126 166 L121 153 L108 148 L121 143 Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='11' stroke-linecap='round' opacity='0.48'%3E%3Cpath d='M18 292 C128 248 214 318 324 278'/%3E%3Cpath d='M348 334 C430 296 498 350 608 314'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 620px 420px;
+      opacity: 0.72;
+    }
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(transparent, transparent 10px, rgba(255,255,255,0.28) 12px);
+      animation: rain 0.6s linear infinite;
+      opacity: 0.4;
+      z-index: 1;
+    }
+    header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 30px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left h1 { margin: 0; font-size: 2rem; }
+    .header-right { display: flex; gap: 10px; }
+    .header-btn {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: #000000;
+      color: #ffffff;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
     }
     main {
-      max-width: 960px;
+      position: relative;
+      z-index: 2;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 24px 16px 48px;
     }
     .panel {
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.9);
       border-radius: 20px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
-      padding: 22px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      padding: 24px;
       margin-bottom: 16px;
     }
-    h1 { margin: 0 0 10px; font-size: clamp(2rem, 4.2vw, 2.8rem); }
-    h2 { margin: 0 0 10px; font-size: clamp(1.4rem, 3vw, 2rem); }
-    p { margin: 0 0 12px; color: #2f4959; }
+    h2 { margin: 0 0 10px; font-size: clamp(1.7rem, 4.2vw, 2.5rem); }
+    h3 { margin: 0 0 8px; font-size: clamp(1.3rem, 3vw, 1.8rem); }
+    p { margin: 0; color: #2f4959; }
     .lead { font-size: 1.08rem; }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
+      margin-top: 12px;
     }
     .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
       border: 1px solid #dce8ef;
-      border-radius: 14px;
-      padding: 12px;
-      background: #ffffff;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
     }
-    .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
-    .faq-item + .faq-item { margin-top: 10px; }
-    .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .card h4 { margin: 0 0 6px; font-size: 1.1rem; }
+    .hero-media {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.11);
+    }
+    .hero-media img {
+      width: 100%;
+      height: clamp(300px, 44vw, 520px);
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 70px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 70%, rgba(255,255,255,1));
+    }
+    .hero-panel {
+      padding: 0;
+      overflow: hidden;
+    }
+    .hero-panel .hero-media {
+      margin: 0;
+      border-radius: 20px 20px 0 0;
+      box-shadow: none;
+    }
+    .hero-copy {
+      padding: 20px 24px 24px;
+    }
+    .cta-row { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
     .cta {
       display: inline-block;
-      padding: 11px 16px;
+      padding: 12px 18px;
       border-radius: 999px;
       text-decoration: none;
       font-weight: 700;
       color: #1f2d3d;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
-    .cta-1 { background: #ffd966; }
-    .cta-2 { background: #d6f0ff; }
-    .cta-3 { background: #d9f8e8; }
+    .cta-yellow { background: #ffd966; }
+    .cta-blue { background: #d6f0ff; }
+    .cta-green { background: #d9f8e8; }
+    .small { font-size: 0.95rem; margin-top: 8px; }
+    .faq-item + .faq-item { margin-top: 10px; }
+    .faq-item p { margin-top: 4px; }
     .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-    .links a { color: #234968; font-weight: 700; text-decoration: none; }
+    .links a { color: #234968; text-decoration: none; font-weight: 700; }
     .links a:hover { text-decoration: underline; }
-    @media (max-width: 860px) {
+    .footer-links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .footer-links a { color: #234968; text-decoration: none; font-weight: 700; }
+    .footer-links a:hover { text-decoration: underline; }
+    @keyframes rain { from { background-position: 0 0; } to { background-position: 0 20px; } }
+    @media (max-width: 840px) {
       .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      header { padding: 10px 12px; }
+      .header-left h1 { font-size: 1.05rem; }
+      .header-left img { height: 46px !important; }
+      .panel { border-radius: 16px; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <section class="panel">
+  <div class="rain"></div>
+
+  <header>
+    <div class="header-left">
+      <a href="/"><img src="/Images/Logo Rainydayclub.png" alt="Rainy Day Club logo" style="height:150px;width:auto;" /></a>
       <h1>AI experience voor kinderen</h1>
-      <p class="lead">
-        Zoek je een AI experience voor kinderen die creatief, veilig en direct leuk is? RainyDay Club helpt kinderen
-        om met simpele prompts kleurplaten, challenges, karakters en liedjes te maken. Dit werkt thuis, op school,
-        in de BSO en tijdens events.
-      </p>
-      <div class="cta-row">
-        <a class="cta cta-1" href="/scholen-bso.html">Voor school en BSO</a>
-        <a class="cta cta-2" href="/events.html">Voor events</a>
-        <a class="cta cta-3" href="/home.html">Voor thuis</a>
+    </div>
+    <div class="header-right">
+      <a class="header-btn" href="/">Home</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel hero-panel">
+      <div class="hero-media" aria-hidden="true">
+        <img src="/Images/Kinderdag%20activiteit%20in%20vergaderzaal.png" alt="" />
+      </div>
+      <div class="hero-copy">
+        <h2>AI voor kinderen op school, BSO en events</h2>
+        <p class="lead">
+          Zoek je een AI experience voor kinderen die creatief, veilig en direct leuk is? RainyDay Club helpt
+          kinderen met kleurplaten, challenges, karakters en liedjes. Deze opzet werkt thuis, op school,
+          in de BSO en tijdens events.
+        </p>
+        <div class="cta-row">
+          <a class="cta cta-yellow" href="/scholen-bso.html">Voor school en BSO</a>
+          <a class="cta cta-blue" href="/events.html">Voor events</a>
+          <a class="cta cta-green" href="/home.html">Voor thuis</a>
+        </div>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Waarom dit werkt voor kinderen</h2>
+      <h3>Waarom dit werkt voor kinderen</h3>
       <div class="grid">
         <article class="card">
-          <h3>Direct resultaat</h3>
+          <h4>Direct resultaat</h4>
           <p>Kinderen zien hun ideeen meteen terug in een eigen creatie.</p>
         </article>
         <article class="card">
-          <h3>Laagdrempelig</h3>
+          <h4>Laagdrempelig</h4>
           <p>Geen technische kennis nodig: kiezen, invullen, maken.</p>
         </article>
         <article class="card">
-          <h3>Speels leren</h3>
+          <h4>Speels leren</h4>
           <p>Creativiteit, taal en samenwerken worden spelenderwijs geoefend.</p>
         </article>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Voor welke situaties?</h2>
+      <h3>Voor welke situaties?</h3>
       <p><strong>School en BSO:</strong> gestructureerde opdrachten met bingo-kaart en AI Creator diploma.</p>
       <p><strong>Events:</strong> opvallende kinderactiviteit voor familiedagen, open dagen en bedrijfsfeesten.</p>
       <p><strong>Thuis:</strong> creatieve regenachtige-middag activiteit voor ouders en kinderen.</p>
@@ -151,7 +281,11 @@
     </section>
 
     <section class="panel">
-      <h2>Veelgestelde vragen</h2>
+      <h3>Veelgestelde vragen</h3>
+      <article class="faq-item">
+        <h3>Wat is AI voor kinderen op school?</h3>
+        <p>AI voor kinderen op school is een speelse aanpak waarmee leerlingen creatief werken met opdrachten zoals kleurplaten en challenges.</p>
+      </article>
       <article class="faq-item">
         <h3>Wat is een AI experience voor kinderen?</h3>
         <p>Een speelse activiteit waarbij kinderen met AI creatieve output maken, zoals kleurplaten en challenges.</p>
@@ -165,9 +299,10 @@
         <p>Je kunt direct starten via thuis, of contact opnemen voor school/BSO en events.</p>
       </article>
       <div class="cta-row">
-        <a class="cta cta-1" href="mailto:info@rainydayclub.nl?subject=Informatie%20AI%20experience%20voor%20kinderen">Mail voor informatie</a>
+        <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20AI%20experience%20voor%20kinderen">Mail voor informatie</a>
       </div>
-      <div class="links" style="margin-top: 16px;">
+      <p class="small">Wil je direct vergelijken? Bekijk ook <a href="/scholen-bso.html">school/BSO</a> en <a href="/events.html">events</a>.</p>
+      <div class="footer-links">
         <a href="/privacy.html">Privacy</a>
         <a href="/terms.html">Voorwaarden</a>
         <a href="/cookies.html">Cookies</a>
