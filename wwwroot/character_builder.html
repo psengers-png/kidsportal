@@ -917,7 +917,7 @@ function validateStep(step) {
         if (state.appearance.ogen.length < 1) return 'Kies 1 oog-optie bij uiterlijk.';
     }
     if (step.id === 'krachten' && state.powers.length < 1) return 'Kies minimaal 1 kracht.';
-    if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Kies precies 2 eigenschappen.';
+    if (step.id === 'persoonlijkheid' && state.personality.length !== 1) return 'Kies precies 1 eigenschap.';
     if (step.id === 'wereld' && !state.world) return 'Kies een wereld.';
     return '';
 }

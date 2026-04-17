@@ -880,7 +880,7 @@ function validateStep(step) {
         if (state.appearance.ogen.length < 1) return 'Pick 1 eye option in appearance.';
     }
     if (step.id === 'krachten' && state.powers.length < 1) return 'Choose at least 1 power.';
-    if (step.id === 'persoonlijkheid' && state.personality.length !== 2) return 'Choose exactly 2 personality traits.';
+    if (step.id === 'persoonlijkheid' && state.personality.length !== 1) return 'Choose exactly 1 personality trait.';
     if (step.id === 'wereld' && !state.world) return 'Choose a world.';
     return '';
 }
