@@ -501,6 +501,17 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function waitForUserId(maxWaitMs = 5000) {
+    const started = Date.now();
+    while (Date.now() - started < maxWaitMs) {
+        if (getUserId()) {
+            return true;
+        }
+        await sleep(200);
+    }
+    return Boolean(getUserId());
+}
+
 function updateNameSuggestionsInResult(suggestions) {
     const text = resultText.textContent || '';
     const line = 'Name suggestions: ' + (suggestions || []).join(', ');
@@ -1003,7 +1014,26 @@ setTimeout(() => {
 (async function init() {
     try {
         setStatus('Loading flow...');
-        const data = await callAgent({ action: 'get_flow' });
+        await waitForUserId(5000);
+
+        let data = null;
+        let lastError = null;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+            try {
+                data = await callAgent({ action: 'get_flow' });
+                break;
+            } catch (err) {
+                lastError = err;
+                if (attempt < 3) {
+                    await sleep(600);
+                }
+            }
+        }
+
+        if (!data?.flow) {
+            throw lastError || new Error('Flow missing from server response.');
+        }
+
         flow = data.flow;
         currentStep = 0;
         setStatus('');

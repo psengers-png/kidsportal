@@ -425,6 +425,11 @@ const API_REQUEST_ENDPOINTS = [
     'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest'
 ];
 
+const CHARACTER_BUILDER_DIRECT_ENDPOINTS = [
+    'https://sengfam1.azurewebsites.net/character_builder_agent',
+    'https://sengfam1.azurewebsites.net/api/character_builder_agent'
+];
+
 let flow = null;
 let currentStep = 0;
 let builtCharacter = null;
@@ -438,9 +443,18 @@ const state = {
         ogen: [],
         accessoires: []
     },
+    custom_appearance: {
+        kleur: '',
+        bouw: '',
+        ogen: '',
+        accessoires: ''
+    },
     powers: [],
+    custom_power: '',
     personality: [],
+    custom_personality: '',
     world: '',
+    custom_world: '',
     name: ''
 };
 
@@ -460,7 +474,56 @@ function getUserId() {
 }
 
 async function callAgent(payload) {
-    return callApiRequest('character_builder', payload);
+    try {
+        return await callApiRequest('character_builder', payload);
+    } catch (err) {
+        const message = (err && err.message) ? err.message : '';
+        const shouldFallback = /serverfout\s*400|bad request|unknown request type|onbekend type request/i.test(message);
+        if (!shouldFallback) {
+            throw err;
+        }
+
+        setStatus('Fallback: directe character builder verbinding...');
+        return callCharacterBuilderDirect(payload);
+    }
+}
+
+async function callCharacterBuilderDirect(payload) {
+    let lastError = null;
+
+    for (const endpoint of CHARACTER_BUILDER_DIRECT_ENDPOINTS) {
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                cache: 'no-store'
+            });
+
+            const text = await response.text();
+            let data = {};
+            try {
+                data = text ? JSON.parse(text) : {};
+            } catch (parseErr) {
+                if (!response.ok) {
+                    throw new Error(text || ('Serverfout ' + response.status));
+                }
+                throw new Error('Kon response niet lezen: ' + text);
+            }
+
+            if (!response.ok) {
+                throw new Error(data.error || data.details || ('Serverfout ' + response.status));
+            }
+
+            return data;
+        } catch (err) {
+            lastError = err;
+        }
+    }
+
+    throw lastError || new Error('Directe character_builder_agent endpoint niet bereikbaar');
 }
 
 async function callApiRequest(type, payload) {
@@ -501,8 +564,11 @@ async function callApiRequest(type, payload) {
                 const text = await response.text();
                 let data = {};
                 try {
-                    data = JSON.parse(text);
+                    data = text ? JSON.parse(text) : {};
                 } catch (err) {
+                    if (!response.ok) {
+                        throw new Error(text || ('Serverfout ' + response.status));
+                    }
                     throw new Error('Kon response niet lezen: ' + text);
                 }
 
@@ -535,6 +601,17 @@ async function callApiRequest(type, payload) {
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function waitForUserId(maxWaitMs = 5000) {
+    const started = Date.now();
+    while (Date.now() - started < maxWaitMs) {
+        if (getUserId()) {
+            return true;
+        }
+        await sleep(200);
+    }
+    return Boolean(getUserId());
 }
 
 function updateNameSuggestionsInResult(suggestions) {
@@ -760,6 +837,18 @@ function toggleMultiArray(arr, value, max) {
     }
 }
 
+function renderCustomInput({ value, placeholder, onInput }) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = placeholder;
+    input.value = value || '';
+    input.oninput = (e) => {
+        onInput(e.target.value || '');
+        renderCurrentStep();
+    };
+    return input;
+}
+
 function renderStepType(step) {
     const box = document.createElement('div');
     box.className = 'choices';
@@ -824,14 +913,39 @@ function renderStepAppearance(step) {
             chipRow.appendChild(chip);
         });
 
+        if (group.allow_custom) {
+            const customChip = document.createElement('button');
+            customChip.type = 'button';
+            customChip.className = 'chip' + (state.custom_appearance[groupKey] ? ' selected' : '');
+            customChip.textContent = 'Zelf verzinnen';
+            customChip.onclick = () => {
+                if (state.custom_appearance[groupKey]) {
+                    state.custom_appearance[groupKey] = '';
+                }
+                renderCurrentStep();
+            };
+            chipRow.appendChild(customChip);
+        }
+
         box.appendChild(chipRow);
+
+        if (group.allow_custom) {
+            box.appendChild(renderCustomInput({
+                value: state.custom_appearance[groupKey],
+                placeholder: `Of verzin zelf (${groupKey})...`,
+                onInput: (value) => {
+                    state.custom_appearance[groupKey] = value;
+                }
+            }));
+        }
+
         row.appendChild(box);
     });
 
     stepContainer.appendChild(row);
 }
 
-function renderStepMulti(step, stateKey) {
+function renderStepMulti(step, stateKey, customKey, placeholder) {
     const box = document.createElement('div');
     box.className = 'choices';
 
@@ -848,7 +962,30 @@ function renderStepMulti(step, stateKey) {
         box.appendChild(btn);
     });
 
+    if (step.allow_custom && customKey) {
+        box.appendChild(renderChoiceButton(
+            { label: 'Zelf verzinnen', emoji: '🧠' },
+            Boolean(state[customKey]),
+            () => {
+                if (state[customKey]) {
+                    state[customKey] = '';
+                }
+                renderCurrentStep();
+            }
+        ));
+    }
+
     stepContainer.appendChild(box);
+
+    if (step.allow_custom && customKey) {
+        stepContainer.appendChild(renderCustomInput({
+            value: state[customKey],
+            placeholder,
+            onInput: (value) => {
+                state[customKey] = value;
+            }
+        }));
+    }
 }
 
 function renderStepWorld(step) {
@@ -858,11 +995,35 @@ function renderStepWorld(step) {
     step.options.forEach(option => {
         const selected = state.world === option.id;
         box.appendChild(renderChoiceButton({ label: option.label, emoji: '🌍' }, selected, () => {
+            state.custom_world = '';
             toggleSingle('world', option.id);
         }));
     });
 
+    if (step.allow_custom) {
+        box.appendChild(renderChoiceButton({ label: 'Zelf verzinnen', emoji: '🧠' }, Boolean(state.custom_world), () => {
+            state.world = '';
+            if (state.custom_world) {
+                state.custom_world = '';
+            }
+            renderCurrentStep();
+        }));
+    }
+
     stepContainer.appendChild(box);
+
+    if (step.allow_custom) {
+        stepContainer.appendChild(renderCustomInput({
+            value: state.custom_world,
+            placeholder: 'Of verzin zelf een wereld...',
+            onInput: (value) => {
+                state.custom_world = value;
+                if (value.trim()) {
+                    state.world = '';
+                }
+            }
+        }));
+    }
 }
 
 function getVisibleSteps() {
@@ -894,9 +1055,9 @@ function renderCurrentStep() {
     } else if (step.id === 'uiterlijk') {
         renderStepAppearance(step);
     } else if (step.id === 'krachten') {
-        renderStepMulti(step, 'powers');
+        renderStepMulti(step, 'powers', 'custom_power', 'Of verzin zelf een kracht...');
     } else if (step.id === 'persoonlijkheid') {
-        renderStepMulti(step, 'personality');
+        renderStepMulti(step, 'personality', 'custom_personality', 'Of verzin zelf een eigenschap...');
     } else if (step.id === 'wereld') {
         renderStepWorld(step);
     }
@@ -912,13 +1073,32 @@ function validateStep(step) {
         }
     }
     if (step.id === 'uiterlijk') {
-        if (state.appearance.kleur.length < 1) return 'Kies 1 kleur bij uiterlijk.';
-        if (state.appearance.bouw.length < 1) return 'Kies 1 bouw bij uiterlijk.';
-        if (state.appearance.ogen.length < 1) return 'Kies 1 oog-optie bij uiterlijk.';
+        const kleurCount = state.appearance.kleur.length + (state.custom_appearance.kleur.trim() ? 1 : 0);
+        const bouwCount = state.appearance.bouw.length + (state.custom_appearance.bouw.trim() ? 1 : 0);
+        const ogenCount = state.appearance.ogen.length + (state.custom_appearance.ogen.trim() ? 1 : 0);
+        const accessoiresCount = state.appearance.accessoires.length + (state.custom_appearance.accessoires.trim() ? 1 : 0);
+
+        if (kleurCount < 1) return 'Kies of verzin 1 kleur bij uiterlijk.';
+        if (kleurCount > 1) return 'Kies/verzin maximaal 1 kleur.';
+        if (bouwCount < 1) return 'Kies of verzin 1 bouw bij uiterlijk.';
+        if (bouwCount > 1) return 'Kies/verzin maximaal 1 bouw.';
+        if (ogenCount < 1) return 'Kies of verzin 1 oog-optie bij uiterlijk.';
+        if (ogenCount > 1) return 'Kies/verzin maximaal 1 oog-optie.';
+        if (accessoiresCount > 2) return 'Kies/verzin maximaal 2 accessoires.';
     }
-    if (step.id === 'krachten' && state.powers.length < 1) return 'Kies minimaal 1 kracht.';
-    if (step.id === 'persoonlijkheid' && state.personality.length !== 1) return 'Kies precies 1 eigenschap.';
-    if (step.id === 'wereld' && !state.world) return 'Kies een wereld.';
+    if (step.id === 'krachten') {
+        const powerCount = state.powers.length + (state.custom_power.trim() ? 1 : 0);
+        if (powerCount < 1) return 'Kies of verzin minimaal 1 kracht.';
+        if (powerCount > 2) return 'Kies/verzin maximaal 2 krachten.';
+    }
+    if (step.id === 'persoonlijkheid') {
+        const personalityCount = state.personality.length + (state.custom_personality.trim() ? 1 : 0);
+        if (personalityCount !== 1) return 'Kies of verzin precies 1 eigenschap.';
+    }
+    if (step.id === 'wereld') {
+        const worldCount = (state.world ? 1 : 0) + (state.custom_world.trim() ? 1 : 0);
+        if (worldCount !== 1) return 'Kies of verzin precies 1 wereld.';
+    }
     return '';
 }
 
@@ -929,9 +1109,13 @@ async function buildCharacter() {
         character_type: state.character_type,
         custom_type: state.custom_type,
         appearance: state.appearance,
+        custom_appearance: state.custom_appearance,
         powers: state.powers,
+        custom_power: state.custom_power,
         personality: state.personality,
+        custom_personality: state.custom_personality,
         world: state.world,
+        custom_world: state.custom_world,
         name: state.name
     };
 
@@ -1040,7 +1224,26 @@ setTimeout(() => {
 (async function init() {
     try {
         setStatus('Flow laden...');
-        const data = await callAgent({ action: 'get_flow' });
+        await waitForUserId(5000);
+
+        let data = null;
+        let lastError = null;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+            try {
+                data = await callAgent({ action: 'get_flow' });
+                break;
+            } catch (err) {
+                lastError = err;
+                if (attempt < 3) {
+                    await sleep(600);
+                }
+            }
+        }
+
+        if (!data?.flow) {
+            throw lastError || new Error('Flow ontbreekt in serverantwoord.');
+        }
+
         flow = data.flow;
         currentStep = 0;
         setStatus('');
