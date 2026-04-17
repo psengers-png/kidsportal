@@ -844,7 +844,6 @@ function renderCustomInput({ value, placeholder, onInput }) {
     input.value = value || '';
     input.oninput = (e) => {
         onInput(e.target.value || '');
-        renderCurrentStep();
     };
     return input;
 }
