@@ -1,7 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-M9MF9YBFN0');
+    </script>
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account beheren - Rainy Day Club</title>
     <meta name="description" content="Beheer je Rainy Day Club account, abonnement en maandelijkse gratis creaties." />
@@ -187,7 +195,7 @@
         <h1>Account beheren</h1>
     </div>
     <div class="header-right">
-        <a class="header-btn" href="/home.html">← Home</a>
+        <a class="header-btn" href="/home.html">â† Home</a>
         <button class="header-btn" id="logoutBtn" style="display:none;">Uitloggen</button>
     </div>
 </header>
@@ -235,7 +243,7 @@
         <ul class="info-list">
             <li>Elke ingelogde gebruiker krijgt <strong>10 gratis creaties per maand</strong>.</li>
             <li>Heb je de 10 gratis creaties gebruikt? Dan verschijnt automatisch een upgrade-pop-up.</li>
-            <li>Je kunt kiezen uit <strong>€2,99 per maand</strong> of <strong>€12,99 per jaar</strong>.</li>
+            <li>Je kunt kiezen uit <strong>â‚¬2,99 per maand</strong> of <strong>â‚¬12,99 per jaar</strong>.</li>
             <li>Bij opzeggen blijft je toegang actief tot het einde van je huidige factuurperiode.</li>
             <li>Je account blijft altijd bestaan; je kunt later opnieuw upgraden.</li>
         </ul>
@@ -270,8 +278,8 @@
         const preferred = (status?.preferredPlanType || '').toLowerCase();
         const candidate = planType || preferred;
 
-        if (candidate === 'jaarlijks') return 'Jaarabonnement (€12,99/jaar)';
-        if (candidate === 'particulier') return 'Maandabonnement (€2,99/mnd)';
+        if (candidate === 'jaarlijks') return 'Jaarabonnement (â‚¬12,99/jaar)';
+        if (candidate === 'particulier') return 'Maandabonnement (â‚¬2,99/mnd)';
         if (candidate === 'pilot') return 'Pilot toegang';
         return 'Actief abonnement';
     }
@@ -310,7 +318,7 @@
             banner.style.border = '1px solid #fdba74';
             bannerTitle.style.color = '#9a3412';
             bannerText.style.color = '#7c2d12';
-            bannerTitle.textContent = endsAt ? `Opgezegd — loopt af op ${endsAt}` : 'Opgezegd — nog tijdelijk actief';
+            bannerTitle.textContent = endsAt ? `Opgezegd â€” loopt af op ${endsAt}` : 'Opgezegd â€” nog tijdelijk actief';
             bannerText.textContent = endsAt
                 ? `Je abonnement is opgezegd, maar blijft geldig tot ${endsAt}. Daarna stopt het automatisch en val je terug op het gratis plan.`
                 : 'Je abonnement is opgezegd, maar blijft actief tot het einde van je huidige factuurperiode.';
@@ -448,3 +456,8 @@
 </script>
 </body>
 </html>
+
+
+
+
+

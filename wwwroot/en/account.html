@@ -1,7 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MF9YBFN0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-M9MF9YBFN0');
+    </script>
+<meta charset="UTF-8">
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage account - Rainy Day Club</title>
@@ -190,7 +198,7 @@
         <h1>Manage account</h1>
     </div>
     <div class="header-right">
-        <a class="header-btn" href="/en/home.html">← Home</a>
+        <a class="header-btn" href="/en/home.html">â† Home</a>
         <button class="header-btn" id="logoutBtn" style="display:none;">Log out</button>
     </div>
 </header>
@@ -238,7 +246,7 @@
         <ul class="info-list">
             <li>Every signed-in user gets <strong>10 free creations per month</strong>.</li>
             <li>Used your 10 free creations? An upgrade popup appears automatically.</li>
-            <li>You can choose <strong>€2,99 per month</strong> or <strong>€12,99 per year</strong>.</li>
+            <li>You can choose <strong>â‚¬2,99 per month</strong> or <strong>â‚¬12,99 per year</strong>.</li>
             <li>If you cancel, your access remains active until the end of your current billing period.</li>
             <li>Your account always stays available; you can upgrade again later.</li>
         </ul>
@@ -273,8 +281,8 @@
         const preferred = (status?.preferredPlanType || '').toLowerCase();
         const candidate = planType || preferred;
 
-        if (candidate === 'jaarlijks') return 'Yearly subscription (€12,99/year)';
-        if (candidate === 'particulier') return 'Monthly subscription (€2,99/month)';
+        if (candidate === 'jaarlijks') return 'Yearly subscription (â‚¬12,99/year)';
+        if (candidate === 'particulier') return 'Monthly subscription (â‚¬2,99/month)';
         if (candidate === 'pilot') return 'Pilot access';
         return 'Active subscription';
     }
@@ -468,5 +476,11 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
