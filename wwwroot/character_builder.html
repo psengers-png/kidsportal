@@ -363,11 +363,11 @@
         <div class="agent-header">
             <h2>Bouw je eigen Agent</h2>
             <p>
-                Maak in 6 korte stappen een karakter dat echt bij jullie past.
-                Kies uiterlijk, krachten en persoonlijkheid, geef het een naam en zet het daarna direct om naar een beeld en filmpje om samen te delen.
+                Maak in 5 korte stappen een karakter dat echt bij jullie past.
+                Kies uiterlijk, krachten en persoonlijkheid, kies daarna een naam en zet het direct om naar een beeld en filmpje om samen te delen.
             </p>
         </div>
-        <p class="progress" id="progressText">Stap 1 van 6</p>
+        <p class="progress" id="progressText">Stap 1 van 5</p>
         <h2 class="step-title" id="stepTitle">Laden...</h2>
         <p class="step-sub" id="stepSub"></p>
         <p class="status" id="statusText"></p>
@@ -429,14 +429,43 @@ const lifeStatus = document.getElementById('lifeStatus');
 
 const logoutBtn = document.getElementById('logoutBtn');
 
-const API_REQUEST_ENDPOINTS = [
-    'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest'
-];
+function isLocalHost() {
+    const host = window.location.hostname || '';
+    return host === 'localhost' || host === '127.0.0.1';
+}
 
-const CHARACTER_BUILDER_DIRECT_ENDPOINTS = [
-    'https://sengfam1.azurewebsites.net/character_builder_agent',
-    'https://sengfam1.azurewebsites.net/api/character_builder_agent'
-];
+const API_REQUEST_ENDPOINTS = (() => {
+    const endpoints = [];
+    if (isLocalHost()) {
+        endpoints.push(
+            '/api/apiRequest',
+            'http://127.0.0.1:7071/api/apiRequest',
+            'http://localhost:7071/api/apiRequest'
+        );
+    }
+    endpoints.push('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest');
+    return [...new Set(endpoints)];
+})();
+
+const CHARACTER_BUILDER_DIRECT_ENDPOINTS = (() => {
+    const endpoints = [];
+    if (isLocalHost()) {
+        endpoints.push(
+            '/api/character_builder_agent',
+            'http://127.0.0.1:7071/api/character_builder_agent',
+            'http://localhost:7071/api/character_builder_agent',
+            'http://127.0.0.1:7071/character_builder_agent',
+            'http://localhost:7071/character_builder_agent'
+        );
+    }
+    endpoints.push(
+        'https://sengfam1.azurewebsites.net/character_builder_agent',
+        'https://sengfam1.azurewebsites.net/api/character_builder_agent'
+    );
+    return [...new Set(endpoints)];
+})();
+
+const KNOWN_STEP_IDS = ['soort', 'uiterlijk', 'krachten', 'persoonlijkheid', 'wereld'];
 
 let flow = null;
 let currentStep = 0;
@@ -609,6 +638,35 @@ async function callApiRequest(type, payload) {
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function fallbackFlowDefinition() {
+    return {
+        title: 'Bouw je eigen karakter',
+        version: 4,
+        steps: [
+            { id: 'soort', title: 'Soort karakter', ui_hint: 'Kies 1 soort die bij jullie past, of bedenk zelf een eigen type.', allow_custom: true, max: 1, options: [] },
+            { id: 'uiterlijk', title: 'Uiterlijk', ui_hint: 'Kies kleur, bouw en ogen. Accessoires zijn optioneel (maximaal 2).', groups: {} },
+            { id: 'krachten', title: 'Speciale krachten', ui_hint: 'Kies minimaal 1 en maximaal 2 krachten.', min: 1, max: 2, options: [] },
+            { id: 'persoonlijkheid', title: 'Persoonlijkheid', ui_hint: 'Kies precies 1 eigenschap die het karakter typeert.', min: 1, max: 1, options: [] },
+            { id: 'wereld', title: 'Wereld', ui_hint: 'Kies 1 wereld waar het avontuur van je karakter begint.', max: 1, options: [] }
+        ]
+    };
+}
+
+function normalizeFlow(rawFlow) {
+    const base = (rawFlow && typeof rawFlow === 'object') ? rawFlow : {};
+    const serverSteps = Array.isArray(base.steps) ? base.steps : [];
+    const filtered = serverSteps.filter(step => step && KNOWN_STEP_IDS.includes(step.id));
+
+    if (!filtered.length) {
+        return fallbackFlowDefinition();
+    }
+
+    return {
+        ...base,
+        steps: filtered
+    };
 }
 
 async function waitForUserId(maxWaitMs = 5000) {
@@ -1034,7 +1092,7 @@ function renderStepWorld(step) {
 }
 
 function getVisibleSteps() {
-    return (flow?.steps || []).filter(step => step.id !== 'naam');
+    return (flow?.steps || []).filter(step => KNOWN_STEP_IDS.includes(step.id));
 }
 
 function renderCurrentStep() {
@@ -1251,7 +1309,7 @@ setTimeout(() => {
             throw lastError || new Error('Flow ontbreekt in serverantwoord.');
         }
 
-        flow = data.flow;
+        flow = normalizeFlow(data.flow);
         currentStep = 0;
         setStatus('');
         renderCurrentStep();
