@@ -383,7 +383,7 @@
             <h3 style="margin-top:0;">Jouw Karakter</h3>
             <pre id="resultText"></pre>
             <div class="name-actions">
-                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>ðŸŽ² Naam kiezen voor filmpje</button>
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>Naam kiezen voor filmpje</button>
                 <input id="finalNameInput" class="name-input" type="text" placeholder="Of typ zelf een naam">
                 <button class="secondary" id="applyNameBtn" type="button" disabled>Gebruik deze naam</button>
             </div>
@@ -391,12 +391,12 @@
             <img id="resultImage" alt="Gegenereerd karakter">
             <p class="status life-status" id="lifeStatus"></p>
             <div class="life-actions">
-                <button class="secondary" id="makeColoringBtn" type="button" disabled>ðŸŽ¨ Maak een kleurplaat</button>
-                <button class="primary" id="bringToLifeBtn" type="button" disabled>âœ¨ Breng tot leven</button>
+                <button class="secondary" id="makeColoringBtn" type="button" disabled>Maak een kleurplaat</button>
+                <button class="primary" id="bringToLifeBtn" type="button" disabled>Breng tot leven</button>
             </div>
             <img id="resultColoringImage" class="coloring-image" alt="Gegenereerde kleurplaat">
             <div class="life-actions">
-                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">â¬‡ï¸ Download kleurplaat</button>
+                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">Download kleurplaat</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -884,7 +884,7 @@ function renderChoiceButton(choice, isSelected, onClick) {
     const btn = document.createElement('button');
     btn.className = 'choice' + (isSelected ? ' selected' : '');
     btn.type = 'button';
-    btn.innerHTML = `<span class="emoji">${choice.emoji || 'âœ¨'}</span><span>${choice.label}</span>`;
+    btn.innerHTML = `<span class="emoji">${choice.emoji || '*'}</span><span>${choice.label}</span>`;
     btn.onclick = onClick;
     return btn;
 }
@@ -930,7 +930,7 @@ function renderStepType(step) {
     });
 
     if (step.allow_custom) {
-        const customBtn = renderChoiceButton({ label: 'Zelf verzonnen', emoji: 'ðŸ§ ' }, state.character_type === 'zelf_verzonnen', () => {
+        const customBtn = renderChoiceButton({ label: 'Zelf verzonnen', emoji: '+' }, state.character_type === 'zelf_verzonnen', () => {
             state.character_type = 'zelf_verzonnen';
             renderCurrentStep();
         });
@@ -1019,7 +1019,7 @@ function renderStepMulti(step, stateKey, customKey, placeholder) {
         btn.type = 'button';
         const selected = state[stateKey].includes(option.id);
         btn.className = 'choice' + (selected ? ' selected' : '');
-        btn.innerHTML = `<span class="emoji">âœ¨</span><span>${option.label}</span>`;
+        btn.innerHTML = `<span class="emoji">*</span><span>${option.label}</span>`;
         btn.onclick = () => {
             toggleMultiArray(state[stateKey], option.id, step.max);
             renderCurrentStep();
@@ -1029,7 +1029,7 @@ function renderStepMulti(step, stateKey, customKey, placeholder) {
 
     if (step.allow_custom && customKey) {
         box.appendChild(renderChoiceButton(
-            { label: 'Zelf verzinnen', emoji: 'ðŸ§ ' },
+            { label: 'Zelf verzinnen', emoji: '+' },
             Boolean(state[customKey]),
             () => {
                 if (state[customKey]) {
@@ -1059,14 +1059,14 @@ function renderStepWorld(step) {
 
     step.options.forEach(option => {
         const selected = state.world === option.id;
-        box.appendChild(renderChoiceButton({ label: option.label, emoji: 'ðŸŒ' }, selected, () => {
+        box.appendChild(renderChoiceButton({ label: option.label, emoji: 'W' }, selected, () => {
             state.custom_world = '';
             toggleSingle('world', option.id);
         }));
     });
 
     if (step.allow_custom) {
-        box.appendChild(renderChoiceButton({ label: 'Zelf verzinnen', emoji: 'ðŸ§ ' }, Boolean(state.custom_world), () => {
+        box.appendChild(renderChoiceButton({ label: 'Zelf verzinnen', emoji: '+' }, Boolean(state.custom_world), () => {
             state.world = '';
             if (state.custom_world) {
                 state.custom_world = '';

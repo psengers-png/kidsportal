@@ -347,7 +347,7 @@
             <h3 style="margin-top:0;">Your Character</h3>
             <pre id="resultText"></pre>
             <div class="name-actions">
-                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>ðŸŽ² Pick name for video</button>
+                <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>Pick name for video</button>
                 <input id="finalNameInput" class="name-input" type="text" placeholder="Or type your own name">
                 <button class="secondary" id="applyNameBtn" type="button" disabled>Use this name</button>
             </div>
@@ -355,12 +355,12 @@
             <img id="resultImage" alt="Generated character">
             <p class="status life-status" id="lifeStatus"></p>
             <div class="life-actions">
-                <button class="secondary" id="makeColoringBtn" type="button" disabled>ðŸŽ¨ Make coloring page</button>
-                <button class="primary" id="bringToLifeBtn" type="button" disabled>âœ¨ Bring to life</button>
+                <button class="secondary" id="makeColoringBtn" type="button" disabled>Make coloring page</button>
+                <button class="primary" id="bringToLifeBtn" type="button" disabled>Bring to life</button>
             </div>
             <img id="resultColoringImage" class="coloring-image" alt="Generated coloring page">
             <div class="life-actions">
-                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">â¬‡ï¸ Download coloring page</button>
+                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">Download coloring page</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -723,7 +723,7 @@ function renderChoiceButton(choice, isSelected, onClick) {
     const btn = document.createElement('button');
     btn.className = 'choice' + (isSelected ? ' selected' : '');
     btn.type = 'button';
-    btn.innerHTML = `<span class="emoji">${choice.emoji || 'âœ¨'}</span><span>${choice.label}</span>`;
+    btn.innerHTML = `<span class="emoji">${choice.emoji || '*'}</span><span>${choice.label}</span>`;
     btn.onclick = onClick;
     return btn;
 }
@@ -758,7 +758,7 @@ function renderStepType(step) {
     });
 
     if (step.allow_custom) {
-        const customBtn = renderChoiceButton({ label: 'Custom', emoji: 'ðŸ§ ' }, state.character_type === 'zelf_verzonnen', () => {
+        const customBtn = renderChoiceButton({ label: 'Custom', emoji: '+' }, state.character_type === 'zelf_verzonnen', () => {
             state.character_type = 'zelf_verzonnen';
             renderCurrentStep();
         });
@@ -822,7 +822,7 @@ function renderStepMulti(step, stateKey) {
         btn.type = 'button';
         const selected = state[stateKey].includes(option.id);
         btn.className = 'choice' + (selected ? ' selected' : '');
-        btn.innerHTML = `<span class="emoji">âœ¨</span><span>${option.label}</span>`;
+        btn.innerHTML = `<span class="emoji">*</span><span>${option.label}</span>`;
         btn.onclick = () => {
             toggleMultiArray(state[stateKey], option.id, step.max);
             renderCurrentStep();
@@ -839,7 +839,7 @@ function renderStepWorld(step) {
 
     step.options.forEach(option => {
         const selected = state.world === option.id;
-        box.appendChild(renderChoiceButton({ label: option.label, emoji: 'ðŸŒ' }, selected, () => {
+        box.appendChild(renderChoiceButton({ label: option.label, emoji: 'W' }, selected, () => {
             toggleSingle('world', option.id);
         }));
     });
