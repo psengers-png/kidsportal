@@ -13,7 +13,7 @@
         gtag('config', 'G-M9MF9YBFN0');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Challenge generator for kids | Questy � Rainy Day Club</title>
+    <title>Challenge generator for kids | Questy � Rainy Day Club</title>
     <meta name="description" content="Gebruik Questy als challenge generator voor kinderen en krijg direct leuke, leerzame challenges voor thuis of in de klas." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/en/challenge.html" />
@@ -347,7 +347,9 @@
         <input id="challengePhotos" type="file" accept="image/*" multiple>
         <br><br>
         <button id="judgePhotosBtn" type="button">?? Let Questy judge</button>
+        <button id="bringToLifeBtn" type="button" style="width:100%; margin-top:10px; background:#16a34a;">✨ Bring drawing to life</button>
         <div id="judgeResult"></div>
+        <div id="bringToLifeResult" style="margin-top:12px;"></div>
     </div>
 
 </main>
@@ -401,7 +403,9 @@ const submitBtn = form.querySelector('button[type="submit"]');
 const uploadSection = document.getElementById("uploadSection");
 const photosInput = document.getElementById("challengePhotos");
 const judgePhotosBtn = document.getElementById("judgePhotosBtn");
+const bringToLifeBtn = document.getElementById("bringToLifeBtn");
 const judgeResult = document.getElementById("judgeResult");
+const bringToLifeResult = document.getElementById("bringToLifeResult");
 let currentChallengeText = "";
 
 let _videoRestartTimer = null;
@@ -512,6 +516,7 @@ form.addEventListener("submit", async (e) => {
         `;
         uploadSection.style.display = "block";
         judgeResult.innerHTML = "";
+        bringToLifeResult.innerHTML = "";
         photosInput.value = "";
     } catch (err) {
         resultaat.innerHTML = `<p style='color:red;'>Error: ${err}</p>`;
@@ -578,6 +583,117 @@ judgePhotosBtn.addEventListener("click", async (event) => {
         judgeResult.innerHTML = `? Questy picks: <strong>${data.winner_name || "Unknown"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Error: ${err}</span>`;
+    } finally {
+        event.target.disabled = false;
+    }
+});
+
+bringToLifeBtn.addEventListener("click", async (event) => {
+    const userId = await requireLoginForAction("Log in to bring your drawing to life.");
+    if (!userId) {
+        return;
+    }
+
+    const files = Array.from(photosInput.files || []);
+    if (files.length < 1) {
+        bringToLifeResult.innerHTML = "<span style='color:#c53030;'>Upload at least 1 photo first.</span>";
+        return;
+    }
+
+    event.target.disabled = true;
+    bringToLifeResult.innerHTML = "<span style='color:#0369a1;'>✨ Questy is bringing your drawing to life...</span>";
+
+    try {
+        const firstImage = await fileToDataUrl(files[0]);
+
+        const startResp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({
+                type: 'grok_challenge',
+                payload: {
+                    mode: 'bring_to_life',
+                    image_base64: firstImage,
+                    challenge: currentChallengeText
+                }
+            })
+        });
+
+        const startText = await startResp.text();
+        if (!startResp.ok) {
+            throw new Error(startText || `HTTP ${startResp.status}`);
+        }
+
+        let startData;
+        try {
+            startData = JSON.parse(startText);
+        } catch {
+            throw new Error('Invalid response from Grok Challenge service.');
+        }
+
+        if (startData.error) {
+            throw new Error(startData.error);
+        }
+
+        const requestId = startData.request_id;
+        if (!requestId) {
+            throw new Error('Missing request_id from Grok Challenge.');
+        }
+
+        let videoUrl = null;
+        for (let attempt = 0; attempt < 90; attempt++) {
+            await new Promise((resolve) => setTimeout(resolve, 4000));
+
+            const statusResp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                },
+                body: JSON.stringify({
+                    type: 'grok_challenge_status',
+                    payload: {
+                        mode: 'check_status',
+                        request_id: requestId
+                    }
+                })
+            });
+
+            const statusText = await statusResp.text();
+            let statusData;
+            try {
+                statusData = JSON.parse(statusText);
+            } catch {
+                continue;
+            }
+
+            if (statusData.error) {
+                throw new Error(statusData.error);
+            }
+
+            const progress = statusData.progress ?? 0;
+            bringToLifeResult.innerHTML = `<span style='color:#0369a1;'>🎬 Creating animation... ${progress}%</span>`;
+
+            if (statusData.status === 'done' && statusData.video_url) {
+                videoUrl = statusData.video_url;
+                break;
+            }
+        }
+
+        if (!videoUrl) {
+            throw new Error('Video generation timed out or failed.');
+        }
+
+        bringToLifeResult.innerHTML = `
+            <div style="margin-top:8px;">
+                <video src="${videoUrl}" controls autoplay loop playsinline style="width:100%; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.18);"></video>
+            </div>
+        `;
+    } catch (err) {
+        bringToLifeResult.innerHTML = `<span style='color:#c53030;'>Bring-to-life failed: ${err.message || err}</span>`;
     } finally {
         event.target.disabled = false;
     }

@@ -383,6 +383,16 @@
         #judgePhotosBtn:hover:not(:disabled) {
             box-shadow: 0 8px 24px rgba(14,165,233,0.45);
         }
+        #bringToLifeBtn {
+            background: linear-gradient(135deg, #22c55e, #0ea5e9);
+            box-shadow: 0 6px 18px rgba(34,197,94,0.35);
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+        }
+        #bringToLifeBtn:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(34,197,94,0.45);
+        }
 
         #judgeResult {
             margin-top: 12px;
@@ -545,7 +555,9 @@
         </div>
         <div class="file-selected-name" id="judgePhotoNaam"></div>
         <button id="judgePhotosBtn" type="button">🏆 Laat Questy beoordelen!</button>
+        <button id="bringToLifeBtn" type="button">✨ Breng tekening tot leven</button>
         <div id="judgeResult"></div>
+        <div id="bringToLifeResult" style="margin-top:12px;"></div>
     </div>
 
 </main>
@@ -599,7 +611,9 @@ const submitBtn = document.getElementById('submitBtn');
 const uploadSection = document.getElementById("uploadSection");
 const photosInput = document.getElementById("challengePhotos");
 const judgePhotosBtn = document.getElementById("judgePhotosBtn");
+const bringToLifeBtn = document.getElementById("bringToLifeBtn");
 const judgeResult = document.getElementById("judgeResult");
+const bringToLifeResult = document.getElementById("bringToLifeResult");
 let currentChallengeText = "";
 
 // Picker button logic
@@ -630,6 +644,7 @@ photosInput.addEventListener('change', function() {
         judgeUploadZone.classList.remove('has-file');
         judgePhotoNaam.style.display = 'none';
     }
+    bringToLifeResult.innerHTML = "";
 });
 
 let _videoRestartTimer = null;
@@ -745,6 +760,7 @@ form.addEventListener("submit", async (e) => {
         `;
         uploadSection.style.display = "block";
         judgeResult.innerHTML = "";
+        bringToLifeResult.innerHTML = "";
         photosInput.value = "";
     } catch (err) {
         resultaat.innerHTML = `<p style='color:red;'>Fout: ${err}</p>`;
@@ -811,6 +827,117 @@ judgePhotosBtn.addEventListener("click", async (event) => {
         judgeResult.innerHTML = `🏆 Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
+    } finally {
+        event.target.disabled = false;
+    }
+});
+
+bringToLifeBtn.addEventListener("click", async (event) => {
+    const userId = await requireLoginForAction("Log in om je tekening tot leven te brengen.");
+    if (!userId) {
+        return;
+    }
+
+    const files = Array.from(photosInput.files || []);
+    if (files.length < 1) {
+        bringToLifeResult.innerHTML = "<span style='color:#c53030;'>Upload eerst een foto om tot leven te brengen.</span>";
+        return;
+    }
+
+    event.target.disabled = true;
+    bringToLifeResult.innerHTML = "<span style='color:#0369a1;'>✨ Questy brengt jullie tekening tot leven...</span>";
+
+    try {
+        const firstImage = await fileToDataUrl(files[0]);
+
+        const startResp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'user-id': userId
+            },
+            body: JSON.stringify({
+                type: 'grok_challenge',
+                payload: {
+                    mode: 'bring_to_life',
+                    image_base64: firstImage,
+                    challenge: currentChallengeText
+                }
+            })
+        });
+
+        const startText = await startResp.text();
+        if (!startResp.ok) {
+            throw new Error(startText || `HTTP ${startResp.status}`);
+        }
+
+        let startData;
+        try {
+            startData = JSON.parse(startText);
+        } catch {
+            throw new Error('Ongeldige response van Grok Challenge service.');
+        }
+
+        if (startData.error) {
+            throw new Error(startData.error);
+        }
+
+        const requestId = startData.request_id;
+        if (!requestId) {
+            throw new Error('Geen request_id ontvangen van Grok Challenge.');
+        }
+
+        let videoUrl = null;
+        for (let attempt = 0; attempt < 90; attempt++) {
+            await new Promise((resolve) => setTimeout(resolve, 4000));
+
+            const statusResp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                },
+                body: JSON.stringify({
+                    type: 'grok_challenge_status',
+                    payload: {
+                        mode: 'check_status',
+                        request_id: requestId
+                    }
+                })
+            });
+
+            const statusText = await statusResp.text();
+            let statusData;
+            try {
+                statusData = JSON.parse(statusText);
+            } catch {
+                continue;
+            }
+
+            if (statusData.error) {
+                throw new Error(statusData.error);
+            }
+
+            const progress = statusData.progress ?? 0;
+            bringToLifeResult.innerHTML = `<span style='color:#0369a1;'>🎬 Animatie wordt gemaakt... ${progress}%</span>`;
+
+            if (statusData.status === 'done' && statusData.video_url) {
+                videoUrl = statusData.video_url;
+                break;
+            }
+        }
+
+        if (!videoUrl) {
+            throw new Error('Video generatie duurde te lang of is mislukt.');
+        }
+
+        bringToLifeResult.innerHTML = `
+            <div style="margin-top:8px;">
+                <video src="${videoUrl}" controls autoplay loop playsinline style="width:100%; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.18);"></video>
+            </div>
+        `;
+    } catch (err) {
+        bringToLifeResult.innerHTML = `<span style='color:#c53030;'>Fout bij tot leven brengen: ${err.message || err}</span>`;
     } finally {
         event.target.disabled = false;
     }
