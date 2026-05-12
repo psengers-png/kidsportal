@@ -13,13 +13,13 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beatty - Rainy Day Club</title>
-    <meta name="description" content="Beatty helpt kinderen met leuke liedjes, tekstidee�n en muzikale inspiratie in Rainy Day Club." />
+    <meta name="description" content="Beatty helpt kinderen met leuke liedjes, tekstideeën en muzikale inspiratie in Rainy Day Club." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/liedjes.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Beatty | Liedjes en muziek voor kinderen" />
-    <meta property="og:description" content="Maak liedjes en ontdek muzikale idee�n met Beatty in Rainy Day Club." />
+    <meta property="og:description" content="Maak liedjes en ontdek muzikale ideeën met Beatty in Rainy Day Club." />
     <meta property="og:url" content="https://www.rainydayclub.nl/liedjes.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Beatty.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -151,30 +151,97 @@
             font-size: 2.2rem;
         }
 
-        .form-section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px dashed #dbeafe;
+        .option-card {
+            margin-bottom: 18px;
+            padding: 22px 24px;
+            border-radius: 26px;
+            background: #f0f9ff;
+            border: 3px solid #bae6fd;
+        }
+
+        .option-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .step-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.35);
         }
 
         .section-title {
-            font-weight: 700;
-            color: #3b82f6;
-            margin-bottom: 10px;
+            font-weight: 800;
+            color: #1e40af;
+            font-size: 1.2rem;
+            margin: 0;
         }
 
         label {
-            font-weight: 600;
+            font-weight: 700;
             display: block;
-            margin-top: 10px;
+            margin-top: 14px;
+            color: #1e3a5f;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid #e0e7ff;
-            margin-top: 6px;
+            padding: 15px 18px;
+            border-radius: 16px;
+            border: 3px solid #bae6fd;
+            margin-top: 8px;
+            font-size: 1.05rem;
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        }
+
+        .chip-group {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .choice-chip {
+            margin-top: 0;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 2px solid #bfdbfe;
+            background: #ffffff;
+            color: #1e40af;
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: none;
+        }
+
+        .choice-chip:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: #60a5fa;
+            background: #eff6ff;
+        }
+
+        .choice-chip.active {
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #3730a3;
         }
 
         input:disabled {
@@ -183,17 +250,25 @@
 
         button {
             margin-top: 20px;
-            padding: 12px 24px;
-            background: #3b82f6;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
             color: white;
             border: none;
             border-radius: 999px;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.05rem;
             cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 6px 18px rgba(59,130,246,0.35);
         }
 
         button:hover:not(:disabled) {
-            background: #2563eb;
+            transform: scale(1.04);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.45);
+        }
+
+        button:active:not(:disabled) {
+            transform: scale(0.97);
         }
 
         button:disabled {
@@ -255,14 +330,39 @@
 
         #lyrics {
             white-space: pre-wrap;
-            background: #f1f5f9;
-            border-left: 6px solid #3b82f6;
-            padding: 20px;
-            border-radius: 16px;
+            background: linear-gradient(135deg, #fdf4ff, #eff6ff);
+            border: 3px solid #c084fc;
+            padding: 24px;
+            border-radius: 24px;
             margin-top: 20px;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.8;
             display: none;
+            box-shadow: 0 6px 20px rgba(168,85,247,0.12);
+        }
+
+        #genereerBtn {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            box-shadow: 0 6px 18px rgba(236,72,153,0.35);
+            font-size: 1.15rem;
+            padding: 18px 36px;
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+
+        #genereerBtn:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(236,72,153,0.45);
+        }
+
+        #downloadBtn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 6px 18px rgba(16,185,129,0.35);
+            font-size: 1.1rem;
+            padding: 16px 28px;
+            width: 100%;
+            display: block;
+            text-align: center;
         }
 
         @media (max-width: 720px) {
@@ -330,26 +430,43 @@
         <div class="agent-header">
             <img src="Images/Beatty.png" alt="Beatty">
             <h2>Beatty - De Liedjesmaker</h2>
-            <p>Beatty maakt een nieuw liedje op basis van jouw onderwerp, stijl en stemming.</p>
+            <p>Beatty maakt een vrolijk liedje over jouw idee! 🎵</p>
         </div>
 
         <p id="statusText">Bezig met controleren...</p>
 
         <form id="liedjesForm" style="display:none;">
-            <div class="form-section">
-                <div class="section-title">Beschrijving</div>
+            <div class="option-card">
+                <div class="option-card-header">
+                    <div class="step-badge">1</div>
+                    <div class="section-title">🎤 Waar gaat je liedje over?</div>
+                </div>
+
                 <label>Onderwerp (verplicht)</label>
-                <input id="onderwerp" type="text" placeholder="Bijv. een avontuur in het bos">
+                <input id="onderwerp" type="text" placeholder="bijv. een dinosaurus op het strand">
 
-                <label>Stijl/genre (optioneel)</label>
-                <input id="stijl" type="text" placeholder="Bijv. klassiek, pop, hiphop">
+                <label>🎶 Kies een stijl (optioneel)</label>
+                <div class="chip-group" id="stijlChips">
+                    <button type="button" class="choice-chip" data-target="stijl" data-value="pop">Pop</button>
+                    <button type="button" class="choice-chip" data-target="stijl" data-value="hiphop">Hiphop</button>
+                    <button type="button" class="choice-chip" data-target="stijl" data-value="rock">Rock</button>
+                    <button type="button" class="choice-chip" data-target="stijl" data-value="sprookje">Sprookje</button>
+                    <button type="button" class="choice-chip" data-target="stijl" data-value="kinderliedje">Kinderliedje</button>
+                </div>
+                <input id="stijl" type="text" placeholder="of typ je eigen stijl hier">
 
-                <label>Stemming (optioneel)</label>
-                <input id="stemming" type="text" placeholder="Bijv. vrolijk, rustig, spannend">
+                <label>😊 Kies een stemming (optioneel)</label>
+                <div class="chip-group" id="stemmingChips">
+                    <button type="button" class="choice-chip" data-target="stemming" data-value="vrolijk">Vrolijk</button>
+                    <button type="button" class="choice-chip" data-target="stemming" data-value="rustig">Rustig</button>
+                    <button type="button" class="choice-chip" data-target="stemming" data-value="spannend">Spannend</button>
+                    <button type="button" class="choice-chip" data-target="stemming" data-value="grappig">Grappig</button>
+                </div>
+                <input id="stemming" type="text" placeholder="of typ je eigen stemming hier">
             </div>
 
-            <button type="submit" id="genereerBtn">?? Maak een vrolijk liedje</button>
-            <button id="downloadBtn" type="button" style="display:none;">?? Download</button>
+            <button type="submit" id="genereerBtn">🎵 Maak mijn liedje!</button>
+            <button id="downloadBtn" type="button" style="display:none;">⬇️ Download liedje</button>
         </form>
 
         <div id="resultaat">
@@ -423,6 +540,18 @@ const beattyLoadingVideo = document.getElementById("beattyLoadingVideo");
 const downloadBtn = document.getElementById("downloadBtn");
 const btn = document.getElementById("genereerBtn");
 
+document.querySelectorAll('.choice-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+        const targetId = chip.dataset.target;
+        const targetInput = document.getElementById(targetId);
+        targetInput.value = chip.dataset.value;
+
+        const container = chip.parentElement;
+        container.querySelectorAll('.choice-chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+    });
+});
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function renderResult(data) {
@@ -476,7 +605,7 @@ function startLoadingState() {
     audioPlayer.style.display = "none";
     downloadBtn.style.display = "none";
     lyricsBox.style.display = "block";
-    lyricsBox.textContent = "Liedje wordt aangemaakt...";
+    lyricsBox.textContent = "Beatty is een liedje voor je aan het maken...";
     beattyLoadingVideo.style.display = "block";
     startLoadingVideo(beattyLoadingVideo);
 }
@@ -487,7 +616,7 @@ function stopLoadingState() {
 
 async function pollStatus(taskId, userId) {
     for (let attempt = 1; attempt <= 30; attempt += 1) {
-        lyricsBox.textContent = `Liedje wordt verwerkt... (${attempt}/30)`;
+        lyricsBox.textContent = `Beatty zingt en schrijft... (${attempt}/30)`;
 
         const resp = await fetch('https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest', {
             method: 'POST',
@@ -520,7 +649,7 @@ async function pollStatus(taskId, userId) {
         return data;
     }
 
-    lyricsBox.textContent = "Timeout: liedje nog niet klaar. Probeer later opnieuw.";
+    lyricsBox.textContent = "Dit duurde iets langer dan verwacht. Probeer het zo nog eens.";
     return null;
 }
 
@@ -541,7 +670,7 @@ form.addEventListener("submit", async (e) => {
     const stemming = document.getElementById("stemming").value.trim();
 
     if (!onderwerp) {
-        lyricsBox.textContent = "Vul een onderwerp in.";
+        lyricsBox.textContent = "Typ eerst een onderwerp voor je liedje.";
         btn.disabled = false;
         return;
     }
