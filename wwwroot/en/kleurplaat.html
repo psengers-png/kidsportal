@@ -590,23 +590,6 @@ async function initFormLogic() {
                 };
 
             } catch (error) {
-                const errorMessage = (error?.message || '').toLowerCase();
-                const isPremiumError =
-                    errorMessage.includes('grok functie') ||
-                    errorMessage.includes('actief maandelijks of jaarlijks abonnement') ||
-                    errorMessage.includes('premium');
-
-                if (isPremiumError) {
-                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>This request uses a Premium feature (GROK). You need an active monthly or yearly subscription to continue.</div>`;
-                    const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
-                    if (window.showSubscriptionUpgradeModal) {
-                        window.showSubscriptionUpgradeModal(_upgradeUserId, {
-                            mode: 'premium',
-                            featureName: 'GROK Bring To Life'
-                        });
-                    }
-                    return;
-                }
                 resultaat.textContent = 'Error while bringing to life: ' + error.message;
                 console.error('Driply colorization error:', error);
             } finally {
