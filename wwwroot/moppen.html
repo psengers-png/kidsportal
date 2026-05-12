@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -286,8 +286,8 @@
 
         <div class="agent-header">
             <img src="Images/Giggly.png" alt="Giggly">
-            <h2>Giggly – De Moppentapper</h2>
-            <p>Giggly tapt flauwe grappen, raadsels en woordgrappen om je dag op te fleuren ☁️😂</p>
+            <h2>Giggly � De Moppentapper</h2>
+            <p>Giggly tapt flauwe grappen, raadsels en woordgrappen om je dag op te fleuren ????</p>
         </div>
 
         <p id="statusText">Bezig met controleren...</p>
@@ -308,7 +308,7 @@
                     <option value="verhaalmop">Verhaalmop</option>
                 </select>
             </div>
-            <button type="submit" id="genereerBtn">🎲 Tap een mop!</button>
+            <button type="submit" id="genereerBtn">?? Tap een mop!</button>
         </form>
 
         <div class="giggly-video-wrapper">
@@ -399,7 +399,7 @@ function stopLoadingVideo(vid) {
 
 function startLoadingState() {
     btn.disabled = true;
-    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Mop wordt getapt...</p>';
+    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">? Mop wordt getapt...</p>';
     gigglyLoadingVideo.style.display = "block";
     startLoadingVideo(gigglyLoadingVideo);
 }
@@ -437,7 +437,7 @@ form.addEventListener("submit", async (e) => {
         console.log("Response text:", text);
         if (!res.ok) {
             if(res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 25 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
@@ -455,7 +455,7 @@ form.addEventListener("submit", async (e) => {
             return;
         }
         if (data.mop) {
-            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Jouw Mop:</strong><br><br>' + data.mop + '</div>';
+            resultaat.innerHTML = '<div class="mop-box"><strong>?? Jouw Mop:</strong><br><br>' + data.mop + '</div>';
         } else {
             resultaat.innerHTML = '<p style="color:red;">' + (data.error || 'Onbekende fout.') + '</p>';
         }

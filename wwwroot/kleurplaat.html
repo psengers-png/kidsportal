@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -304,7 +304,7 @@
         <div class="agent-header">
             <img src="Images/Driply.png" alt="Driply">
             <h2>Kleurplaat AI generator: kleurplaat maken met Driply</h2>
-            <p>Beschrijf iets of upload een foto en Driply maakt er een kleurplaat van ☔🎨</p>
+            <p>Beschrijf iets of upload een foto en Driply maakt er een kleurplaat van ???</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
                 Met deze kleurplaat AI tool kun je eenvoudig een kleurplaat maken voor kinderen. Kies een onderwerp zoals dieren,
                 sprookjes of voertuigen en genereer direct een uniek kleurplaat ontwerp op maat. Deze kleurplaat generator
@@ -336,16 +336,16 @@
             <input id="foto" type="file" accept="image/*">
         </div>
 
-        <button type="submit">🎨 Maak een mooie kleurplaat</button>
+        <button type="submit">?? Maak een mooie kleurplaat</button>
 
                 <div class="form-section" style="margin-top: 28px;">
                     <div class="section-title">Optie 3: Tot leven brengen met Driply</div>
                     <label>Upload je kleurplaat aan Driply en laat hem die al dansend inkleuren</label>
                     <input id="driply_foto" type="file" accept="image/*">
-                    <button type="button" id="driplyBtn" style="margin-top: 10px;">🎨 Tot leven brengen met Driply</button>
+                    <button type="button" id="driplyBtn" style="margin-top: 10px;">?? Tot leven brengen met Driply</button>
                 </div>
 
-        <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
+        <button type="button" id="downloadBtn" style="display:none;">?? Download</button>
     </form>
 
     <div id="resultaat"></div>
@@ -531,7 +531,7 @@ async function initFormLogic() {
         
         reader.onload = async () => {
             startLoadingState();
-            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply gaat aan de slag... even geduld!</p>';
+            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">?? Driply gaat aan de slag... even geduld!</p>';
             const imageBase64 = reader.result;
 
             try {
@@ -570,7 +570,7 @@ async function initFormLogic() {
                     if (statusData.error) throw new Error(statusData.error);
 
                     const progress = statusData.progress ?? 0;
-                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply danst en kleurt... ${progress}%</p>`;
+                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">?? Driply danst en kleurt... ${progress}%</p>`;
 
                     if (statusData.status === 'done' && statusData.video_url) {
                         videoUrl = statusData.video_url;
@@ -658,7 +658,7 @@ async function initFormLogic() {
 
             if (!resp.ok) {
                 if (resp.status === 403 && text.includes('limiet')) {
-                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                    resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 25 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
                     const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                     if (window.showSubscriptionUpgradeModal) {
                         window.showSubscriptionUpgradeModal(_upgradeUserId);

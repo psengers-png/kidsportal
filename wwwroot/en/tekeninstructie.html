@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -289,8 +289,8 @@
 
         <div class="agent-header">
             <img src="Images/Scetchy.png" alt="Scetchy">
-            <h2>Scetchy – Tekeninstructie Agent</h2>
-            <p>Scetchy maakt stap-voor-stap tekeninstructies die kinderen makkelijk kunnen volgen ✏️🖍️</p>
+            <h2>Scetchy � Tekeninstructie Agent</h2>
+            <p>Scetchy maakt stap-voor-stap tekeninstructies die kinderen makkelijk kunnen volgen ?????</p>
         </div>
 
         <p id="statusText">Checking...</p>
@@ -300,8 +300,8 @@
                 <label for="onderwerp">What do you want to draw?</label>
                 <input type="text" id="onderwerp" name="onderwerp" required placeholder="e.g. crocodile">
             </div>
-            <button type="submit" id="genereerBtn">✍️ Create drawing tutorial</button>
-            <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
+            <button type="submit" id="genereerBtn">?? Create drawing tutorial</button>
+            <button type="button" id="downloadBtn" style="display:none;">?? Download</button>
         </form>
 
         <video id="scetchyLoadingVideo" playsinline preload="auto">
@@ -405,7 +405,7 @@ function stopLoadingVideo(vid) {
 function startLoadingState() {
     btn.disabled = true;
     downloadBtn.style.display = 'none';
-    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">⏳ Scetchy is creating your drawing tutorial...</p>';
+    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">? Scetchy is creating your drawing tutorial...</p>';
     scetchyLoadingVideo.style.display = "block";
     startLoadingVideo(scetchyLoadingVideo);
 }
@@ -441,7 +441,7 @@ form.addEventListener("submit", async (e) => {
         const text = await res.text();
         if (!res.ok) {
             if (res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 25 free requests. Choose a subscription to continue.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);

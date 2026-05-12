@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -291,7 +291,7 @@
         <div class="agent-header">
             <img src="Images/Giggly.png" alt="Giggly">
             <h2>Giggly - The Joke Generator</h2>
-            <p>Giggly creates silly jokes, riddles, and wordplay to brighten your day ☁️😂</p>
+            <p>Giggly creates silly jokes, riddles, and wordplay to brighten your day ????</p>
         </div>
 
         <p id="statusText">Checking...</p>
@@ -312,7 +312,7 @@
                     <option value="verhaalmop">Story joke</option>
                 </select>
             </div>
-            <button type="submit" id="genereerBtn">🎲 Generate a joke!</button>
+            <button type="submit" id="genereerBtn">?? Generate a joke!</button>
         </form>
 
         <div class="giggly-video-wrapper">
@@ -403,7 +403,7 @@ function stopLoadingVideo(vid) {
 
 function startLoadingState() {
     btn.disabled = true;
-    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">⏳ Generating joke...</p>';
+    resultaat.innerHTML = '<p style="text-align:center; color:#f5576c;">? Generating joke...</p>';
     gigglyLoadingVideo.style.display = "block";
     startLoadingVideo(gigglyLoadingVideo);
 }
@@ -441,7 +441,7 @@ form.addEventListener("submit", async (e) => {
         console.log("Response text:", text);
         if (!res.ok) {
             if(res.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 25 free requests. Choose a subscription to continue.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
@@ -459,7 +459,7 @@ form.addEventListener("submit", async (e) => {
             return;
         }
         if (data.mop) {
-            resultaat.innerHTML = '<div class="mop-box"><strong>😂 Your Joke:</strong><br><br>' + data.mop + '</div>';
+            resultaat.innerHTML = '<div class="mop-box"><strong>?? Your Joke:</strong><br><br>' + data.mop + '</div>';
         } else {
             resultaat.innerHTML = '<p style="color:red;">' + (data.error || 'Unknown error.') + '</p>';
         }

@@ -190,7 +190,7 @@ function showSubscriptionManageModal(userStatus = null) {
 
         const usageInfo = document.createElement("div");
         const totalUsed = Number(userStatus?.totalRequestsUsed || 0);
-        const maxRequests = Number(userStatus?.maxRequests || 10);
+        const maxRequests = Number(userStatus?.maxRequests || 25);
         usageInfo.style.fontSize = "14px";
         usageInfo.style.color = "#334155";
         usageInfo.innerHTML = `<strong>Deze maand gebruikt:</strong> ${totalUsed} van ${maxRequests} gratis aanvragen`;
@@ -894,7 +894,7 @@ function getAccountMenuStatusText(userStatus) {
     }
 
     const totalUsed = Number(userStatus.totalRequestsUsed || 0);
-    const maxRequests = Number(userStatus.maxRequests || 10);
+    const maxRequests = Number(userStatus.maxRequests || 25);
     return `Gratis plan — ${totalUsed}/${maxRequests} gratis aanvragen gebruikt.`;
 }
 

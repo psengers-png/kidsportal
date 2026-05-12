@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
         gtag('config', 'G-M9MF9YBFN0');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Challenge generator for kids | Questy – Rainy Day Club</title>
+    <title>Challenge generator for kids | Questy � Rainy Day Club</title>
     <meta name="description" content="Gebruik Questy als challenge generator voor kinderen en krijg direct leuke, leerzame challenges voor thuis of in de klas." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/en/challenge.html" />
@@ -294,7 +294,7 @@
         <div class="agent-header">
             <img src="Images/Questy.png" alt="Questy">
             <h2>Challenge Generator for Kids with Questy</h2>
-            <p>Questy creates fun activities for rainy days ☁️🎯</p>
+            <p>Questy creates fun activities for rainy days ????</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
                 Questy is a challenge generator for kids that quickly creates fun and educational activities.
                 Choose an energy level and activity type and get challenge ideas instantly
@@ -330,7 +330,7 @@
             </select>
         </div>
 
-        <button type="submit">🚀 Generate Challenge</button>
+        <button type="submit">?? Generate Challenge</button>
     </form>
 
     <video id="questyLoadingVideo" playsinline preload="auto">
@@ -343,10 +343,10 @@
 
     <div id="resultaat"></div>
     <div id="uploadSection" class="judge-box" style="display:none;">
-        <strong>📸 Upload 1 photo of all results</strong><br><br>
+        <strong>?? Upload 1 photo of all results</strong><br><br>
         <input id="challengePhotos" type="file" accept="image/*" multiple>
         <br><br>
-        <button id="judgePhotosBtn" type="button">🏆 Let Questy judge</button>
+        <button id="judgePhotosBtn" type="button">?? Let Questy judge</button>
         <div id="judgeResult"></div>
     </div>
 
@@ -429,7 +429,7 @@ function stopLoadingVideo(vid) {
 
 function startLoadingState() {
     submitBtn.disabled = true;
-    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
+    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>? Challenge wordt gegenereerd...</p>";
     questyLoadingVideo.style.display = "block";
     startLoadingVideo(questyLoadingVideo);
 }
@@ -484,7 +484,7 @@ form.addEventListener("submit", async (e) => {
 
         if (!resp.ok) {
             if(resp.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 25 free requests. Choose a subscription to continue.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
@@ -506,7 +506,7 @@ form.addEventListener("submit", async (e) => {
         currentChallengeText = data.challenge || "";
         resultaat.innerHTML = `
             <div class="challenge-box">
-                <strong>🎯 Your Challenge:</strong><br><br>
+                <strong>?? Your Challenge:</strong><br><br>
                 ${data.challenge}
             </div>
         `;
@@ -535,7 +535,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
     }
 
     event.target.disabled = true;
-    judgeResult.textContent = "⏳ Questy kijkt wie het mooist heeft getekend...";
+    judgeResult.textContent = "? Questy kijkt wie het mooist heeft getekend...";
 
     try {
         const submissions = await Promise.all(
@@ -575,7 +575,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
             return;
         }
 
-        judgeResult.innerHTML = `✅ Questy picks: <strong>${data.winner_name || "Unknown"}</strong><br>${data.reasoning || ""}`;
+        judgeResult.innerHTML = `? Questy picks: <strong>${data.winner_name || "Unknown"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Error: ${err}</span>`;
     } finally {

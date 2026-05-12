@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,13 +14,13 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beatty - Rainy Day Club</title>
-    <meta name="description" content="Beatty helpt kinderen met leuke liedjes, tekstideeën en muzikale inspiratie in Rainy Day Club." />
+    <meta name="description" content="Beatty helpt kinderen met leuke liedjes, tekstidee�n en muzikale inspiratie in Rainy Day Club." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/en/liedjes.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Beatty | Liedjes en muziek voor kinderen" />
-    <meta property="og:description" content="Maak liedjes en ontdek muzikale ideeën met Beatty in Rainy Day Club." />
+    <meta property="og:description" content="Maak liedjes en ontdek muzikale idee�n met Beatty in Rainy Day Club." />
     <meta property="og:url" content="https://www.rainydayclub.nl/en/liedjes.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Beatty.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -352,8 +352,8 @@
                 <input id="stemming" type="text" placeholder="e.g. cheerful, calm, exciting">
             </div>
 
-            <button type="submit" id="genereerBtn">✨ Generate song</button>
-            <button id="downloadBtn" type="button" style="display:none;">⬇️ Download</button>
+            <button type="submit" id="genereerBtn">? Generate song</button>
+            <button id="downloadBtn" type="button" style="display:none;">?? Download</button>
         </form>
 
         <div id="resultaat">
@@ -565,7 +565,7 @@ form.addEventListener("submit", async (e) => {
             const normalizedError = (text || '').toLowerCase();
 
             if (resp.status === 403 && normalizedError.includes('limiet')) {
-                lyricsBox.innerHTML = "<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 10 free requests. Choose a subscription to continue.</div>";
+                lyricsBox.innerHTML = "<div style='color:#64748b; text-align:center; padding: 16px;'>You have used your 25 free requests. Choose a subscription to continue.</div>";
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(normalizedUserId);
                 }

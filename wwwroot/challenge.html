@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -13,18 +13,18 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knutselchallenge en challenge generator voor kinderen | Questy</title>
-    <meta name="description" content="Zoek je een knutselchallenge voor kinderen? Gebruik Questy en krijg direct leuke challenge ideeën voor thuis, school en regenachtige dagen." />
+    <meta name="description" content="Zoek je een knutselchallenge voor kinderen? Gebruik Questy en krijg direct leuke challenge idee�n voor thuis, school en regenachtige dagen." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/challenge.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Knutselchallenge en challenge generator voor kinderen | Questy" />
-    <meta property="og:description" content="Leuke challenge ideeën voor kinderen, inclusief knutselchallenge inspiratie." />
+    <meta property="og:description" content="Leuke challenge idee�n voor kinderen, inclusief knutselchallenge inspiratie." />
     <meta property="og:url" content="https://www.rainydayclub.nl/challenge.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Questy.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Knutselchallenge en challenge generator voor kinderen | Questy" />
-    <meta name="twitter:description" content="Leuke challenge ideeën voor kinderen, inclusief knutselchallenge inspiratie." />
+    <meta name="twitter:description" content="Leuke challenge idee�n voor kinderen, inclusief knutselchallenge inspiratie." />
 
 
     <style>
@@ -305,10 +305,10 @@
         <div class="agent-header">
             <img src="Images/Questy.png" alt="Questy">
             <h2>Knutselchallenge en challenge generator voor kinderen met Questy</h2>
-            <p>Questy bedenkt leuke opdrachten voor regenachtige dagen ☁️🎯</p>
+            <p>Questy bedenkt leuke opdrachten voor regenachtige dagen ????</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
                 Questy is een challenge generator voor kinderen waarmee je snel leuke en leerzame opdrachten maakt.
-                Kies een energieniveau en type activiteit en ontvang direct challenge ideeën die passen bij kinderen
+                Kies een energieniveau en type activiteit en ontvang direct challenge idee�n die passen bij kinderen
                 van 5 tot 10 jaar, thuis of in de klas.
             </p>
             <div class="top-challenges-link">
@@ -344,7 +344,7 @@
             </select>
         </div>
 
-        <button type="submit">🚀 Bedenk een leuke challenge</button>
+        <button type="submit">?? Bedenk een leuke challenge</button>
     </form>
 
     <video id="questyLoadingVideo" playsinline preload="auto">
@@ -357,10 +357,10 @@
 
     <div id="resultaat"></div>
     <div id="uploadSection" class="judge-box" style="display:none;">
-        <strong>📸 Upload 1 foto van alle resultaten</strong><br><br>
+        <strong>?? Upload 1 foto van alle resultaten</strong><br><br>
         <input id="challengePhotos" type="file" accept="image/*" multiple>
         <br><br>
-        <button id="judgePhotosBtn" type="button">🏆 Laat Questy beoordelen</button>
+        <button id="judgePhotosBtn" type="button">?? Laat Questy beoordelen</button>
         <div id="judgeResult"></div>
     </div>
 
@@ -443,7 +443,7 @@ function stopLoadingVideo(vid) {
 
 function startLoadingState() {
     submitBtn.disabled = true;
-    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt gegenereerd...</p>";
+    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>? Challenge wordt gegenereerd...</p>";
     questyLoadingVideo.style.display = "block";
     startLoadingVideo(questyLoadingVideo);
 }
@@ -498,7 +498,7 @@ form.addEventListener("submit", async (e) => {
 
         if (!resp.ok) {
             if(resp.status === 403 && text.includes('limiet')) {
-                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 10 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
+                resultaat.innerHTML = `<div style='color:#64748b; text-align:center; padding: 16px;'>Je hebt je 25 gratis aanvragen gebruikt. Kies een abonnement om verder te gaan.</div>`;
                 const _upgradeUserId = (localStorage.getItem('userId') || localStorage.getItem('user-id') || '').split('.')[0];
                 if (window.showSubscriptionUpgradeModal) {
                     window.showSubscriptionUpgradeModal(_upgradeUserId);
@@ -520,7 +520,7 @@ form.addEventListener("submit", async (e) => {
         currentChallengeText = data.challenge || "";
         resultaat.innerHTML = `
             <div class="challenge-box">
-                <strong>🎯 Jouw Challenge:</strong><br><br>
+                <strong>?? Jouw Challenge:</strong><br><br>
                 ${data.challenge}
             </div>
         `;
@@ -549,7 +549,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
     }
 
     event.target.disabled = true;
-    judgeResult.textContent = "⏳ Questy kijkt wie het mooist heeft getekend...";
+    judgeResult.textContent = "? Questy kijkt wie het mooist heeft getekend...";
 
     try {
         const submissions = await Promise.all(
@@ -589,7 +589,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
             return;
         }
 
-        judgeResult.innerHTML = `✅ Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
+        judgeResult.innerHTML = `? Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
     } finally {
