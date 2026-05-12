@@ -374,7 +374,7 @@
         <div class="agent-header">
             <h2>Bouw je eigen Agent</h2>
             <p>
-                Maak in 5 korte stappen een karakter dat echt bij jullie past.
+                Maak in 5 korte stappen je eigen superheld die echt bij jullie past.
                 Kies uiterlijk, krachten en persoonlijkheid, kies daarna een naam en zet het direct om naar een beeld en filmpje om samen te delen.
             </p>
         </div>
@@ -391,15 +391,15 @@
         </div>
 
         <div class="result" id="resultBox">
-            <h3 style="margin-top:0;">Jouw Karakter</h3>
+            <h3 style="margin-top:0;">Jouw Superheld</h3>
             <pre id="resultText"></pre>
             <div class="name-actions">
                 <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>Naam kiezen voor filmpje</button>
-                <input id="finalNameInput" class="name-input" type="text" placeholder="Of typ hier zelf een naam">
+                <input id="finalNameInput" class="name-input" type="text" placeholder="Of typ hier zelf een heldennaam">
                 <button class="secondary" id="applyNameBtn" type="button" disabled>Gebruik deze naam</button>
             </div>
             <div id="nameChoiceRow" class="name-choice-row"></div>
-            <img id="resultImage" alt="Gegenereerd karakter">
+            <img id="resultImage" alt="Gegenereerde superheld">
             <p class="status life-status" id="lifeStatus"></p>
             <div class="life-actions">
                 <button class="secondary" id="makeColoringBtn" type="button" disabled>🎨 Maak een kleurplaat</button>
@@ -653,14 +653,14 @@ function sleep(ms) {
 
 function fallbackFlowDefinition() {
     return {
-        title: 'Bouw je eigen karakter',
+        title: 'Bouw je eigen superheld',
         version: 4,
         steps: [
-            { id: 'soort', title: 'Soort karakter', ui_hint: 'Kies 1 soort die bij jullie past, of bedenk zelf een eigen type.', allow_custom: true, max: 1, options: [] },
+            { id: 'soort', title: 'Soort superheld', ui_hint: 'Kies 1 soort die bij jullie past, of bedenk zelf een eigen type.', allow_custom: true, max: 1, options: [] },
             { id: 'uiterlijk', title: 'Uiterlijk', ui_hint: 'Kies kleur, bouw en ogen. Accessoires zijn optioneel (maximaal 2).', groups: {} },
             { id: 'krachten', title: 'Speciale krachten', ui_hint: 'Kies minimaal 1 en maximaal 2 krachten.', min: 1, max: 2, options: [] },
-            { id: 'persoonlijkheid', title: 'Persoonlijkheid', ui_hint: 'Kies precies 1 eigenschap die het karakter typeert.', min: 1, max: 1, options: [] },
-            { id: 'wereld', title: 'Wereld', ui_hint: 'Kies 1 wereld waar het avontuur van je karakter begint.', max: 1, options: [] }
+            { id: 'persoonlijkheid', title: 'Persoonlijkheid', ui_hint: 'Kies precies 1 eigenschap die je superheld typeert.', min: 1, max: 1, options: [] },
+            { id: 'wereld', title: 'Wereld', ui_hint: 'Kies 1 wereld waar het avontuur van je superheld begint.', max: 1, options: [] }
         ]
     };
 }
@@ -734,7 +734,7 @@ function updateBringToLifeAvailability() {
 
 async function makeColoringPageFromCharacter() {
     if (!builtCharacter?.image_data_uri) {
-        setLifeStatus('Maak eerst een karakter met afbeelding.');
+        setLifeStatus('Maak eerst een superheld met afbeelding.');
         return;
     }
 
@@ -786,7 +786,7 @@ function setChosenName(name) {
 
 async function suggestNamesAfterVideo() {
     if (!builtCharacter) {
-        setStatus('Maak eerst een karakter.');
+        setStatus('Maak eerst een superheld.');
         return;
     }
 
@@ -817,7 +817,7 @@ async function suggestNamesAfterVideo() {
 
 function buildCharacterLifePayload() {
     const profile = builtCharacter?.character_profile || {};
-    const chosenName = builtCharacter?.name || 'mijn karakter';
+    const chosenName = builtCharacter?.name || 'mijn superheld';
     const powersText = Array.isArray(profile.powers) && profile.powers.length
         ? profile.powers.join(', ')
         : 'mijn krachten';
@@ -831,13 +831,13 @@ function buildCharacterLifePayload() {
         personality: Array.isArray(profile.personality) ? profile.personality : [],
         world: profile.world || '',
         story_seed: builtCharacter?.story_seed || '',
-        character_video_prompt: `Laat het karakter exact overeenkomen met de afbeelding. Laat het karakter zichzelf kort voorstellen op basis van deze gegevens: naam=${chosenName}, krachten=${powersText}, wereld=${worldText}. Gebruik deze variabelen duidelijk in de gesproken tekst, maar formuleer de zin natuurlijk en kindvriendelijk.`
+        character_video_prompt: `Laat de superheld exact overeenkomen met de afbeelding. Laat de superheld zichzelf kort voorstellen op basis van deze gegevens: naam=${chosenName}, krachten=${powersText}, wereld=${worldText}. Gebruik deze variabelen duidelijk in de gesproken tekst, maar formuleer de zin natuurlijk en kindvriendelijk.`
     };
 }
 
 async function bringCharacterToLife() {
     if (!builtCharacter || !builtCharacter.image_data_uri) {
-        setStatus('Maak eerst een karakter met afbeelding.');
+        setStatus('Maak eerst een superheld met afbeelding.');
         return;
     }
 
@@ -847,13 +847,13 @@ async function bringCharacterToLife() {
     }
 
     bringToLifeBtn.disabled = true;
-    setLifeStatus('Je agent wordt tot leven gebracht...');
+    setLifeStatus('Je superheld wordt tot leven gebracht...');
     resultVideo.pause();
     resultVideo.removeAttribute('src');
     resultVideo.style.display = 'none';
 
     try {
-        setStatus('Driply brengt je karakter tot leven...');
+        setStatus('Driply brengt je superheld tot leven...');
         const start = await callApiRequest('grok_kleurplaat', buildCharacterLifePayload());
 
         const requestId = start.request_id;
@@ -872,7 +872,7 @@ async function bringCharacterToLife() {
                 resultVideo.src = poll.video_url;
                 resultVideo.style.display = 'block';
                 videoNameSuggestBtn.disabled = false;
-                setLifeStatus('Je agent is tot leven gebracht!');
+                setLifeStatus('Je superheld is tot leven gebracht!');
                 return;
             }
 
@@ -1124,7 +1124,7 @@ function renderCurrentStep() {
     progressText.textContent = `Stap ${currentStep + 1} van ${steps.length}`;
 
     prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-    nextBtn.textContent = currentStep === steps.length - 1 ? '🎉 Maak karakter!' : 'Volgende ➡️';
+    nextBtn.textContent = currentStep === steps.length - 1 ? '🎉 Maak superheld!' : 'Volgende ➡️';
 
     if (step.id === 'soort') {
         renderStepType(step);
@@ -1143,9 +1143,9 @@ function validateStep(step) {
     if (!step) return 'Stap niet gevonden. Herlaad de pagina.';
 
     if (step.id === 'soort') {
-        if (!state.character_type) return 'Kies eerst een karaktersoort.';
+        if (!state.character_type) return 'Kies eerst een superheld-soort.';
         if (state.character_type === 'zelf_verzonnen' && !state.custom_type.trim()) {
-            return 'Typ je zelf verzonnen karakter.';
+            return 'Typ je zelf verzonnen superheld.';
         }
     }
     if (step.id === 'uiterlijk') {
@@ -1179,7 +1179,7 @@ function validateStep(step) {
 }
 
 async function buildCharacter() {
-    setStatus('Jouw karakter wordt gebouwd...');
+    setStatus('Jouw superheld wordt gebouwd...');
     const payload = {
         action: 'build_character',
         character_type: state.character_type,
@@ -1237,12 +1237,12 @@ async function buildCharacter() {
     setLifeStatus('');
 
     if (data.image_error) {
-        setStatus('Karakter klaar, maar afbeelding kon niet worden gemaakt.');
+        setStatus('Superheld klaar, maar afbeelding kon niet worden gemaakt.');
     }
 
     resultBox.style.display = 'block';
     if (!data.image_error) {
-        setStatus('Klaar! Kies een naam en maak daarna een kleurplaat of breng je agent tot leven.');
+        setStatus('Klaar! Kies een naam en maak daarna een kleurplaat of breng je superheld tot leven.');
     }
 }
 
