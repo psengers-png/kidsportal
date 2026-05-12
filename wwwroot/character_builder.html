@@ -201,15 +201,26 @@
         }
         .actions button {
             border: none;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-weight: 700;
+            border-radius: 999px;
+            padding: 14px 20px;
+            font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
+            box-shadow: 0 6px 16px rgba(30, 41, 59, 0.15);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .secondary { background: #e2e8f0; color: #1f2d3d; }
-        .primary { background: #3b82f6; color: white; }
-        .primary:hover { background: #2563eb; }
+        .actions button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(30, 41, 59, 0.2);
+        }
+        .secondary {
+            background: #e2e8f0;
+            color: #1f2d3d;
+        }
+        .primary {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+        }
         input[type="text"] {
             width: 100%;
             border: 2px solid #e0e7ff;
@@ -375,8 +386,8 @@
         <div id="stepContainer"></div>
 
         <div class="actions">
-            <button class="secondary" id="prevBtn">Vorige</button>
-            <button class="primary" id="nextBtn">Volgende</button>
+            <button class="secondary" id="prevBtn">⬅️ Vorige</button>
+            <button class="primary" id="nextBtn">Volgende ➡️</button>
         </div>
 
         <div class="result" id="resultBox">
@@ -384,19 +395,19 @@
             <pre id="resultText"></pre>
             <div class="name-actions">
                 <button class="secondary" id="videoNameSuggestBtn" type="button" disabled>Naam kiezen voor filmpje</button>
-                <input id="finalNameInput" class="name-input" type="text" placeholder="Of typ zelf een naam">
+                <input id="finalNameInput" class="name-input" type="text" placeholder="Of typ hier zelf een naam">
                 <button class="secondary" id="applyNameBtn" type="button" disabled>Gebruik deze naam</button>
             </div>
             <div id="nameChoiceRow" class="name-choice-row"></div>
             <img id="resultImage" alt="Gegenereerd karakter">
             <p class="status life-status" id="lifeStatus"></p>
             <div class="life-actions">
-                <button class="secondary" id="makeColoringBtn" type="button" disabled>Maak een kleurplaat</button>
-                <button class="primary" id="bringToLifeBtn" type="button" disabled>Breng tot leven</button>
+                <button class="secondary" id="makeColoringBtn" type="button" disabled>🎨 Maak een kleurplaat</button>
+                <button class="primary" id="bringToLifeBtn" type="button" disabled>✨ Breng tot leven</button>
             </div>
             <img id="resultColoringImage" class="coloring-image" alt="Gegenereerde kleurplaat">
             <div class="life-actions">
-                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">Download kleurplaat</button>
+                <button class="secondary" id="downloadColoringBtn" type="button" style="display:none;">⬇️ Download kleurplaat</button>
             </div>
             <video id="resultVideo" controls playsinline></video>
         </div>
@@ -729,7 +740,7 @@ async function makeColoringPageFromCharacter() {
 
     makeColoringBtn.disabled = true;
     try {
-        setLifeStatus('JE agent wordt omgezet naar een kleurplaat...');
+        setLifeStatus('Je agent wordt omgezet naar een kleurplaat...');
         const profile = builtCharacter?.character_profile || {};
         const resp = await callApiRequest('kleurplaat', {
             wie: builtCharacter?.name || profile.type || 'agent',
@@ -836,7 +847,7 @@ async function bringCharacterToLife() {
     }
 
     bringToLifeBtn.disabled = true;
-    setLifeStatus('JE agent wordt tot leven gebracht');
+    setLifeStatus('Je agent wordt tot leven gebracht...');
     resultVideo.pause();
     resultVideo.removeAttribute('src');
     resultVideo.style.display = 'none';
@@ -884,7 +895,7 @@ function renderChoiceButton(choice, isSelected, onClick) {
     const btn = document.createElement('button');
     btn.className = 'choice' + (isSelected ? ' selected' : '');
     btn.type = 'button';
-    btn.innerHTML = `<span class="emoji">${choice.emoji || '*'}</span><span>${choice.label}</span>`;
+    btn.innerHTML = `<span class="emoji">${choice.emoji || '✨'}</span><span>${choice.label}</span>`;
     btn.onclick = onClick;
     return btn;
 }
@@ -1019,7 +1030,7 @@ function renderStepMulti(step, stateKey, customKey, placeholder) {
         btn.type = 'button';
         const selected = state[stateKey].includes(option.id);
         btn.className = 'choice' + (selected ? ' selected' : '');
-        btn.innerHTML = `<span class="emoji">*</span><span>${option.label}</span>`;
+        btn.innerHTML = `<span class="emoji">✨</span><span>${option.label}</span>`;
         btn.onclick = () => {
             toggleMultiArray(state[stateKey], option.id, step.max);
             renderCurrentStep();
@@ -1059,7 +1070,7 @@ function renderStepWorld(step) {
 
     step.options.forEach(option => {
         const selected = state.world === option.id;
-        box.appendChild(renderChoiceButton({ label: option.label, emoji: 'W' }, selected, () => {
+        box.appendChild(renderChoiceButton({ label: option.label, emoji: '🌍' }, selected, () => {
             state.custom_world = '';
             toggleSingle('world', option.id);
         }));
@@ -1113,7 +1124,7 @@ function renderCurrentStep() {
     progressText.textContent = `Stap ${currentStep + 1} van ${steps.length}`;
 
     prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-    nextBtn.textContent = currentStep === steps.length - 1 ? 'Karakter maken' : 'Volgende';
+    nextBtn.textContent = currentStep === steps.length - 1 ? '🎉 Maak karakter!' : 'Volgende ➡️';
 
     if (step.id === 'soort') {
         renderStepType(step);
