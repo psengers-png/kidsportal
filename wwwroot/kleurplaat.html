@@ -152,49 +152,238 @@
             font-size: 2.2rem;
         }
 
-        .form-section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px dashed #dbeafe;
+        /* ── Option Cards ── */
+        .option-card {
+            margin-bottom: 18px;
+            padding: 22px 24px;
+            border-radius: 26px;
+            background: #f0f9ff;
+            border: 3px solid #bae6fd;
+        }
+        .option-card.card-purple {
+            background: #fdf4ff;
+            border-color: #e9d5ff;
+        }
+        .option-card.card-orange {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .option-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .step-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+        }
+        .card-purple .step-badge {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            box-shadow: 0 4px 12px rgba(168,85,247,0.35);
+        }
+        .card-orange .step-badge {
+            background: linear-gradient(135deg, #f97316, #f59e0b);
+            box-shadow: 0 4px 12px rgba(249,115,22,0.35);
         }
 
         .section-title {
-            font-weight: 700;
-            color: #3b82f6;
-            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #1e40af;
+            margin: 0;
         }
+        .card-purple .section-title { color: #7e22ce; }
+        .card-orange .section-title { color: #c2410c; }
 
         label {
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1rem;
             display: block;
-            margin-top: 10px;
+            margin-top: 14px;
+            color: #1e3a5f;
         }
 
-        input {
+        input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid #e0e7ff;
-            margin-top: 6px;
+            padding: 15px 18px;
+            border-radius: 16px;
+            border: 3px solid #bae6fd;
+            margin-top: 8px;
+            font-size: 1.05rem;
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
         }
-
-        input:disabled {
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        }
+        input[type="text"]:disabled {
             background: #f1f5f9;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
+        /* ── Upload Zones ── */
+        .upload-zone {
+            margin-top: 12px;
+            position: relative;
+        }
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        .upload-zone input[type="file"]:disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .upload-zone-visual {
+            border: 3px dashed #c084fc;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            background: white;
+            transition: border-color 0.2s, background 0.2s;
+            pointer-events: none;
+        }
+        .card-orange .upload-zone-visual {
+            border-color: #fb923c;
+        }
+        .upload-zone:hover .upload-zone-visual {
+            border-color: #a855f7;
+            background: #faf5ff;
+        }
+        .card-orange .upload-zone:hover .upload-zone-visual {
+            border-color: #ea580c;
+            background: #fff7ed;
+        }
+        .upload-zone.has-file .upload-zone-visual {
+            border-color: #4ade80;
+            background: #f0fdf4;
+            border-style: solid;
+        }
+        .upload-zone.disabled .upload-zone-visual {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f8fafc;
+        }
+        .upload-icon {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        .upload-zone-visual strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #6b21a8;
+        }
+        .card-orange .upload-zone-visual strong {
+            color: #9a3412;
+        }
+        .upload-zone.has-file .upload-zone-visual strong {
+            color: #15803d;
+        }
+        .upload-zone-visual small {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        .file-selected-name {
+            display: none;
+            margin-top: 8px;
+            font-weight: 700;
+            color: #15803d;
+            text-align: center;
+            font-size: 0.92rem;
+            padding: 6px 12px;
+            background: #dcfce7;
+            border-radius: 999px;
+        }
+        .upload-zone.has-file ~ .file-selected-name {
+            display: block;
+        }
+
+        /* ── Buttons ── */
         button {
             margin-top: 20px;
-            padding: 12px 24px;
-            background: #3b82f6;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
             color: white;
             border: none;
             border-radius: 999px;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.05rem;
             cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 6px 18px rgba(59,130,246,0.35);
         }
-
         button:hover:not(:disabled) {
-            background: #2563eb;
+            transform: scale(1.04);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.45);
+        }
+        button:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+        #btn-genereer {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            box-shadow: 0 6px 18px rgba(236,72,153,0.35);
+            font-size: 1.15rem;
+            padding: 18px 36px;
+            width: 100%;
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+        }
+        #btn-genereer:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(236,72,153,0.45);
+        }
+        #driplyBtn {
+            background: linear-gradient(135deg, #f97316, #f59e0b);
+            box-shadow: 0 6px 18px rgba(249,115,22,0.35);
+            width: 100%;
+            text-align: center;
+        }
+        #driplyBtn:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(249,115,22,0.45);
+        }
+        #downloadBtn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 6px 18px rgba(16,185,129,0.35);
+            font-size: 1.15rem;
+            padding: 18px 36px;
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+        #downloadBtn:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(16,185,129,0.45);
+        }
+        .or-divider {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #94a3b8;
+            font-weight: 700;
+            margin: 8px 0;
+            letter-spacing: 0.05em;
         }
 
         #resultaat {
@@ -304,7 +493,7 @@
         <div class="agent-header">
             <img src="Images/Driply.png" alt="Driply">
             <h2>Kleurplaat AI generator: kleurplaat maken met Driply</h2>
-            <p>Beschrijf iets of upload een foto en Driply maakt er een kleurplaat van ???</p>
+            <p>Beschrijf iets of upload een foto en Driply maakt er een kleurplaat van 🎨</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
                 Met deze kleurplaat AI tool kun je eenvoudig een kleurplaat maken voor kinderen. Kies een onderwerp zoals dieren,
                 sprookjes of voertuigen en genereer direct een uniek kleurplaat ontwerp op maat. Deze kleurplaat generator
@@ -318,34 +507,60 @@
     <p id="statusText">Bezig met controleren...</p>
 
     <form id="kleurplaatForm" style="display:none;">
-        <div class="form-section">
-            <div class="section-title">Optie 1: Beschrijving</div>
-            <label>Wie? (bijv. een aap, kat, prinses)</label>
-            <input id="wie" type="text">
 
-            <label>Waar? (bijv. in de jungle, thuis, op het kasteel)</label>
-            <input id="waar" type="text">
-
-            <label>Welke activiteit? (bijv. spelen, eten, vissen)</label>
-            <input id="activiteit" type="text">
+        <div class="option-card">
+            <div class="option-card-header">
+                <div class="step-badge">1</div>
+                <div class="section-title">✏️ Beschrijf je kleurplaat</div>
+            </div>
+            <label>🐘 Wie zit er in de tekening?</label>
+            <input id="wie" type="text" placeholder="bijv. een lieve draak, een vrolijke aap">
+            <label>🌴 Waar is dat?</label>
+            <input id="waar" type="text" placeholder="bijv. in de jungle, op een regenboog">
+            <label>⚽ Wat doet hij/zij?</label>
+            <input id="activiteit" type="text" placeholder="bijv. huppelen, eten, vissen">
         </div>
 
-        <div class="form-section">
-            <div class="section-title">Optie 2: Foto Upload</div>
-            <label>Upload foto (optioneel)</label>
-            <input id="foto" type="file" accept="image/*">
-        </div>
+        <div class="or-divider">— of —</div>
 
-        <button type="submit">?? Maak een mooie kleurplaat</button>
-
-                <div class="form-section" style="margin-top: 28px;">
-                    <div class="section-title">Optie 3: Tot leven brengen met Driply</div>
-                    <label>Upload je kleurplaat aan Driply en laat hem die al dansend inkleuren</label>
-                    <input id="driply_foto" type="file" accept="image/*">
-                    <button type="button" id="driplyBtn" style="margin-top: 10px;">?? Tot leven brengen met Driply</button>
+        <div class="option-card card-purple">
+            <div class="option-card-header">
+                <div class="step-badge">2</div>
+                <div class="section-title">📸 Upload een foto</div>
+            </div>
+            <p style="margin:0 0 10px; color:#6b21a8; font-weight:600; font-size:0.95rem;">Upload een foto en Driply maakt er een kleurplaat van!</p>
+            <div class="upload-zone" id="fotoZone">
+                <input id="foto" type="file" accept="image/*">
+                <div class="upload-zone-visual">
+                    <span class="upload-icon">📷</span>
+                    <strong>Klik hier om een foto te kiezen</strong>
+                    <small>JPG, PNG of GIF</small>
                 </div>
+            </div>
+            <div class="file-selected-name" id="fotoNaam"></div>
+        </div>
 
-        <button type="button" id="downloadBtn" style="display:none;">?? Download</button>
+        <button type="submit" id="btn-genereer">🎨 Maak mijn kleurplaat!</button>
+
+        <div class="option-card card-orange" style="margin-top: 28px;">
+            <div class="option-card-header">
+                <div class="step-badge">3</div>
+                <div class="section-title">✨ Laat Driply inkleuren!</div>
+            </div>
+            <p style="margin:0 0 10px; color:#9a3412; font-weight:600; font-size:0.95rem;">Upload je kleurplaat en Driply kleurt hem al dansend in!</p>
+            <div class="upload-zone" id="driplyFotoZone">
+                <input id="driply_foto" type="file" accept="image/*">
+                <div class="upload-zone-visual">
+                    <span class="upload-icon">🖼️</span>
+                    <strong>Klik hier om je kleurplaat te uploaden</strong>
+                    <small>JPG, PNG of GIF</small>
+                </div>
+            </div>
+            <div class="file-selected-name" id="driplyFotoNaam"></div>
+            <button type="button" id="driplyBtn">✨ Laat Driply inkleuren!</button>
+        </div>
+
+        <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
     </form>
 
     <div id="resultaat"></div>
@@ -421,20 +636,44 @@ async function initFormLogic() {
         const hasText = wieInput.value.trim() || waarInput.value.trim() || activiteitInput.value.trim();
         const hasPhoto = fotoInput.files.length > 0;
 
-        // Als foto is geupload, disable tekstvelden
         wieInput.disabled = hasPhoto;
         waarInput.disabled = hasPhoto;
         activiteitInput.disabled = hasPhoto;
+        fotoInput.disabled = !!hasText;
 
-        // Als tekst ingevuld, disable foto upload
-        fotoInput.disabled = hasText;
+        const fotoZone = document.getElementById('fotoZone');
+        if (fotoZone) {
+            if (hasText) fotoZone.classList.add('disabled');
+            else fotoZone.classList.remove('disabled');
+        }
     }
+
+    function setupUploadZone(inputId, zoneId, nameId) {
+        const input = document.getElementById(inputId);
+        const zone = document.getElementById(zoneId);
+        const nameEl = document.getElementById(nameId);
+        if (!input || !zone) return;
+        input.addEventListener('change', function () {
+            if (this.files.length > 0) {
+                zone.classList.add('has-file');
+                if (nameEl) {
+                    nameEl.textContent = '✅ ' + this.files[0].name;
+                    nameEl.style.display = 'block';
+                }
+            } else {
+                zone.classList.remove('has-file');
+                if (nameEl) nameEl.style.display = 'none';
+            }
+            if (inputId === 'foto') updateFieldStates();
+        });
+    }
+    setupUploadZone('foto', 'fotoZone', 'fotoNaam');
+    setupUploadZone('driply_foto', 'driplyFotoZone', 'driplyFotoNaam');
 
     // Listeners voor real-time enable/disable
     wieInput.addEventListener("input", updateFieldStates);
     waarInput.addEventListener("input", updateFieldStates);
     activiteitInput.addEventListener("input", updateFieldStates);
-    fotoInput.addEventListener("change", updateFieldStates);
 
     let _videoRestartTimer = null;
 
@@ -531,7 +770,7 @@ async function initFormLogic() {
         
         reader.onload = async () => {
             startLoadingState();
-            resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">?? Driply gaat aan de slag... even geduld!</p>';
+                resultaat.innerHTML = '<p style="text-align:center;color:#2563eb;font-weight:600;">🎨 Driply gaat aan de slag... even geduld!</p>';
             const imageBase64 = reader.result;
 
             try {
@@ -570,7 +809,7 @@ async function initFormLogic() {
                     if (statusData.error) throw new Error(statusData.error);
 
                     const progress = statusData.progress ?? 0;
-                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">?? Driply danst en kleurt... ${progress}%</p>`;
+                    resultaat.innerHTML = `<p style="text-align:center;color:#2563eb;font-weight:600;">💃 Driply danst en kleurt... ${progress}%</p>`;
 
                     if (statusData.status === 'done' && statusData.video_url) {
                         videoUrl = statusData.video_url;
