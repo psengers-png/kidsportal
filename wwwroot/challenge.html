@@ -13,18 +13,18 @@
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knutselchallenge en challenge generator voor kinderen | Questy</title>
-    <meta name="description" content="Zoek je een knutselchallenge voor kinderen? Gebruik Questy en krijg direct leuke challenge idee�n voor thuis, school en regenachtige dagen." />
+    <meta name="description" content="Zoek je een knutselchallenge voor kinderen? Gebruik Questy en krijg direct leuke challenge ideeën voor thuis, school en regenachtige dagen." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.rainydayclub.nl/challenge.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rainy Day Club" />
     <meta property="og:title" content="Knutselchallenge en challenge generator voor kinderen | Questy" />
-    <meta property="og:description" content="Leuke challenge idee�n voor kinderen, inclusief knutselchallenge inspiratie." />
+    <meta property="og:description" content="Leuke challenge ideeën voor kinderen, inclusief knutselchallenge inspiratie." />
     <meta property="og:url" content="https://www.rainydayclub.nl/challenge.html" />
     <meta property="og:image" content="https://www.rainydayclub.nl/Images/Questy.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Knutselchallenge en challenge generator voor kinderen | Questy" />
-    <meta name="twitter:description" content="Leuke challenge idee�n voor kinderen, inclusief knutselchallenge inspiratie." />
+    <meta name="twitter:description" content="Leuke challenge ideeën voor kinderen, inclusief knutselchallenge inspiratie." />
 
 
     <style>
@@ -155,35 +155,115 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        label {
-            font-weight: 600;
+        .picker-label {
+            font-weight: 800;
+            font-size: 1.05rem;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            color: #1e3a5f;
         }
 
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid #e0e7ff;
+        .picker-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .picker-btn {
+            flex: 1 1 calc(33% - 10px);
+            min-width: 110px;
+            padding: 14px 10px;
+            border-radius: 20px;
+            border: 3px solid #e0e7ff;
+            background: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #334155;
+            text-align: center;
+            transition: border-color 0.15s, background 0.15s, transform 0.1s;
+            margin-top: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            line-height: 1.3;
+        }
+        .picker-btn .picker-icon {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+        .picker-btn:hover {
+            border-color: #a5b4fc;
+            background: #eef2ff;
+            transform: scale(1.04);
+        }
+        .picker-btn.selected {
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #3730a3;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+        }
+        .picker-btn.selected-green {
+            border-color: #22c55e;
+            background: #f0fdf4;
+            color: #15803d;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+        }
+        .picker-btn.selected-orange {
+            border-color: #f97316;
+            background: #fff7ed;
+            color: #c2410c;
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
+        }
+        .picker-btn.selected-red {
+            border-color: #ef4444;
+            background: #fef2f2;
+            color: #b91c1c;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+        }
+        .picker-btn.selected-blue {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
 
         button {
             margin-top: 20px;
-            padding: 12px 24px;
-            background: #3b82f6;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
             color: white;
             border: none;
             border-radius: 999px;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.05rem;
             cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 6px 18px rgba(59,130,246,0.35);
         }
-
         button:hover:not(:disabled) {
-            background: #2563eb;
+            transform: scale(1.04);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.45);
+        }
+        button:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+        #submitBtn {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            box-shadow: 0 6px 18px rgba(236,72,153,0.35);
+            font-size: 1.15rem;
+            padding: 18px 36px;
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+        #submitBtn:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(236,72,153,0.45);
         }
 
         #statusText {
@@ -193,13 +273,18 @@
         }
 
         .challenge-box {
-            background: #f1f5f9;
-            border-left: 6px solid #3b82f6;
-            padding: 20px;
-            border-radius: 16px;
+            background: linear-gradient(135deg, #fdf4ff, #eff6ff);
+            border: 3px solid #c084fc;
+            padding: 24px;
+            border-radius: 24px;
             margin-top: 20px;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            box-shadow: 0 6px 20px rgba(168,85,247,0.12);
+        }
+        .challenge-box strong {
+            font-size: 1.2rem;
+            color: #7e22ce;
         }
 
         .top-challenges-link {
@@ -218,11 +303,85 @@
         }
 
         .judge-box {
-            margin-top: 18px;
-            padding: 16px;
-            border: 1px solid #dbeafe;
-            border-radius: 12px;
-            background: #eff6ff;
+            margin-top: 24px;
+            padding: 24px;
+            border: 3px solid #bae6fd;
+            border-radius: 24px;
+            background: #f0f9ff;
+        }
+        .judge-box strong {
+            font-size: 1.05rem;
+            color: #0369a1;
+        }
+        .upload-zone {
+            margin-top: 14px;
+            position: relative;
+        }
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        .upload-zone-visual {
+            border: 3px dashed #7dd3fc;
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            background: white;
+            transition: border-color 0.2s, background 0.2s;
+            pointer-events: none;
+        }
+        .upload-zone:hover .upload-zone-visual {
+            border-color: #0284c7;
+            background: #e0f2fe;
+        }
+        .upload-zone.has-file .upload-zone-visual {
+            border-color: #4ade80;
+            background: #f0fdf4;
+            border-style: solid;
+        }
+        .upload-icon {
+            font-size: 2.6rem;
+            display: block;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        .upload-zone-visual strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0369a1;
+        }
+        .upload-zone.has-file .upload-zone-visual strong {
+            color: #15803d;
+        }
+        .upload-zone-visual small {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        .file-selected-name {
+            display: none;
+            margin-top: 8px;
+            font-weight: 700;
+            color: #15803d;
+            text-align: center;
+            font-size: 0.92rem;
+            padding: 6px 12px;
+            background: #dcfce7;
+            border-radius: 999px;
+        }
+        #judgePhotosBtn {
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            box-shadow: 0 6px 18px rgba(14,165,233,0.35);
+            width: 100%;
+            text-align: center;
+        }
+        #judgePhotosBtn:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(14,165,233,0.45);
         }
 
         #judgeResult {
@@ -305,10 +464,10 @@
         <div class="agent-header">
             <img src="Images/Questy.png" alt="Questy">
             <h2>Knutselchallenge en challenge generator voor kinderen met Questy</h2>
-            <p>Questy bedenkt leuke opdrachten voor regenachtige dagen ????</p>
+            <p>Questy bedenkt leuke opdrachten voor regenachtige dagen 🌈🌟</p>
             <p style="max-width:700px; margin:12px auto 0; line-height:1.7;">
                 Questy is een challenge generator voor kinderen waarmee je snel leuke en leerzame opdrachten maakt.
-                Kies een energieniveau en type activiteit en ontvang direct challenge idee�n die passen bij kinderen
+                Kies een energieniveau en type activiteit en ontvang direct challenge ideeën die passen bij kinderen
                 van 5 tot 10 jaar, thuis of in de klas.
             </p>
             <div class="top-challenges-link">
@@ -319,32 +478,49 @@
     <p id="statusText">Bezig met controleren...</p>
 
     <form id="challengeForm" style="display:none;">
-        <!-- Leeftijdsveld verwijderd. De categorie is altijd voor kinderen van 5-10 jaar. -->
 
         <div class="form-group">
-            <label>Energie-niveau</label>
-            <select id="energie" required>
-                <option value="">-- Kies een optie --</option>
-                <option value="laag">Laag (rustig, ontspannen)</option>
-                <option value="gemiddeld">Gemiddeld (normaal)</option>
-                <option value="hoog">Hoog (energiek, actief)</option>
-            </select>
+            <span class="picker-label">⚡ Hoeveel energie heb je?</span>
+            <div class="picker-grid" id="energiePicker">
+                <button type="button" class="picker-btn" data-value="laag" data-group="energie">
+                    <span class="picker-icon">💤</span>Rustig
+                </button>
+                <button type="button" class="picker-btn" data-value="gemiddeld" data-group="energie">
+                    <span class="picker-icon">🙂</span>Gewoon
+                </button>
+                <button type="button" class="picker-btn" data-value="hoog" data-group="energie">
+                    <span class="picker-icon">🚀</span>Super actief!
+                </button>
+            </div>
+            <input type="hidden" id="energie" required>
         </div>
 
         <div class="form-group">
-            <label>Type activiteit (voor kinderen van 5-10 jaar)</label>
-            <select id="type" required>
-                <option value="">-- Kies een optie --</option>
-                <option value="knutselen">Knutselen</option>
-                <option value="kleuren">Kleuren</option>
-                <option value="puzzel">Puzzel</option>
-                <option value="kennis">Kennis</option>
-                <option value="buiten">Buiten</option>
-                <option value="natuur">Natuur</option>
-            </select>
+            <span class="picker-label">🎨 Wat wil je doen?</span>
+            <div class="picker-grid" id="typePicker">
+                <button type="button" class="picker-btn" data-value="knutselen" data-group="type">
+                    <span class="picker-icon">✂️</span>Knutselen
+                </button>
+                <button type="button" class="picker-btn" data-value="kleuren" data-group="type">
+                    <span class="picker-icon">🖨️</span>Kleuren
+                </button>
+                <button type="button" class="picker-btn" data-value="puzzel" data-group="type">
+                    <span class="picker-icon">🧩</span>Puzzel
+                </button>
+                <button type="button" class="picker-btn" data-value="kennis" data-group="type">
+                    <span class="picker-icon">🧠</span>Weetjes
+                </button>
+                <button type="button" class="picker-btn" data-value="buiten" data-group="type">
+                    <span class="picker-icon">🌳</span>Buiten
+                </button>
+                <button type="button" class="picker-btn" data-value="natuur" data-group="type">
+                    <span class="picker-icon">🐛</span>Natuur
+                </button>
+            </div>
+            <input type="hidden" id="type" required>
         </div>
 
-        <button type="submit">?? Bedenk een leuke challenge</button>
+        <button type="submit" id="submitBtn">🌟 Bedenk een leuke challenge!</button>
     </form>
 
     <video id="questyLoadingVideo" playsinline preload="auto">
@@ -357,10 +533,18 @@
 
     <div id="resultaat"></div>
     <div id="uploadSection" class="judge-box" style="display:none;">
-        <strong>?? Upload 1 foto van alle resultaten</strong><br><br>
-        <input id="challengePhotos" type="file" accept="image/*" multiple>
-        <br><br>
-        <button id="judgePhotosBtn" type="button">?? Laat Questy beoordelen</button>
+        <strong>📸 Upload een foto van jullie resultaat</strong>
+        <p style="margin:8px 0 0; color:#0369a1; font-size:0.95rem;">Questy kijkt wie het mooist heeft gedaan!</p>
+        <div class="upload-zone" id="judgeUploadZone">
+            <input id="challengePhotos" type="file" accept="image/*" multiple>
+            <div class="upload-zone-visual">
+                <span class="upload-icon">📷</span>
+                <strong>Klik hier om een foto te kiezen</strong>
+                <small>JPG of PNG — mag ook meerdere foto’s</small>
+            </div>
+        </div>
+        <div class="file-selected-name" id="judgePhotoNaam"></div>
+        <button id="judgePhotosBtn" type="button">🏆 Laat Questy beoordelen!</button>
         <div id="judgeResult"></div>
     </div>
 
@@ -411,12 +595,42 @@ async function requireLoginForAction(message) {
 const form = document.getElementById("challengeForm");
 const resultaat = document.getElementById("resultaat");
 const questyLoadingVideo = document.getElementById("questyLoadingVideo");
-const submitBtn = form.querySelector('button[type="submit"]');
+const submitBtn = document.getElementById('submitBtn');
 const uploadSection = document.getElementById("uploadSection");
 const photosInput = document.getElementById("challengePhotos");
 const judgePhotosBtn = document.getElementById("judgePhotosBtn");
 const judgeResult = document.getElementById("judgeResult");
 let currentChallengeText = "";
+
+// Picker button logic
+const pickerColors = { energie: ['selected-green','selected-orange','selected-red'], type: ['selected-blue','selected-blue','selected-blue','selected-blue','selected-blue','selected-blue'] };
+document.querySelectorAll('.picker-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll(`.picker-btn[data-group="${group}"]`).forEach(b => {
+            b.classList.remove('selected','selected-green','selected-orange','selected-red','selected-blue');
+        });
+        const colorMap = { laag:'selected-green', gemiddeld:'selected-orange', hoog:'selected-red',
+            knutselen:'selected-blue', kleuren:'selected-blue', puzzel:'selected-blue',
+            kennis:'selected-blue', buiten:'selected-green', natuur:'selected-green' };
+        btn.classList.add(colorMap[btn.dataset.value] || 'selected');
+        document.getElementById(group).value = btn.dataset.value;
+    });
+});
+
+// Upload zone file preview
+const judgeUploadZone = document.getElementById('judgeUploadZone');
+const judgePhotoNaam = document.getElementById('judgePhotoNaam');
+photosInput.addEventListener('change', function() {
+    if (this.files.length > 0) {
+        judgeUploadZone.classList.add('has-file');
+        judgePhotoNaam.textContent = '\u2705 ' + Array.from(this.files).map(f => f.name).join(', ');
+        judgePhotoNaam.style.display = 'block';
+    } else {
+        judgeUploadZone.classList.remove('has-file');
+        judgePhotoNaam.style.display = 'none';
+    }
+});
 
 let _videoRestartTimer = null;
 
@@ -443,7 +657,7 @@ function stopLoadingVideo(vid) {
 
 function startLoadingState() {
     submitBtn.disabled = true;
-    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>? Challenge wordt gegenereerd...</p>";
+    resultaat.innerHTML = "<p style='text-align:center; color:#f5576c;'>⏳ Challenge wordt bedacht...</p>";
     questyLoadingVideo.style.display = "block";
     startLoadingVideo(questyLoadingVideo);
 }
@@ -469,10 +683,15 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
-    startLoadingState();
-
     const energie = document.getElementById("energie").value;
     const activiteit_type = document.getElementById("type").value;
+
+    if (!energie || !activiteit_type) {
+        resultaat.innerHTML = "<p style='text-align:center; color:#f97316; font-weight:700;'>⚠️ Kies eerst een energieniveau én een activiteit!</p>";
+        return;
+    }
+
+    startLoadingState();
 
     const payload = {
         energie: energie,
@@ -520,7 +739,7 @@ form.addEventListener("submit", async (e) => {
         currentChallengeText = data.challenge || "";
         resultaat.innerHTML = `
             <div class="challenge-box">
-                <strong>?? Jouw Challenge:</strong><br><br>
+                <strong>🌟 Jouw Challenge:</strong><br><br>
                 ${data.challenge}
             </div>
         `;
@@ -549,7 +768,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
     }
 
     event.target.disabled = true;
-    judgeResult.textContent = "? Questy kijkt wie het mooist heeft getekend...";
+    judgeResult.textContent = "🔍 Questy kijkt wie het mooist heeft gedaan...";
 
     try {
         const submissions = await Promise.all(
@@ -589,7 +808,7 @@ judgePhotosBtn.addEventListener("click", async (event) => {
             return;
         }
 
-        judgeResult.innerHTML = `? Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
+        judgeResult.innerHTML = `🏆 Questy kiest: <strong>${data.winner_name || "Onbekend"}</strong><br>${data.reasoning || ""}`;
     } catch (err) {
         judgeResult.innerHTML = `<span style='color:#c53030;'>Fout: ${err}</span>`;
     } finally {
