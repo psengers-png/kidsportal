@@ -153,34 +153,51 @@
 
         .form-group {
             margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 20px;
+            background: #f0f9ff;
+            border: 3px solid #bae6fd;
         }
 
         label {
-            font-weight: 600;
+            font-weight: 700;
             display: block;
             margin-bottom: 8px;
+            color: #1e3a5f;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid #e0e7ff;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 3px solid #bae6fd;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
         }
 
         button {
             margin-top: 20px;
-            padding: 12px 24px;
-            background: #3b82f6;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
             color: white;
             border: none;
             border-radius: 999px;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.1rem;
             cursor: pointer;
+            box-shadow: 0 6px 18px rgba(236,72,153,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+            width: 100%;
         }
 
         button:hover:not(:disabled) {
-            background: #2563eb;
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(236,72,153,0.45);
         }
 
         button:disabled {
@@ -201,9 +218,12 @@
 
         #resultaat img {
             max-width: 100%;
-            border-radius: 10px;
+            border-radius: 22px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             margin-bottom: 20px;
+            border: 3px solid #c084fc;
+            background: #fff;
+            padding: 8px;
         }
 
         #scetchyLoadingVideo {
@@ -285,19 +305,19 @@
 
         <div class="agent-header">
             <img src="Images/Scetchy.png" alt="Scetchy">
-            <h2>Scetchy � Tekeninstructie Agent</h2>
-            <p>Scetchy maakt stap-voor-stap tekeninstructies die kinderen makkelijk kunnen volgen ?????</p>
+            <h2>Scetchy - Tekeninstructie Agent</h2>
+            <p>Scetchy maakt stap-voor-stap tekeninstructies die kinderen makkelijk kunnen volgen. ✏️</p>
         </div>
 
         <p id="statusText">Bezig met controleren...</p>
 
         <form id="scetchyForm" style="display:none;">
             <div class="form-group">
-                <label for="onderwerp">Wat wil je tekenen?</label>
-                <input type="text" id="onderwerp" name="onderwerp" required placeholder="Bijv. krokodil">
+                <label for="onderwerp">🎯 Wat wil je tekenen?</label>
+                <input type="text" id="onderwerp" name="onderwerp" required placeholder="bijv. krokodil, raceauto, prinses">
             </div>
-            <button type="submit" id="genereerBtn">?? Maak tekeninstructie</button>
-            <button type="button" id="downloadBtn" style="display:none;">?? Download</button>
+            <button type="submit" id="genereerBtn">🖍️ Maak tekeninstructie</button>
+            <button type="button" id="downloadBtn" style="display:none;">⬇️ Download</button>
         </form>
 
         <video id="scetchyLoadingVideo" playsinline preload="auto">
@@ -401,7 +421,7 @@ function stopLoadingVideo(vid) {
 function startLoadingState() {
     btn.disabled = true;
     downloadBtn.style.display = 'none';
-    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">? Scetchy maakt je tekeninstructie...</p>';
+    resultaat.innerHTML = '<p style="text-align:center; color:#2563eb;">⏳ Scetchy maakt je tekeninstructie...</p>';
     scetchyLoadingVideo.style.display = "block";
     startLoadingVideo(scetchyLoadingVideo);
 }

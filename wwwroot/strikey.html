@@ -142,34 +142,102 @@
             font-size: 2rem;
         }
 
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
+        .form-card {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 20px;
+            background: #f0f9ff;
+            border: 3px solid #bae6fd;
         }
 
-        input,
-        select {
+        label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 8px;
+            color: #1e3a5f;
+        }
+
+        input {
             width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid #e0e7ff;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 3px solid #bae6fd;
             background: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        }
+
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .choice-chip {
+            margin-top: 0;
+            width: auto;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 2px solid #bfdbfe;
+            background: #ffffff;
+            color: #1e40af;
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: none;
+            cursor: pointer;
+        }
+
+        .choice-chip:hover {
+            border-color: #60a5fa;
+            background: #eff6ff;
+        }
+
+        .choice-chip.active {
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #3730a3;
         }
 
         button {
             margin-top: 18px;
-            padding: 12px 24px;
-            background: #3b82f6;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
             color: white;
             border: none;
             border-radius: 999px;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.1rem;
             cursor: pointer;
+            box-shadow: 0 6px 18px rgba(236,72,153,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+            width: 100%;
         }
 
         button:hover:not(:disabled) {
-            background: #2563eb;
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(236,72,153,0.45);
+        }
+
+        .choice-chip,
+        .choice-chip:hover {
+            width: auto;
+            transform: none;
+            box-shadow: none;
+            background: #ffffff;
+            color: #1e40af;
+        }
+
+        .choice-chip.active,
+        .choice-chip.active:hover {
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #3730a3;
         }
 
         #statusText {
@@ -194,8 +262,11 @@
 
         #resultaat img {
             max-width: 100%;
-            border-radius: 18px;
+            border-radius: 22px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid #c084fc;
+            background: #fff;
+            padding: 8px;
         }
 
         .download-wrap {
@@ -266,26 +337,31 @@
         <div class="agent-header">
             <img src="Images/Strikey.png" alt="Strikey">
             <h2>Strijkkraalmotief Generator met Strikey</h2>
-            <p>Geef een onderwerp en Strikey maakt een voorbeeldmotief dat je kunt namaken met strijkkralen.</p>
+            <p>Typ een idee en Strikey maakt een leuk motief om na te leggen met strijkkralen! 🧩</p>
         </div>
 
         <p id="statusText">Bezig met controleren...</p>
 
         <form id="strikeyForm" style="display:none;">
-            <label for="onderwerp">Onderwerp (bijv. dinosaurus, eenhoorn, voetbal)</label>
-            <input id="onderwerp" type="text" maxlength="100" required>
+            <div class="form-card">
+                <label for="onderwerp">🎯 Onderwerp (bijv. dinosaurus, eenhoorn, voetbal)</label>
+                <input id="onderwerp" type="text" maxlength="100" required>
+            </div>
 
-            <label for="bordVormGrootte" style="margin-top:14px;">Vorm en grootte van het bord</label>
-            <select id="bordVormGrootte" required>
-                <option value="rond_15">Rond diameter 15</option>
-                <option value="rond_20">Rond diameter 20</option>
-                <option value="rond_30">Rond diameter 30</option>
-                <option value="vierkant_15x15">Vierkant 15x15</option>
-                <option value="vierkant_20x20" selected>Vierkant 20x20</option>
-                <option value="vierkant_30x30">Vierkant 30x30</option>
-            </select>
+            <div class="form-card">
+                <label>📐 Kies een bord-vorm</label>
+                <div class="chip-group" id="boardChips">
+                    <button type="button" class="choice-chip" data-target="bordVormGrootte" data-value="rond_15">Rond 15</button>
+                    <button type="button" class="choice-chip" data-target="bordVormGrootte" data-value="rond_20">Rond 20</button>
+                    <button type="button" class="choice-chip" data-target="bordVormGrootte" data-value="rond_30">Rond 30</button>
+                    <button type="button" class="choice-chip" data-target="bordVormGrootte" data-value="vierkant_15x15">Vierkant 15x15</button>
+                    <button type="button" class="choice-chip active" data-target="bordVormGrootte" data-value="vierkant_20x20">Vierkant 20x20</button>
+                    <button type="button" class="choice-chip" data-target="bordVormGrootte" data-value="vierkant_30x30">Vierkant 30x30</button>
+                </div>
+                <input id="bordVormGrootte" type="hidden" value="vierkant_20x20" required>
+            </div>
 
-            <button id="generateBtn" type="submit">🧩 Maak een leuk strijkkraalmotief</button>
+            <button id="generateBtn" type="submit">🧩 Maak mijn strijkkraalmotief</button>
         </form>
 
         <video id="strikeyLoadingVideo" playsinline preload="auto">
@@ -351,6 +427,16 @@ const apiRequestEndpoints = [
     'https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebsites.net/apiRequest/'
 ];
 let currentImage = '';
+
+document.querySelectorAll('.choice-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+        const targetInput = document.getElementById(chip.dataset.target);
+        if (!targetInput) return;
+        targetInput.value = chip.dataset.value;
+        chip.parentElement.querySelectorAll('.choice-chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+    });
+});
 
 function toSafeStrijkkraalOnderwerp(input) {
     const value = (input || '').trim().toLowerCase();
