@@ -1144,6 +1144,44 @@ function normalizeUserId(rawUserId) {
     return rawUserId.split('.')[0];
 }
 
+function pickBestMsalAccount(accounts) {
+    if (!Array.isArray(accounts) || accounts.length === 0) {
+        return null;
+    }
+
+    const active = typeof msalInstance.getActiveAccount === "function"
+        ? msalInstance.getActiveAccount()
+        : null;
+    if (active && accounts.some((account) => account.homeAccountId === active.homeAccountId)) {
+        return active;
+    }
+
+    const storedUserId = (localStorage.getItem("userId") || localStorage.getItem("user-id") || "").trim();
+    if (storedUserId) {
+        const matchById = accounts.find((account) => {
+            const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+            return normalizeUserId(rawUserId) === storedUserId;
+        });
+        if (matchById) {
+            return matchById;
+        }
+    }
+
+    const pendingSignupEmail = (localStorage.getItem("pendingSignupEmail") || "").trim().toLowerCase();
+    if (pendingSignupEmail) {
+        const matchByEmail = accounts.find((account) => {
+            const resolved = (resolveAccountEmail(account) || "").toLowerCase();
+            const username = (account?.username || "").toLowerCase();
+            return resolved === pendingSignupEmail || username === pendingSignupEmail;
+        });
+        if (matchByEmail) {
+            return matchByEmail;
+        }
+    }
+
+    return accounts[0];
+}
+
 function getPreferredPlanTypeFromQuery() {
     const params = new URLSearchParams(window.location.search || "");
     const fromPlanType = (params.get("planType") || "").toLowerCase();
@@ -1312,6 +1350,9 @@ const msalReadyPromise = msalInstance.initialize()
         console.log("Redirect response:", response);
         if (response) {
             console.log("Redirect successful. Account added:", msalInstance.getAllAccounts());
+            if (response.account && typeof msalInstance.setActiveAccount === "function") {
+                msalInstance.setActiveAccount(response.account);
+            }
         }
         resetLoginRedirectState();
         return response;
@@ -1362,7 +1403,10 @@ async function updateUI() {
     let userStatus = null;
 
     if (accounts.length > 0) {
-        const account = accounts[0];
+        const account = pickBestMsalAccount(accounts);
+        if (account && typeof msalInstance.setActiveAccount === "function") {
+            msalInstance.setActiveAccount(account);
+        }
         const preferredFromQuery = normalizePreferredPlanType(getPreferredPlanTypeFromQuery());
         if (preferredFromQuery) {
             localStorage.setItem("preferredPlanType", preferredFromQuery);
@@ -1505,7 +1549,10 @@ if (abonnementBtn) {
             return;
         }
 
-        const account = accounts[0];
+        const account = pickBestMsalAccount(accounts);
+        if (account && typeof msalInstance.setActiveAccount === "function") {
+            msalInstance.setActiveAccount(account);
+        }
         const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
         const userId = normalizeUserId(rawUserId);
         if (!userId) {
