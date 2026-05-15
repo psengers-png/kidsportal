@@ -211,7 +211,7 @@
 
     <div class="card">
         <h2>Your account</h2>
-        <div class="muted">Here you can see your current plan, usage, and what you can do if you want to upgrade or cancel.</div>
+        <div class="muted">Here you can see your current plan and usage, with actions that match your account type.</div>
 
         <div class="status-grid">
             <div class="status-item">
@@ -273,13 +273,22 @@
         }).format(date);
     }
 
-    function readablePlan(status) {
-        const isActive = Boolean(status?.isActive);
-        if (!isActive) return 'No active subscription (free plan)';
-
+    function getPlanCandidate(status) {
         const planType = (status?.planType || '').toLowerCase();
         const preferred = (status?.preferredPlanType || '').toLowerCase();
-        const candidate = planType || preferred;
+        return planType || preferred;
+    }
+
+    function isExperienceAccount(status) {
+        return getPlanCandidate(status) === 'ai_experience_box';
+    }
+
+    function readablePlan(status) {
+        const candidate = getPlanCandidate(status);
+        if (candidate === 'ai_experience_box') return 'AI Experience Box (100 credits)';
+
+        const isActive = Boolean(status?.isActive);
+        if (!isActive) return 'No active subscription (free plan)';
 
         if (candidate === 'jaarlijks') return 'Yearly subscription (€12,99/year)';
         if (candidate === 'particulier') return 'Monthly subscription (€2,99/month)';
@@ -306,6 +315,7 @@
 
     function renderStatus(status) {
         const isActive = Boolean(status?.isActive);
+        const isExperience = isExperienceAccount(status);
         const isCanceling = (status?.planStatus || '').toLowerCase() === 'cancel_at_period_end' || Boolean(status?.subscriptionCanceledAt);
         const endsAt = formatDateNl(status?.subscriptionEndsAt);
         const totalUsed = Number(status?.totalRequestsUsed || 0);
@@ -316,7 +326,14 @@
 
         banner.classList.add('show');
 
-        if (isCanceling) {
+        if (isExperience) {
+            banner.style.background = '#ecfeff';
+            banner.style.border = '1px solid #67e8f9';
+            bannerTitle.style.color = '#155e75';
+            bannerText.style.color = '#0f172a';
+            bannerTitle.textContent = 'AI Experience Box active';
+            bannerText.textContent = `You are using a one-time AI Experience Box account. ${Math.max(0, maxRequests - totalUsed)} credits remaining.`;
+        } else if (isCanceling) {
             banner.style.background = '#fff7ed';
             banner.style.border = '1px solid #fdba74';
             bannerTitle.style.color = '#9a3412';
@@ -343,21 +360,25 @@
 
         document.getElementById('statusValue').textContent = isCanceling
             ? 'Canceled, still active'
-            : (isActive ? 'Active' : 'Not active');
+            : (isActive || isExperience ? 'Active' : 'Not active');
         document.getElementById('statusValue').style.color = isCanceling
             ? '#9a3412'
-            : (isActive ? '#166534' : '#b91c1c');
+            : (isActive || isExperience ? '#166534' : '#b91c1c');
         document.getElementById('planValue').textContent = readablePlan(status);
         document.getElementById('usageValue').textContent = `${totalUsed} / ${maxRequests}`;
 
-        const nextStep = isCanceling
+        const nextStep = isExperience
+            ? 'Use your credits; upgrade/cancel is not applicable'
+            : isCanceling
             ? (endsAt ? `Geldig t/m ${endsAt}` : 'Geldig tot einde factuurperiode')
             : (isActive
                 ? 'You have unlimited access'
                 : (totalUsed >= maxRequests ? 'Upgrade required to continue' : 'You can still use free requests'));
         document.getElementById('nextStepValue').textContent = nextStep;
 
-        document.getElementById('statusNotice').textContent = isCanceling
+        document.getElementById('statusNotice').textContent = isExperience
+            ? 'This account is from the AI Experience Box. It is a one-time purchase, not a subscription.'
+            : isCanceling
             ? (endsAt
                 ? `Your subscription is canceled and remains valid until ${endsAt}. Then it stops automatically.`
                 : 'Your subscription is canceled and remains active until the end of your billing period.')
@@ -367,10 +388,18 @@
                     ? 'Your free limit has been reached. Upgrade for unlimited use.'
                     : 'Your account is active on the free plan.'));
 
+        const upgradeBtn = document.getElementById('upgradeBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        cancelBtn.disabled = !isActive || isCanceling;
-        cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
-        cancelBtn.textContent = isCanceling ? 'Already canceled' : 'Cancel subscription';
+        if (isExperience) {
+            upgradeBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        } else {
+            upgradeBtn.style.display = '';
+            cancelBtn.style.display = '';
+            cancelBtn.disabled = !isActive || isCanceling;
+            cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
+            cancelBtn.textContent = isCanceling ? 'Already canceled' : 'Cancel subscription';
+        }
     }
 
     async function refreshStatus() {
@@ -403,6 +432,14 @@
             return;
         }
 
+        try {
+            const latestStatus = await fetchUserStatus(userId);
+            if (isExperienceAccount(latestStatus)) {
+                alert('Your AI Experience Box account does not need an upgrade.');
+                return;
+            }
+        } catch (_) {}
+
         if (window.showSubscriptionUpgradeModal) {
             window.showSubscriptionUpgradeModal(userId);
             return;
@@ -420,6 +457,11 @@
 
         try {
             const latestStatus = await refreshStatus();
+            if (isExperienceAccount(latestStatus)) {
+                alert('Cancel is not applicable for an AI Experience Box account.');
+                return;
+            }
+
             if (!latestStatus?.isActive) {
                 alert('You do not have an active subscription to cancel.');
                 return;

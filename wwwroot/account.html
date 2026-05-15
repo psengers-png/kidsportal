@@ -208,7 +208,7 @@
 
     <div class="card">
         <h2>Jouw account</h2>
-        <div class="muted">Hier zie je je huidige plan, gebruik en wat je kunt doen als je wilt upgraden of opzeggen.</div>
+        <div class="muted">Hier zie je je huidige plan en gebruik, met de acties die bij jouw accounttype passen.</div>
 
         <div class="status-grid">
             <div class="status-item">
@@ -270,13 +270,22 @@
         }).format(date);
     }
 
-    function readablePlan(status) {
-        const isActive = Boolean(status?.isActive);
-        if (!isActive) return 'Geen actief abonnement (gratis plan)';
-
+    function getPlanCandidate(status) {
         const planType = (status?.planType || '').toLowerCase();
         const preferred = (status?.preferredPlanType || '').toLowerCase();
-        const candidate = planType || preferred;
+        return planType || preferred;
+    }
+
+    function isExperienceAccount(status) {
+        return getPlanCandidate(status) === 'ai_experience_box';
+    }
+
+    function readablePlan(status) {
+        const candidate = getPlanCandidate(status);
+        if (candidate === 'ai_experience_box') return 'AI Experience Box (100 credits)';
+
+        const isActive = Boolean(status?.isActive);
+        if (!isActive) return 'Geen actief abonnement (gratis plan)';
 
         if (candidate === 'jaarlijks') return 'Jaarabonnement (€12,99/jaar)';
         if (candidate === 'particulier') return 'Maandabonnement (€2,99/mnd)';
@@ -303,6 +312,7 @@
 
     function renderStatus(status) {
         const isActive = Boolean(status?.isActive);
+        const isExperience = isExperienceAccount(status);
         const isCanceling = (status?.planStatus || '').toLowerCase() === 'cancel_at_period_end' || Boolean(status?.subscriptionCanceledAt);
         const endsAt = formatDateNl(status?.subscriptionEndsAt);
         const totalUsed = Number(status?.totalRequestsUsed || 0);
@@ -313,7 +323,14 @@
 
         banner.classList.add('show');
 
-        if (isCanceling) {
+        if (isExperience) {
+            banner.style.background = '#ecfeff';
+            banner.style.border = '1px solid #67e8f9';
+            bannerTitle.style.color = '#155e75';
+            bannerText.style.color = '#0f172a';
+            bannerTitle.textContent = 'AI Experience Box actief';
+            bannerText.textContent = `Je gebruikt een eenmalig AI Experience Box account. Nog ${Math.max(0, maxRequests - totalUsed)} credits beschikbaar.`;
+        } else if (isCanceling) {
             banner.style.background = '#fff7ed';
             banner.style.border = '1px solid #fdba74';
             bannerTitle.style.color = '#9a3412';
@@ -340,21 +357,25 @@
 
         document.getElementById('statusValue').textContent = isCanceling
             ? 'Opgezegd, nog actief'
-            : (isActive ? 'Actief' : 'Niet actief');
+            : (isActive || isExperience ? 'Actief' : 'Niet actief');
         document.getElementById('statusValue').style.color = isCanceling
             ? '#9a3412'
-            : (isActive ? '#166534' : '#b91c1c');
+            : (isActive || isExperience ? '#166534' : '#b91c1c');
         document.getElementById('planValue').textContent = readablePlan(status);
         document.getElementById('usageValue').textContent = `${totalUsed} / ${maxRequests}`;
 
-        const nextStep = isCanceling
+        const nextStep = isExperience
+            ? 'Gebruik je credits; upgraden/opzeggen is niet van toepassing'
+            : isCanceling
             ? (endsAt ? `Geldig t/m ${endsAt}` : 'Geldig tot einde factuurperiode')
             : (isActive
                 ? 'Je hebt onbeperkte toegang'
                 : (totalUsed >= maxRequests ? 'Upgrade nodig om door te gaan' : 'Je kunt nog gratis gebruiken'));
         document.getElementById('nextStepValue').textContent = nextStep;
 
-        document.getElementById('statusNotice').textContent = isCanceling
+        document.getElementById('statusNotice').textContent = isExperience
+            ? 'Dit account komt uit de AI Experience Box. Dit is een eenmalige aankoop zonder abonnement.'
+            : isCanceling
             ? (endsAt
                 ? `Je abonnement is opgezegd en blijft geldig tot ${endsAt}. Daarna stopt het automatisch.`
                 : 'Je abonnement is opgezegd en blijft actief tot het einde van je factuurperiode.')
@@ -364,10 +385,18 @@
                     ? 'Je gratis limiet is bereikt. Upgrade om onbeperkt verder te gaan.'
                     : 'Je account is actief op het gratis plan.'));
 
+        const upgradeBtn = document.getElementById('upgradeBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        cancelBtn.disabled = !isActive || isCanceling;
-        cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
-        cancelBtn.textContent = isCanceling ? 'Al opgezegd' : 'Abonnement opzeggen';
+        if (isExperience) {
+            upgradeBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        } else {
+            upgradeBtn.style.display = '';
+            cancelBtn.style.display = '';
+            cancelBtn.disabled = !isActive || isCanceling;
+            cancelBtn.style.opacity = (!isActive || isCanceling) ? '0.55' : '1';
+            cancelBtn.textContent = isCanceling ? 'Al opgezegd' : 'Abonnement opzeggen';
+        }
     }
 
     async function refreshStatus() {
@@ -400,6 +429,14 @@
             return;
         }
 
+        try {
+            const latestStatus = await fetchUserStatus(userId);
+            if (isExperienceAccount(latestStatus)) {
+                alert('Je AI Experience Box account heeft geen upgrade nodig.');
+                return;
+            }
+        } catch (_) {}
+
         if (window.showSubscriptionUpgradeModal) {
             window.showSubscriptionUpgradeModal(userId);
             return;
@@ -417,6 +454,11 @@
 
         try {
             const latestStatus = await refreshStatus();
+            if (isExperienceAccount(latestStatus)) {
+                alert('Opzeggen is niet van toepassing voor een AI Experience Box account.');
+                return;
+            }
+
             if (!latestStatus?.isActive) {
                 alert('Je hebt geen actief abonnement om op te zeggen.');
                 return;
