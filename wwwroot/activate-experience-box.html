@@ -126,6 +126,12 @@
       box.textContent = text;
     }
 
+    function redirectToHomeSoon() {
+      window.setTimeout(() => {
+        window.location.href = '/home.html';
+      }, 900);
+    }
+
     function getAccountId() {
       return (
         localStorage.getItem('userId')
@@ -178,7 +184,8 @@
         }
 
         if (status.activated) {
-          renderStatus(`Je account is actief. Beschikbare credits: ${status.creditsBalance}`, 'ok');
+          renderStatus(`Je account is actief. Beschikbare credits: ${status.creditsBalance}. Je gaat nu door naar home...`, 'ok');
+          redirectToHomeSoon();
         } else {
           renderStatus('Je account is nog niet geactiveerd met een code.', '');
         }
@@ -204,9 +211,10 @@
 
       try {
         const result = await window.redeemExperienceCode(activationCode);
-        renderStatus(`Activatie gelukt. Beschikbare credits: ${result.creditsBalance}`, 'ok');
+        renderStatus(`Activatie gelukt. Beschikbare credits: ${result.creditsBalance}. Je gaat nu door naar home...`, 'ok');
         localStorage.removeItem('pendingActivationCode');
         input.value = '';
+        redirectToHomeSoon();
       } catch (error) {
         renderStatus(error?.message || 'Activatie mislukt.', 'error');
       }
