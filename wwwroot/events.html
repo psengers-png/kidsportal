@@ -227,9 +227,10 @@
       </div>
       <div class="hero-copy">
         <h2>Interactieve AI experience voor kinderen op locatie</h2>
-        <p class="lead">Een creatieve AI experience voor kinderen op events. Kinderen maken in korte tijd iets eigens en gaan met een grote glimlach naar huis.</p>
+        <p class="lead">Een creatieve AI experience voor kinderen op events. Kinderen maken in korte tijd iets eigens en gaan met een grote glimlach naar huis. Deze ervaring is nu ook direct te bestellen als AI Experience Box.</p>
         <div class="cta-row">
           <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor meer info</a>
+          <a class="cta cta-green" href="#" id="boxCheckoutBtnEvents">Bestel AI Experience Box</a>
         </div>
       </div>
     </section>
@@ -257,6 +258,28 @@
     </section>
 
     <section class="panel">
+      <h3>AI Experience Box voor events en kinderactiviteiten</h3>
+      <p>Wil je een snelle en schaalbare opzet voor een event? Met de AI Experience Box heb je direct een complete, bestelbare flow met betaling via Stripe en activatie via code.</p>
+      <div class="grid">
+        <article class="card">
+          <h4>Inhoud van de box</h4>
+          <p>Unieke activatiecode voor RainyDay Club, 100 credits, AI Creator diploma, bingokaart en een duidelijke handleiding.</p>
+        </article>
+        <article class="card">
+          <h4>Direct bestellen</h4>
+          <p>Bestel via deze pagina, betaal veilig via Stripe en ontvang daarna automatisch de activatie-informatie per mail.</p>
+        </article>
+        <article class="card">
+          <h4>Direct inzetten</h4>
+          <p>Na accountactivatie met code is de ervaring meteen live voor jullie team of locatie met 100 credits beschikbaar.</p>
+        </article>
+      </div>
+      <div class="cta-row">
+        <a class="cta cta-green" href="#" id="boxCheckoutBtnEventsMiddle">Bestel AI Experience Box</a>
+      </div>
+    </section>
+
+    <section class="panel">
       <h3>Waarom dit werkt op events</h3>
       <div class="grid">
         <article class="card">
@@ -275,6 +298,7 @@
       <div class="cta-row">
         <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor meer info</a>
         <a class="cta cta-blue" href="mailto:info@rainydayclub.nl?subject=Informatie%20BSO%20en%20scholen">Mail voor school/BSO info</a>
+        <a class="cta cta-green" href="#" id="boxCheckoutBtnEventsBottom">Bestel AI Experience Box</a>
       </div>
       <p class="small">Zoek je een setting voor groepen? Bekijk ook onze <a href="/scholen-bso.html">AI experience voor kinderen op school en BSO</a>.</p>
       <div class="footer-links">
@@ -284,6 +308,26 @@
       </div>
     </section>
   </main>
+  <script src="/JS/experience-box.js"></script>
+  <script>
+    async function handleBoxCheckoutClick(event) {
+      event.preventDefault();
+      const email = window.prompt('Vul je e-mailadres in voor de bestelling:');
+      if (!email) {
+        return;
+      }
+
+      try {
+        await window.startExperienceBoxCheckout('events', email);
+      } catch (error) {
+        window.alert(error?.message || 'Het starten van de checkout is mislukt.');
+      }
+    }
+
+    document.getElementById('boxCheckoutBtnEvents')?.addEventListener('click', handleBoxCheckoutClick);
+    document.getElementById('boxCheckoutBtnEventsMiddle')?.addEventListener('click', handleBoxCheckoutClick);
+    document.getElementById('boxCheckoutBtnEventsBottom')?.addEventListener('click', handleBoxCheckoutClick);
+  </script>
 </body>
 </html>
 

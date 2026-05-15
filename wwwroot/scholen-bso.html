@@ -227,9 +227,10 @@
       </div>
       <div class="hero-copy">
         <h2>Interactieve AI voor kinderen op school in groepen</h2>
-        <p class="lead">Een speelse AI experience voor kinderen waarin ze samenwerken met creatieve AI agents, ideeen bedenken en stap voor stap een eigen creatie maken. Ideaal voor AI voor kinderen school en BSO-programma's.</p>
+        <p class="lead">Een speelse AI experience voor kinderen waarin ze samenwerken met creatieve AI agents, ideeen bedenken en stap voor stap een eigen creatie maken. Ideaal voor AI voor kinderen school en BSO-programma's, nu ook als complete AI Experience Box.</p>
         <div class="cta-row">
           <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20BSO%20en%20scholen">Mail voor meer info</a>
+          <a class="cta cta-green" href="#" id="boxCheckoutBtnBso">Bestel AI Experience Box</a>
         </div>
       </div>
     </section>
@@ -257,6 +258,28 @@
     </section>
 
     <section class="panel">
+      <h3>Nieuw: AI Experience Box voor kinderen</h3>
+      <p>Voor scholen en BSO's die direct willen starten hebben we nu een complete box-flow. Na bestelling ontvangen jullie alles per mail en kunnen kinderen meteen aan de slag.</p>
+      <div class="grid">
+        <article class="card">
+          <h4>Wat zit erin?</h4>
+          <p>Een unieke activatiecode voor RainyDay Club, 100 credits, een AI Creator diploma, een bingokaart en een praktische handleiding voor begeleiders.</p>
+        </article>
+        <article class="card">
+          <h4>Hoe bestel je?</h4>
+          <p>Klik op <strong>Bestel AI Experience Box</strong>, rond de Stripe-betaling af en ontvang daarna automatisch de activatie-mail.</p>
+        </article>
+        <article class="card">
+          <h4>Hoe activeer je?</h4>
+          <p>Maak een account aan, vul de activatiecode in en het account wordt geactiveerd met 100 credits voor jullie groep.</p>
+        </article>
+      </div>
+      <div class="cta-row">
+        <a class="cta cta-green" href="#" id="boxCheckoutBtnBsoMiddle">Bestel AI Experience Box</a>
+      </div>
+    </section>
+
+    <section class="panel">
       <h3>Waarom dit werkt voor school en BSO</h3>
       <div class="grid">
         <article class="card">
@@ -275,6 +298,7 @@
       <div class="cta-row">
         <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20BSO%20en%20scholen">Mail voor meer info</a>
         <a class="cta cta-blue" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor events info</a>
+        <a class="cta cta-green" href="#" id="boxCheckoutBtnBsoBottom">Bestel AI Experience Box</a>
       </div>
       <p class="small">Bekijk ook onze <a href="/events.html">AI experience voor kinderen op events</a> of ga naar <a href="/home.html">AI activiteiten voor thuis</a>.</p>
       <div class="footer-links">
@@ -284,6 +308,26 @@
       </div>
     </section>
   </main>
+  <script src="/JS/experience-box.js"></script>
+  <script>
+    async function handleBoxCheckoutClick(event) {
+      event.preventDefault();
+      const email = window.prompt('Vul je e-mailadres in voor de bestelling:');
+      if (!email) {
+        return;
+      }
+
+      try {
+        await window.startExperienceBoxCheckout('schools_bso', email);
+      } catch (error) {
+        window.alert(error?.message || 'Het starten van de checkout is mislukt.');
+      }
+    }
+
+    document.getElementById('boxCheckoutBtnBso')?.addEventListener('click', handleBoxCheckoutClick);
+    document.getElementById('boxCheckoutBtnBsoMiddle')?.addEventListener('click', handleBoxCheckoutClick);
+    document.getElementById('boxCheckoutBtnBsoBottom')?.addEventListener('click', handleBoxCheckoutClick);
+  </script>
 </body>
 </html>
 

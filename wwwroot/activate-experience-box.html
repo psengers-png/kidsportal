@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activeer je AI Experience Box | RainyDay Club</title>
+  <meta name="description" content="Activeer je RainyDay Club AI Experience Box met je unieke activatiecode en ontvang 100 credits." />
+  <style>
+    * { box-sizing: border-box; font-family: "Segoe UI", system-ui, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #e8f6ff, #fff9e6 45%, #dcfce7);
+      color: #173042;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(760px, 100%);
+      background: #ffffff;
+      border: 1px solid #dce8ef;
+      border-radius: 20px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+      padding: 28px;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(1.4rem, 4vw, 2rem); }
+    p { margin: 0 0 14px; color: #35546a; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    input {
+      flex: 1;
+      min-width: 260px;
+      border: 1px solid #bfd3df;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+    }
+    button {
+      border: 0;
+      border-radius: 12px;
+      background: #0f172a;
+      color: #fff;
+      font-weight: 700;
+      padding: 12px 18px;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #1f6f8b;
+    }
+    .status {
+      margin-top: 14px;
+      border-radius: 12px;
+      padding: 12px;
+      background: #eef8ff;
+      border: 1px solid #c5e6ff;
+      color: #1d516f;
+      display: none;
+    }
+    .ok {
+      background: #ecfdf3;
+      border-color: #b7efc5;
+      color: #1f6d3b;
+    }
+    .error {
+      background: #fff3f1;
+      border-color: #ffd1cb;
+      color: #923020;
+    }
+    .hint {
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+    a { color: #0b63a6; font-weight: 700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Activeer je AI Experience Box</h1>
+    <p>Log eerst in of maak een account aan. Vul daarna je unieke activatiecode in om 100 credits te activeren.</p>
+
+    <div class="row">
+      <input id="activationCodeInput" type="text" autocomplete="off" placeholder="Bijv. RDC-ABCD-1234" />
+      <button id="redeemBtn" type="button">Activeer code</button>
+      <button id="refreshBtn" class="secondary" type="button">Ververs status</button>
+    </div>
+
+    <p class="hint">Nog geen account? <a href="/signup.html">Maak hier een account aan</a> en kom daarna terug naar deze pagina.</p>
+
+    <div id="statusBox" class="status"></div>
+  </main>
+
+  <script src="/JS/experience-box.js"></script>
+  <script>
+    function renderStatus(text, className) {
+      const box = document.getElementById('statusBox');
+      box.style.display = 'block';
+      box.className = `status ${className || ''}`.trim();
+      box.textContent = text;
+    }
+
+    async function refreshStatus() {
+      try {
+        const status = await window.fetchExperienceStatus();
+        if (status.missingAccount) {
+          renderStatus('Log in om je credits te bekijken.', '');
+          return;
+        }
+
+        if (status.activated) {
+          renderStatus(`Je account is actief. Beschikbare credits: ${status.creditsBalance}`, 'ok');
+        } else {
+          renderStatus('Je account is nog niet geactiveerd met een code.', '');
+        }
+      } catch (error) {
+        renderStatus(error?.message || 'Status ophalen mislukt.', 'error');
+      }
+    }
+
+    async function redeemCode() {
+      const input = document.getElementById('activationCodeInput');
+      const activationCode = (input.value || '').trim().toUpperCase();
+      if (!activationCode) {
+        renderStatus('Vul een activatiecode in.', 'error');
+        return;
+      }
+
+      try {
+        const result = await window.redeemExperienceCode(activationCode);
+        renderStatus(`Activatie gelukt. Beschikbare credits: ${result.creditsBalance}`, 'ok');
+        input.value = '';
+      } catch (error) {
+        renderStatus(error?.message || 'Activatie mislukt.', 'error');
+      }
+    }
+
+    document.getElementById('redeemBtn').addEventListener('click', redeemCode);
+    document.getElementById('refreshBtn').addEventListener('click', refreshStatus);
+    refreshStatus();
+  </script>
+</body>
+</html>
