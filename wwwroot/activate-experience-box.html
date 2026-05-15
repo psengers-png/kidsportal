@@ -153,8 +153,10 @@
     function hydrateActivationCodeFromQuery() {
       const params = new URLSearchParams(window.location.search);
       const codeFromUrl = (params.get('code') || '').trim().toUpperCase();
-      if (codeFromUrl) {
-        document.getElementById('activationCodeInput').value = codeFromUrl;
+      const codeFromStorage = (localStorage.getItem('pendingActivationCode') || '').trim().toUpperCase();
+      const code = codeFromUrl || codeFromStorage;
+      if (code) {
+        document.getElementById('activationCodeInput').value = code;
       }
     }
 
@@ -203,6 +205,7 @@
       try {
         const result = await window.redeemExperienceCode(activationCode);
         renderStatus(`Activatie gelukt. Beschikbare credits: ${result.creditsBalance}`, 'ok');
+        localStorage.removeItem('pendingActivationCode');
         input.value = '';
       } catch (error) {
         renderStatus(error?.message || 'Activatie mislukt.', 'error');
@@ -210,7 +213,9 @@
     }
 
     document.getElementById('goSignupBtn').addEventListener('click', () => {
-      window.location.href = '/signup.html?next=/activate-experience-box.html';
+      const currentCode = (document.getElementById('activationCodeInput').value || '').trim().toUpperCase();
+      const codeParam = currentCode ? `?code=${encodeURIComponent(currentCode)}` : '';
+      window.location.href = `/signup-experience-box.html${codeParam}`;
     });
 
     document.getElementById('goLoginBtn').addEventListener('click', () => {

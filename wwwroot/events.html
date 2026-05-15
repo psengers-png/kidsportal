@@ -162,6 +162,17 @@
     .cta-yellow { background: #ffd966; }
     .cta-blue { background: #d6f0ff; }
     .cta-green { background: #d9f8e8; }
+    .price-pill {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #163a4f;
+      background: #fff2b8;
+      border: 1px solid #f1dc83;
+    }
     .material-previews {
       margin-top: 14px;
       display: flex;
@@ -297,9 +308,10 @@
       <div class="hero-copy">
         <h2>Interactieve AI experience voor kinderen op locatie</h2>
         <p class="lead">Een creatieve AI experience voor kinderen op events. Kinderen maken in korte tijd iets eigens en gaan met een grote glimlach naar huis. Deze ervaring is nu ook direct te bestellen als AI Experience Box.</p>
+        <span class="price-pill">AI Experience Box: eenmalig €29,99</span>
         <div class="cta-row">
           <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor meer info</a>
-          <a class="cta cta-green" href="#" id="boxCheckoutBtnEvents">Bestel AI Experience Box</a>
+          <a class="cta cta-green" href="#" id="boxCheckoutBtnEvents">Bestel AI Experience Box (€29,99)</a>
         </div>
       </div>
     </section>
@@ -336,7 +348,7 @@
         </article>
         <article class="card">
           <h4>Direct bestellen</h4>
-          <p>Bestel via deze pagina, betaal veilig via Stripe en ontvang daarna automatisch de activatie-informatie per mail.</p>
+          <p>Bestel via deze pagina, betaal veilig via Stripe voor <strong>€29,99</strong> en ontvang daarna automatisch de activatie-informatie per mail.</p>
         </article>
         <article class="card">
           <h4>Direct inzetten</h4>
@@ -344,7 +356,7 @@
         </article>
       </div>
       <div class="cta-row">
-        <a class="cta cta-green" href="#" id="boxCheckoutBtnEventsMiddle">Bestel AI Experience Box</a>
+        <a class="cta cta-green" href="#" id="boxCheckoutBtnEventsMiddle">Bestel AI Experience Box (€29,99)</a>
       </div>
     </section>
 
@@ -367,7 +379,7 @@
       <div class="cta-row">
         <a class="cta cta-yellow" href="mailto:info@rainydayclub.nl?subject=Informatie%20events%20en%20bedrijven">Mail voor meer info</a>
         <a class="cta cta-blue" href="mailto:info@rainydayclub.nl?subject=Informatie%20BSO%20en%20scholen">Mail voor school/BSO info</a>
-        <a class="cta cta-green" href="#" id="boxCheckoutBtnEventsBottom">Bestel AI Experience Box</a>
+        <a class="cta cta-green" href="#" id="boxCheckoutBtnEventsBottom">Bestel AI Experience Box (€29,99)</a>
       </div>
       <p class="small">Zoek je een setting voor groepen? Bekijk ook onze <a href="/scholen-bso.html">AI experience voor kinderen op school en BSO</a>.</p>
       <div class="footer-links">
@@ -380,15 +392,15 @@
 
   <div class="checkout-modal" id="checkoutModalEvents" aria-hidden="true">
     <div class="checkout-modal-card" role="dialog" aria-modal="true" aria-labelledby="checkoutModalTitleEvents">
-      <h4 id="checkoutModalTitleEvents">Bestel AI Experience Box</h4>
+      <h4 id="checkoutModalTitleEvents">Bestel AI Experience Box - €29,99</h4>
       <p>Vul het e-mailadres in waarop je de activatiecode, diploma, bingokaart en handleiding wilt ontvangen.</p>
       <div class="checkout-modal-row">
         <input id="checkoutEmailInputEvents" type="email" autocomplete="email" placeholder="naam@organisatie.nl" />
       </div>
-      <p class="checkout-help">Na betaling ontvang je eerst een e-mail met activatiecode en stappen. Daarna maak je een account aan en activeer je de code.</p>
+      <p class="checkout-help">Prijs: eenmalig €29,99. Na betaling ontvang je eerst een e-mail met activatiecode en stappen. Daarna maak je een account aan en activeer je de code.</p>
       <div id="checkoutErrorEvents" class="checkout-error"></div>
       <div class="checkout-modal-row">
-        <button class="checkout-btn primary" id="checkoutSubmitBtnEvents" type="button">Naar Stripe checkout</button>
+        <button class="checkout-btn primary" id="checkoutSubmitBtnEvents" type="button">Naar Stripe checkout (€29,99)</button>
         <button class="checkout-btn secondary" id="checkoutCloseBtnEvents" type="button">Sluiten</button>
       </div>
     </div>

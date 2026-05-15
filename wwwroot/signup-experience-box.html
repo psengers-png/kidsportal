@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account aanmaken voor AI Experience Box | RainyDay Club</title>
+  <meta name="description" content="Maak een account aan voor de RainyDay Club AI Experience Box en koppel direct je activatiecode." />
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    * { box-sizing: border-box; font-family: "Segoe UI", system-ui, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(165deg, #eaf7ff, #fff7dc 45%, #e1faef);
+      color: #173042;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(760px, 100%);
+      background: #ffffff;
+      border-radius: 22px;
+      border: 1px solid #d7e6ef;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.13);
+      padding: 28px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.35rem, 3.6vw, 1.95rem);
+      color: #15354a;
+    }
+    p {
+      margin: 0;
+      color: #35546a;
+      line-height: 1.5;
+    }
+    .info {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #d4e4ee;
+      background: #f5fbff;
+      color: #35546a;
+      font-size: 0.95rem;
+    }
+    .field {
+      margin-top: 14px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      color: #315468;
+      font-weight: 700;
+    }
+    input[type="email"],
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid #bfd3df;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      color: #173b51;
+    }
+    .consent {
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #476176;
+      font-size: 0.9rem;
+    }
+    .consent input {
+      margin-top: 2px;
+    }
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button, a.btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button.primary {
+      background: #15354a;
+      color: #ffffff;
+    }
+    button.primary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+    a.btn.secondary {
+      background: #e6f0f6;
+      color: #1f4761;
+    }
+    .error {
+      margin-top: 10px;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid #ffd1cb;
+      background: #fff3f1;
+      color: #923020;
+      font-size: 0.92rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Account aanmaken voor AI Experience Box</h1>
+    <p>Gebruik dit formulier specifiek voor de AI Experience Box. Zo koppel je je account direct aan je activatiecode.</p>
+
+    <div class="info">
+      <strong>Stapvolgorde:</strong> 1) vul e-mail + activatiecode in, 2) maak je account aan, 3) na inloggen word je direct teruggestuurd naar activatie.
+    </div>
+
+    <div id="signupError" class="error"></div>
+
+    <div class="field">
+      <label for="emailInput">E-mailadres</label>
+      <input id="emailInput" type="email" autocomplete="email" placeholder="naam@organisatie.nl" />
+    </div>
+
+    <div class="field">
+      <label for="activationCodeInput">Activatiecode uit je e-mail</label>
+      <input id="activationCodeInput" type="text" autocomplete="off" placeholder="Bijv. RDC-ABCD-1234" />
+    </div>
+
+    <label class="consent">
+      <input type="checkbox" id="termsConsent" />
+      Ik ga akkoord met de <a href="/terms.html" target="_blank" rel="noopener noreferrer">voorwaarden</a> en de <a href="/privacy.html" target="_blank" rel="noopener noreferrer">privacyverklaring</a>.
+    </label>
+
+    <div class="actions">
+      <button id="createAccountBtn" class="primary" type="button">Account aanmaken voor activatie</button>
+      <a class="btn secondary" href="/login.html?next=/activate-experience-box.html">Ik heb al een account</a>
+    </div>
+  </main>
+
+  <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+  <script>
+    const msalConfig = {
+      auth: {
+        clientId: "29dc0ff8-8b79-4291-b3bd-037f5f33c82f",
+        authority: "https://kidsportal2.ciamlogin.com/4abbf94b-738e-4740-b4e7-e167dcc756ac",
+        redirectUri: window.location.origin + "/activate-experience-box.html",
+        postLogoutRedirectUri: window.location.origin + "/login.html?loggedOut=1",
+        knownAuthorities: ["kidsportal2.ciamlogin.com"],
+        navigateToLoginRequestUrl: false
+      },
+      cache: { cacheLocation: "localStorage" }
+    };
+
+    const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+    function normalizeUserId(rawUserId) {
+      if (!rawUserId) {
+        return "";
+      }
+      return rawUserId.split('.')[0];
+    }
+
+    function getQueryCode() {
+      const params = new URLSearchParams(window.location.search || "");
+      return (params.get("code") || "").trim().toUpperCase();
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById("signupError");
+      errorEl.textContent = message;
+      errorEl.style.display = "block";
+    }
+
+    function clearError() {
+      const errorEl = document.getElementById("signupError");
+      errorEl.textContent = "";
+      errorEl.style.display = "none";
+    }
+
+    async function bootstrapCiamLogin() {
+      try {
+        await msalInstance.initialize();
+        await msalInstance.handleRedirectPromise();
+
+        const loginInProgress = sessionStorage.getItem("ciamLoginInProgress") === "1";
+        const hasAuthResponse = window.location.hash.includes("id_token")
+          || window.location.hash.includes("code=")
+          || window.location.search.includes("code=")
+          || window.location.search.includes("state=");
+
+        if (!loginInProgress && !hasAuthResponse) {
+          const codeFromQuery = getQueryCode();
+          if (codeFromQuery) {
+            document.getElementById("activationCodeInput").value = codeFromQuery;
+          }
+          return;
+        }
+
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          const account = accounts[0];
+          const rawUserId = account.homeAccountId || account.localAccountId || account.username || "";
+          const userId = normalizeUserId(rawUserId);
+          const email = account.username || "";
+
+          if (userId) {
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("user-id", userId);
+          }
+          if (email) {
+            localStorage.setItem("userEmail", email);
+          }
+
+          const activationCode = (localStorage.getItem("pendingActivationCode") || "").trim().toUpperCase();
+          sessionStorage.removeItem("ciamLoginInProgress");
+
+          const targetUrl = activationCode
+            ? `/activate-experience-box.html?code=${encodeURIComponent(activationCode)}`
+            : "/activate-experience-box.html";
+          window.location.href = targetUrl;
+        }
+      } catch (error) {
+        console.error("CIAM experience signup bootstrap failed:", error);
+        sessionStorage.removeItem("ciamLoginInProgress");
+        showError("Account aanmaken kon niet worden afgerond. Probeer opnieuw.");
+      }
+    }
+
+    async function handleCreateAccount() {
+      clearError();
+
+      const email = (document.getElementById("emailInput").value || "").trim();
+      const activationCode = (document.getElementById("activationCodeInput").value || "").trim().toUpperCase();
+      const hasConsent = document.getElementById("termsConsent").checked;
+      const btn = document.getElementById("createAccountBtn");
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError("Voer een geldig e-mailadres in.");
+        return;
+      }
+
+      if (!activationCode) {
+        showError("Vul je activatiecode uit de e-mail in.");
+        return;
+      }
+
+      if (!hasConsent) {
+        showError("Je moet akkoord gaan met de voorwaarden om door te gaan.");
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.textContent = "Account wordt aangemaakt...";
+
+        sessionStorage.setItem("ciamLoginInProgress", "1");
+        localStorage.setItem("pendingSignupEmail", email);
+        localStorage.setItem("pendingActivationCode", activationCode);
+
+        await msalInstance.loginRedirect({
+          scopes: ["openid", "profile", "offline_access"],
+          redirectUri: window.location.origin + "/activate-experience-box.html"
+        });
+      } catch (error) {
+        console.error("Create experience account redirect failed:", error);
+        sessionStorage.removeItem("ciamLoginInProgress");
+        showError("Account aanmaken is mislukt. Probeer opnieuw.");
+        btn.disabled = false;
+        btn.textContent = "Account aanmaken voor activatie";
+      }
+    }
+
+    document.getElementById("createAccountBtn").addEventListener("click", handleCreateAccount);
+    document.getElementById("activationCodeInput").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        handleCreateAccount();
+      }
+    });
+
+    bootstrapCiamLogin();
+  </script>
+</body>
+</html>
