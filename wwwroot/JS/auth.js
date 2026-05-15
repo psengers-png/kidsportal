@@ -128,6 +128,9 @@ function getReadablePlanName(userStatus) {
     if (candidate === "pilot") {
         return "Pilot toegang";
     }
+    if (candidate === "ai_experience_box") {
+        return "AI Experience Box (100 credits)";
+    }
     if (candidate === "gratis") {
         return "Gratis plan";
     }
@@ -188,9 +191,13 @@ function showSubscriptionManageModal(userStatus = null) {
         activeState.style.marginBottom = "6px";
         activeState.innerHTML = `<strong>Status:</strong> ${isActive ? "Actief" : "Niet actief"}`;
 
-        const usageInfo = document.createElement("div");
-        const totalUsed = Number(userStatus?.totalRequestsUsed || 0);
-        const maxRequests = Number(userStatus?.maxRequests || 25);
+        const creditsBalance = Number(userStatus?.creditsBalance || 0);
+        const planType = (userStatus?.planType || "").toString().toLowerCase();
+        usageInfo.style.fontSize = "14px";
+        usageInfo.style.color = "#334155";
+        usageInfo.innerHTML = planType === "ai_experience_box"
+            ? `<strong>Credits:</strong> ${creditsBalance || 100} van 100`
+            :umber(userStatus?.maxRequests || 25);
         usageInfo.style.fontSize = "14px";
         usageInfo.style.color = "#334155";
         usageInfo.innerHTML = `<strong>Deze maand gebruikt:</strong> ${totalUsed} van ${maxRequests} gratis aanvragen`;
@@ -1544,6 +1551,9 @@ async function registerUser(userId, email, name) {
         : (storedPreferred === "jaarlijks"
             ? "jaarlijks"
             : (storedPreferred === "particulier" ? "particulier" : null));
+    const isExperienceSignup = localStorage.getItem("experienceSignupReturnToActivation") === "1"
+        || Boolean((localStorage.getItem("pendingActivationCode") || "").trim());
+    const accountType = isExperienceSignup ? "ai_experience_box" : null;
     const communicationOptIn = localStorage.getItem("marketingConsent") === "true";
     const communicationOptInAt = communicationOptIn
         ? (localStorage.getItem("marketingConsentAt") || new Date().toISOString())
@@ -1602,6 +1612,7 @@ async function registerUser(userId, email, name) {
                 preferredPlanType,
                 ciamLinked: true,
                 loginMethod: "password",
+                accountType,
                 communicationOptIn,
                 communicationOptInAt
             }),

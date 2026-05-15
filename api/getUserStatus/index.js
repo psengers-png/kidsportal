@@ -1,4 +1,5 @@
 const { getUser } = require('../createCheckout/utils/db');
+const { ensureTables, getAccountEntity, upsertAccountEntity } = require('../../utils/experienceBoxStorage');
 
 const ALLOWED_ORIGINS = [
     "https://www.rainydayclub.nl",
@@ -42,6 +43,29 @@ module.exports = async function(context, req) {
         if (!user) {
             context.res = { status: 404, headers: corsHeaders, body: { error: "User not found" } };
             return;
+        }
+
+        try {
+            await ensureTables();
+            const existingExperienceAccount = await getAccountEntity(userId);
+            const nowIso = new Date().toISOString();
+            await upsertAccountEntity({
+                ...(existingExperienceAccount || {}),
+                partitionKey: 'ACCOUNT',
+                rowKey: userId,
+                email: user.email || existingExperienceAccount?.email || '',
+                name: user.name || existingExperienceAccount?.name || 'Unknown',
+                planType: user.planType || existingExperienceAccount?.planType || 'gratis',
+                planStatus: user.planStatus || existingExperienceAccount?.planStatus || 'gratis',
+                activated: user.isActive === true || existingExperienceAccount?.activated === true,
+                activatedAt: existingExperienceAccount?.activatedAt || (user.isActive === true ? nowIso : null),
+                creditsBalance: Number(user.creditsBalance || existingExperienceAccount?.creditsBalance || 0),
+                maxRequests: Number(user.maxRequests || existingExperienceAccount?.maxRequests || 0),
+                createdAt: existingExperienceAccount?.createdAt || user.created || nowIso,
+                updatedAt: nowIso
+            });
+        } catch (syncError) {
+            console.warn('Could not sync blob user to ExperienceAccounts:', syncError?.message || syncError);
         }
 
         const planType = (user.planType || user.plan || 'gratis').toString().toLowerCase();
