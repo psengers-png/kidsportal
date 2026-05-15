@@ -212,6 +212,14 @@
 
         <div class="status-grid">
             <div class="status-item">
+                <div class="label">Naam</div>
+                <div class="value" id="accountNameValue">Laden...</div>
+            </div>
+            <div class="status-item">
+                <div class="label">E-mailadres</div>
+                <div class="value" id="accountEmailValue">Laden...</div>
+            </div>
+            <div class="status-item">
                 <div class="label">Status</div>
                 <div class="value" id="statusValue">Laden...</div>
             </div>
@@ -317,6 +325,8 @@
         const endsAt = formatDateNl(status?.subscriptionEndsAt);
         const totalUsed = Number(status?.totalRequestsUsed || 0);
         const maxRequests = Number(status?.maxRequests || 25);
+        const accountName = ((status?.accountName || '').toString().trim() || 'Onbekend');
+        const accountEmail = ((status?.accountEmail || '').toString().trim() || 'Onbekend');
         const banner = document.getElementById('subscriptionBanner');
         const bannerTitle = document.getElementById('subscriptionBannerTitle');
         const bannerText = document.getElementById('subscriptionBannerText');
@@ -358,6 +368,8 @@
         document.getElementById('statusValue').textContent = isCanceling
             ? 'Opgezegd, nog actief'
             : (isActive || isExperience ? 'Actief' : 'Niet actief');
+        document.getElementById('accountNameValue').textContent = accountName;
+        document.getElementById('accountEmailValue').textContent = accountEmail;
         document.getElementById('statusValue').style.color = isCanceling
             ? '#9a3412'
             : (isActive || isExperience ? '#166534' : '#b91c1c');

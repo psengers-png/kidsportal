@@ -68,11 +68,15 @@ module.exports = async function(context, req) {
         if (isExperienceAccount) {
             const aiRequestsUsedByType = parseAiUsageByType(experienceAccount.aiRequestsUsedByType);
             const aiRequestsUsedTotal = Number(experienceAccount.aiRequestsUsedTotal || 0);
+            const accountName = (experienceAccount.name || user.name || 'Onbekend').toString();
+            const accountEmail = (experienceAccount.email || user.email || '').toString();
 
             context.res = {
                 status: 200,
                 headers: corsHeaders,
                 body: {
+                    accountName,
+                    accountEmail,
                     isActive: experienceAccount.activated === true,
                     planType: 'ai_experience_box',
                     planStatus: experienceAccount.activated === true ? 'active' : 'inactive',
@@ -110,6 +114,8 @@ module.exports = async function(context, req) {
             status: 200,
             headers: corsHeaders,
             body: {
+                accountName: (user.name || 'Onbekend').toString(),
+                accountEmail: (user.email || '').toString(),
                 isActive,
                 planType,
                 planStatus,
