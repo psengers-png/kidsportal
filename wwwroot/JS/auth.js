@@ -1432,6 +1432,9 @@ async function updateUI() {
     const preferredFromStatus = normalizePreferredPlanType(userStatus?.preferredPlanType);
     if (preferredFromStatus) {
         localStorage.setItem("preferredPlanType", preferredFromStatus);
+    } else if ((localStorage.getItem("preferredPlanType") || "").toLowerCase() === "ai_experience_box") {
+        // Clear stale ai_experience_box value if account is no longer an AI Experience account
+        localStorage.removeItem("preferredPlanType");
     }
     const abonnementBtn = document.getElementById("abonnementBtn");
     if (abonnementBtn) {
