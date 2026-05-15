@@ -70,6 +70,24 @@
       margin-top: 8px;
       font-size: 0.95rem;
     }
+    .account-gate {
+      margin-top: 14px;
+      border-radius: 12px;
+      border: 1px solid #d8e8f1;
+      background: #f5fbff;
+      padding: 14px;
+    }
+    .account-gate h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      color: #173b51;
+    }
+    .account-gate .row {
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
     a { color: #0b63a6; font-weight: 700; text-decoration: none; }
     a:hover { text-decoration: underline; }
   </style>
@@ -77,15 +95,24 @@
 <body>
   <main class="card">
     <h1>Activeer je AI Experience Box</h1>
-    <p>Log eerst in of maak een account aan. Vul daarna je unieke activatiecode in om 100 credits te activeren.</p>
+    <p>Voor activatie is een account verplicht. Maak eerst een account aan of log in, en activeer daarna met de code uit je e-mail.</p>
 
-    <div class="row">
+    <section id="accountGate" class="account-gate">
+      <h2>Stap 1: account aanmaken of inloggen</h2>
+      <p id="accountGateText">Je bent nog niet ingelogd. Maak eerst een account aan en kom daarna terug om je activatiecode te gebruiken.</p>
+      <div class="row">
+        <button id="goSignupBtn" type="button">Account aanmaken</button>
+        <button id="goLoginBtn" class="secondary" type="button">Inloggen</button>
+      </div>
+    </section>
+
+    <div class="row hidden" id="activationRow">
       <input id="activationCodeInput" type="text" autocomplete="off" placeholder="Bijv. RDC-ABCD-1234" />
       <button id="redeemBtn" type="button">Activeer code</button>
       <button id="refreshBtn" class="secondary" type="button">Ververs status</button>
     </div>
 
-    <p class="hint">Nog geen account? <a href="/signup.html">Maak hier een account aan</a> en kom daarna terug naar deze pagina.</p>
+    <p class="hint hidden" id="activationHint">Stap 2: vul nu je activatiecode uit de e-mail in.</p>
 
     <div id="statusBox" class="status"></div>
   </main>
@@ -99,11 +126,52 @@
       box.textContent = text;
     }
 
+    function getAccountId() {
+      return (
+        localStorage.getItem('userId')
+        || localStorage.getItem('ciamUserId')
+        || ''
+      ).trim();
+    }
+
+    function setActivationUiEnabled(enabled) {
+      const activationRow = document.getElementById('activationRow');
+      const activationHint = document.getElementById('activationHint');
+      const accountGate = document.getElementById('accountGate');
+
+      if (enabled) {
+        activationRow.classList.remove('hidden');
+        activationHint.classList.remove('hidden');
+        accountGate.classList.add('hidden');
+      } else {
+        activationRow.classList.add('hidden');
+        activationHint.classList.add('hidden');
+        accountGate.classList.remove('hidden');
+      }
+    }
+
+    function hydrateActivationCodeFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const codeFromUrl = (params.get('code') || '').trim().toUpperCase();
+      if (codeFromUrl) {
+        document.getElementById('activationCodeInput').value = codeFromUrl;
+      }
+    }
+
     async function refreshStatus() {
+      const accountId = getAccountId();
+      if (!accountId) {
+        setActivationUiEnabled(false);
+        renderStatus('Maak eerst een account aan of log in voordat je de activatiecode invult.', '');
+        return;
+      }
+
+      setActivationUiEnabled(true);
+
       try {
         const status = await window.fetchExperienceStatus();
         if (status.missingAccount) {
-          renderStatus('Log in om je credits te bekijken.', '');
+          renderStatus('Er is nog geen account gevonden. Log opnieuw in of maak een account aan.', 'error');
           return;
         }
 
@@ -118,6 +186,13 @@
     }
 
     async function redeemCode() {
+      const accountId = getAccountId();
+      if (!accountId) {
+        setActivationUiEnabled(false);
+        renderStatus('Account vereist: maak eerst een account aan voordat je activeert.', 'error');
+        return;
+      }
+
       const input = document.getElementById('activationCodeInput');
       const activationCode = (input.value || '').trim().toUpperCase();
       if (!activationCode) {
@@ -134,8 +209,17 @@
       }
     }
 
+    document.getElementById('goSignupBtn').addEventListener('click', () => {
+      window.location.href = '/signup.html?next=/activate-experience-box.html';
+    });
+
+    document.getElementById('goLoginBtn').addEventListener('click', () => {
+      window.location.href = '/login.html?next=/activate-experience-box.html';
+    });
+
     document.getElementById('redeemBtn').addEventListener('click', redeemCode);
     document.getElementById('refreshBtn').addEventListener('click', refreshStatus);
+    hydrateActivationCodeFromQuery();
     refreshStatus();
   </script>
 </body>

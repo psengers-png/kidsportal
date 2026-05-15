@@ -197,6 +197,75 @@
     .footer-links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
     .footer-links a { color: #234968; text-decoration: none; font-weight: 700; }
     .footer-links a:hover { text-decoration: underline; }
+    .checkout-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 41, 56, 0.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      padding: 16px;
+    }
+    .checkout-modal.open { display: flex; }
+    .checkout-modal-card {
+      width: min(520px, 100%);
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 24px 52px rgba(0,0,0,0.2);
+      border: 1px solid #d6e4ed;
+    }
+    .checkout-modal-card h4 {
+      margin: 0 0 8px;
+      font-size: 1.3rem;
+      color: #15354a;
+    }
+    .checkout-modal-card p {
+      margin: 0;
+      color: #35546a;
+    }
+    .checkout-modal-row {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .checkout-modal input {
+      width: 100%;
+      border: 1px solid #bdd3df;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      color: #173b51;
+    }
+    .checkout-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .checkout-btn.primary {
+      background: #15354a;
+      color: #ffffff;
+    }
+    .checkout-btn.secondary {
+      background: #e6f0f6;
+      color: #1e445d;
+    }
+    .checkout-help {
+      margin-top: 8px;
+      font-size: 0.88rem;
+      color: #49667a;
+    }
+    .checkout-error {
+      margin-top: 10px;
+      color: #a62828;
+      font-size: 0.92rem;
+      display: none;
+    }
     @keyframes rain { from { background-position: 0 0; } to { background-position: 0 20px; } }
     @media (max-width: 840px) { .grid { grid-template-columns: 1fr; } }
     @media (max-width: 680px) {
@@ -308,21 +377,77 @@
       </div>
     </section>
   </main>
+
+  <div class="checkout-modal" id="checkoutModalBso" aria-hidden="true">
+    <div class="checkout-modal-card" role="dialog" aria-modal="true" aria-labelledby="checkoutModalTitleBso">
+      <h4 id="checkoutModalTitleBso">Bestel AI Experience Box</h4>
+      <p>Vul het e-mailadres in waarop je de activatiecode, diploma, bingokaart en handleiding wilt ontvangen.</p>
+      <div class="checkout-modal-row">
+        <input id="checkoutEmailInputBso" type="email" autocomplete="email" placeholder="naam@organisatie.nl" />
+      </div>
+      <p class="checkout-help">Na betaling ontvang je eerst een e-mail met activatiecode en stappen. Daarna maak je een account aan en activeer je de code.</p>
+      <div id="checkoutErrorBso" class="checkout-error"></div>
+      <div class="checkout-modal-row">
+        <button class="checkout-btn primary" id="checkoutSubmitBtnBso" type="button">Naar Stripe checkout</button>
+        <button class="checkout-btn secondary" id="checkoutCloseBtnBso" type="button">Sluiten</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/JS/experience-box.js"></script>
   <script>
+    const checkoutModalBso = document.getElementById('checkoutModalBso');
+    const checkoutEmailInputBso = document.getElementById('checkoutEmailInputBso');
+    const checkoutErrorBso = document.getElementById('checkoutErrorBso');
+
+    function openCheckoutModalBso() {
+      checkoutErrorBso.style.display = 'none';
+      checkoutErrorBso.textContent = '';
+      checkoutEmailInputBso.value = '';
+      checkoutModalBso.classList.add('open');
+      checkoutModalBso.setAttribute('aria-hidden', 'false');
+      checkoutEmailInputBso.focus();
+    }
+
+    function closeCheckoutModalBso() {
+      checkoutModalBso.classList.remove('open');
+      checkoutModalBso.setAttribute('aria-hidden', 'true');
+    }
+
+    function showCheckoutErrorBso(message) {
+      checkoutErrorBso.textContent = message;
+      checkoutErrorBso.style.display = 'block';
+    }
+
     async function handleBoxCheckoutClick(event) {
       event.preventDefault();
-      const email = window.prompt('Vul je e-mailadres in voor de bestelling:');
+      openCheckoutModalBso();
+    }
+
+    async function submitCheckoutBso() {
+      const email = (checkoutEmailInputBso.value || '').trim();
       if (!email) {
+        showCheckoutErrorBso('Vul een geldig e-mailadres in.');
         return;
       }
 
       try {
+        document.getElementById('checkoutSubmitBtnBso').disabled = true;
         await window.startExperienceBoxCheckout('schools_bso', email);
       } catch (error) {
-        window.alert(error?.message || 'Het starten van de checkout is mislukt.');
+        showCheckoutErrorBso(error?.message || 'Het starten van de checkout is mislukt.');
+      } finally {
+        document.getElementById('checkoutSubmitBtnBso').disabled = false;
       }
     }
+
+    document.getElementById('checkoutSubmitBtnBso')?.addEventListener('click', submitCheckoutBso);
+    document.getElementById('checkoutCloseBtnBso')?.addEventListener('click', closeCheckoutModalBso);
+    checkoutModalBso?.addEventListener('click', (event) => {
+      if (event.target === checkoutModalBso) {
+        closeCheckoutModalBso();
+      }
+    });
 
     document.getElementById('boxCheckoutBtnBso')?.addEventListener('click', handleBoxCheckoutClick);
     document.getElementById('boxCheckoutBtnBsoMiddle')?.addEventListener('click', handleBoxCheckoutClick);

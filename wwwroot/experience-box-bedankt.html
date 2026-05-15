@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bedankt voor je bestelling | RainyDay Club</title>
+  <meta name="description" content="Bedankt voor je AI Experience Box bestelling. Check je e-mail voor je activatiecode en vervolgstappen." />
+  <style>
+    * { box-sizing: border-box; font-family: "Segoe UI", system-ui, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: linear-gradient(160deg, #e9f7ff, #fff7df 45%, #ddf9ec);
+      color: #173042;
+    }
+    .card {
+      width: min(760px, 100%);
+      background: #ffffff;
+      border-radius: 22px;
+      border: 1px solid #d7e6ef;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.13);
+      padding: 28px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      color: #15354a;
+    }
+    p {
+      margin: 0;
+      color: #35546a;
+      line-height: 1.5;
+    }
+    .steps {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid #d6e5ee;
+      background: #f6fbff;
+    }
+    .steps strong {
+      color: #15354a;
+    }
+    .steps p + p {
+      margin-top: 8px;
+    }
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .btn.primary {
+      background: #15354a;
+      color: #fff;
+    }
+    .btn.secondary {
+      background: #e6f0f6;
+      color: #1f4761;
+    }
+    .tiny {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #557287;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Bedankt voor je bestelling</h1>
+    <p>Je betaling voor de AI Experience Box is gelukt. We hebben een e-mail gestuurd met je activatiecode, AI Creator diploma, bingokaart en handleiding.</p>
+
+    <div class="steps">
+      <p><strong>Stap 1:</strong> Check je inbox (en eventueel je spammap) voor de activatiemail.</p>
+      <p><strong>Stap 2:</strong> Maak daarna eerst een account aan (of log in als je al een account hebt).</p>
+      <p><strong>Stap 3:</strong> Activeer daarna met de code uit de e-mail.</p>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" href="/signup.html?next=/activate-experience-box.html">Account aanmaken</a>
+      <a class="btn secondary" href="/login.html?next=/activate-experience-box.html">Ik heb al een account, inloggen</a>
+    </div>
+
+    <p class="tiny">Geen e-mail ontvangen? Neem contact op via info@rainydayclub.nl.</p>
+  </main>
+</body>
+</html>
