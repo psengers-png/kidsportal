@@ -137,6 +137,15 @@ function getReadablePlanName(userStatus) {
     return "Actief abonnement";
 }
 
+function isExperienceBoxAccount(userStatus) {
+    if (!userStatus) {
+        return false;
+    }
+    const planType = (userStatus.planType || "").toString().toLowerCase();
+    const preferredPlanType = (userStatus.preferredPlanType || "").toString().toLowerCase();
+    return planType === "ai_experience_box" || preferredPlanType === "ai_experience_box";
+}
+
 function showSubscriptionManageModal(userStatus = null) {
     return new Promise((resolve) => {
         const overlay = document.createElement("div");
@@ -165,7 +174,10 @@ function showSubscriptionManageModal(userStatus = null) {
         title.style.textAlign = "center";
 
         const body = document.createElement("div");
-        body.textContent = "Hier zie je de status van je account en wat er gebeurt als je opzegt.";
+        const isExperienceAccount = isExperienceBoxAccount(userStatus);
+        body.textContent = isExperienceAccount
+            ? "Hier zie je de status van je AI Experience Box account."
+            : "Hier zie je de status van je account en wat er gebeurt als je opzegt.";
         body.style.fontSize = "16px";
         body.style.lineHeight = "1.45";
         body.style.color = "#334155";
@@ -191,23 +203,23 @@ function showSubscriptionManageModal(userStatus = null) {
         activeState.style.marginBottom = "6px";
         activeState.innerHTML = `<strong>Status:</strong> ${isActive ? "Actief" : "Niet actief"}`;
 
+        const usageInfo = document.createElement("div");
         const creditsBalance = Number(userStatus?.creditsBalance || 0);
         const planType = (userStatus?.planType || "").toString().toLowerCase();
         usageInfo.style.fontSize = "14px";
         usageInfo.style.color = "#334155";
         usageInfo.innerHTML = planType === "ai_experience_box"
             ? `<strong>Credits:</strong> ${creditsBalance || 100} van 100`
-            :umber(userStatus?.maxRequests || 25);
-        usageInfo.style.fontSize = "14px";
-        usageInfo.style.color = "#334155";
-        usageInfo.innerHTML = `<strong>Deze maand gebruikt:</strong> ${totalUsed} van ${maxRequests} gratis aanvragen`;
+            : `<strong>Deze maand gebruikt:</strong> ${Number(userStatus?.totalRequestsUsed || 0)} van ${Number(userStatus?.maxRequests || 25)} gratis aanvragen`;
 
         summaryBox.appendChild(currentPlan);
         summaryBox.appendChild(activeState);
         summaryBox.appendChild(usageInfo);
 
         const hint = document.createElement("div");
-        hint.innerHTML = "<strong>Wat betekent opzeggen?</strong><br>• Je huidige toegang blijft actief tot het einde van je factuurperiode.<br>• Daarna stopt je betaalde plan automatisch.<br>• Je account blijft bestaan en je kunt later opnieuw activeren.";
+        hint.innerHTML = isExperienceAccount
+            ? "<strong>AI Experience Box account</strong><br>• Dit is een eenmalige aankoop, geen abonnement.<br>• Je credits blijven beschikbaar volgens de activatieregels.<br>• Opzeggen is niet van toepassing."
+            : "<strong>Wat betekent opzeggen?</strong><br>• Je huidige toegang blijft actief tot het einde van je factuurperiode.<br>• Daarna stopt je betaalde plan automatisch.<br>• Je account blijft bestaan en je kunt later opnieuw activeren.";
         hint.style.marginTop = "12px";
         hint.style.fontSize = "14px";
         hint.style.color = "#64748b";
@@ -258,8 +270,14 @@ function showSubscriptionManageModal(userStatus = null) {
         backButton.addEventListener("click", () => closeWithResult(false));
         cancelButton.addEventListener("click", () => closeWithResult(true));
 
+        if (isExperienceAccount) {
+            backButton.textContent = "Sluiten";
+        }
+
         actions.appendChild(backButton);
-        actions.appendChild(cancelButton);
+        if (!isExperienceAccount) {
+            actions.appendChild(cancelButton);
+        }
 
         card.appendChild(title);
         card.appendChild(body);
@@ -888,6 +906,11 @@ function getAccountMenuStatusText(userStatus) {
 
     const isActive = Boolean(userStatus.isActive);
     const planStatus = (userStatus.planStatus || "").toLowerCase();
+    const isExperienceAccount = isExperienceBoxAccount(userStatus);
+    if (isExperienceAccount) {
+        const credits = Number(userStatus.creditsBalance || 0);
+        return `AI Experience Box actief — ${credits} credits beschikbaar.`;
+    }
     const endsAt = formatDateNl(userStatus.subscriptionEndsAt);
 
     if (isActive && (planStatus === "cancel_at_period_end" || userStatus.subscriptionCanceledAt)) {
@@ -1057,8 +1080,16 @@ window.addEventListener("storage", (event) => {
     }
 });
 
-function applySubscriptionButtonState(abonnementBtn, isActive) {
+function applySubscriptionButtonState(abonnementBtn, userStatus) {
     if (!abonnementBtn) {
+        return;
+    }
+
+    const isActive = Boolean(userStatus && userStatus.isActive);
+    if (isExperienceBoxAccount(userStatus)) {
+        abonnementBtn.textContent = "AI Experience Box";
+        abonnementBtn.style.background = "#0f766e";
+        abonnementBtn.style.color = "#ffffff";
         return;
     }
 
@@ -1405,7 +1436,7 @@ async function updateUI() {
     const abonnementBtn = document.getElementById("abonnementBtn");
     if (abonnementBtn) {
         const isActive = Boolean(userStatus && userStatus.isActive);
-        applySubscriptionButtonState(abonnementBtn, isActive);
+        applySubscriptionButtonState(abonnementBtn, userStatus);
         if (hasPilotAccess(userStatus)) {
             abonnementBtn.textContent = "Pilot toegang";
             abonnementBtn.style.background = "#22c55e";
@@ -1485,6 +1516,11 @@ if (abonnementBtn) {
         const latestStatus = await checkUserStatus(userId);
         if (hasPilotAccess(latestStatus)) {
             alert("Pilot toegang is actief. Opzeggen is niet nodig.");
+            return;
+        }
+
+        if (isExperienceBoxAccount(latestStatus)) {
+            alert("Dit is een AI Experience Box account met eenmalige aankoop. Upgraden of opzeggen is niet van toepassing.");
             return;
         }
 

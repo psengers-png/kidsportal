@@ -69,7 +69,7 @@ module.exports = async function(context, req) {
         }
 
         const planType = (user.planType || user.plan || 'gratis').toString().toLowerCase();
-        const hasPaidPlanType = planType === 'particulier' || planType === 'enterprise' || planType === 'betaald';
+        const hasPaidPlanType = planType === 'particulier' || planType === 'enterprise' || planType === 'betaald' || planType === 'ai_experience_box';
         const hasActiveSubscriptionMarker = Boolean(user.stripeSubscriptionId) || user.planStatus === 'active' || hasPaidPlanType;
         const isMarkedActive = user.isActive === true || user.IsActive === true;
         const preferredPlanType = user.preferredPlanType || null;
