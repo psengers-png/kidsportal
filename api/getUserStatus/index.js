@@ -1,5 +1,5 @@
 const { getUser } = require('../createCheckout/utils/db');
-const { ensureTables, getAccountEntity, upsertAccountEntity } = require('../../utils/experienceBoxStorage');
+const { ensureTables, getAccountEntity } = require('../../utils/experienceBoxStorage');
 
 const ALLOWED_ORIGINS = [
     "https://www.rainydayclub.nl",
@@ -35,6 +35,19 @@ module.exports = async function(context, req) {
         return;
     }
 
+    function parseAiUsageByType(rawValue) {
+        if (typeof rawValue !== 'string' || !rawValue.trim()) {
+            return {};
+        }
+
+        try {
+            const parsed = JSON.parse(rawValue);
+            return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+        } catch (error) {
+            return {};
+        }
+    }
+
     try {
         const user = await getUser(userId);
 
@@ -45,34 +58,43 @@ module.exports = async function(context, req) {
             return;
         }
 
-        try {
-            await ensureTables();
-            const existingExperienceAccount = await getAccountEntity(userId);
-            const nowIso = new Date().toISOString();
-            await upsertAccountEntity({
-                ...(existingExperienceAccount || {}),
-                partitionKey: 'ACCOUNT',
-                rowKey: userId,
-                email: user.email || existingExperienceAccount?.email || '',
-                name: user.name || existingExperienceAccount?.name || 'Unknown',
-                planType: user.planType || existingExperienceAccount?.planType || 'gratis',
-                planStatus: user.planStatus || existingExperienceAccount?.planStatus || 'gratis',
-                activated: user.isActive === true || existingExperienceAccount?.activated === true,
-                activatedAt: existingExperienceAccount?.activatedAt || (user.isActive === true ? nowIso : null),
-                creditsBalance: Number(user.creditsBalance || existingExperienceAccount?.creditsBalance || 0),
-                maxRequests: Number(user.maxRequests || existingExperienceAccount?.maxRequests || 0),
-                createdAt: existingExperienceAccount?.createdAt || user.created || nowIso,
-                updatedAt: nowIso
-            });
-        } catch (syncError) {
-            console.warn('Could not sync blob user to ExperienceAccounts:', syncError?.message || syncError);
+        await ensureTables();
+        const experienceAccount = await getAccountEntity(userId);
+        const isExperienceAccount = Boolean(
+            experienceAccount
+            && ((experienceAccount.planType || '').toString().toLowerCase() === 'ai_experience_box' || experienceAccount.activated === true)
+        );
+
+        if (isExperienceAccount) {
+            const aiRequestsUsedByType = parseAiUsageByType(experienceAccount.aiRequestsUsedByType);
+            const aiRequestsUsedTotal = Number(experienceAccount.aiRequestsUsedTotal || 0);
+
+            context.res = {
+                status: 200,
+                headers: corsHeaders,
+                body: {
+                    isActive: experienceAccount.activated === true,
+                    planType: 'ai_experience_box',
+                    planStatus: experienceAccount.activated === true ? 'active' : 'inactive',
+                    preferredPlanType: 'ai_experience_box',
+                    subscriptionCanceledAt: null,
+                    subscriptionEndsAt: null,
+                    requestsUsed: aiRequestsUsedByType,
+                    totalRequestsUsed: aiRequestsUsedTotal,
+                    maxRequests: Number(experienceAccount.maxRequests || 100),
+                    creditsBalance: Number(experienceAccount.creditsBalance || 0)
+                }
+            };
+            return;
         }
 
         const planType = (user.planType || user.plan || 'gratis').toString().toLowerCase();
-        const hasPaidPlanType = planType === 'particulier' || planType === 'enterprise' || planType === 'betaald' || planType === 'ai_experience_box';
+        const hasPaidPlanType = planType === 'particulier' || planType === 'enterprise' || planType === 'betaald';
         const hasActiveSubscriptionMarker = Boolean(user.stripeSubscriptionId) || user.planStatus === 'active' || hasPaidPlanType;
         const isMarkedActive = user.isActive === true || user.IsActive === true;
-        const preferredPlanType = user.preferredPlanType || null;
+        // For non-Experience accounts, never return preferredPlanType='ai_experience_box' to prevent misclassification
+        const rawPreferredPlanType = user.preferredPlanType || null;
+        const preferredPlanType = (rawPreferredPlanType === 'ai_experience_box') ? null : rawPreferredPlanType;
         const requestsUsed = (user.requestsUsed && typeof user.requestsUsed === 'object') ? user.requestsUsed : {};
         const totalRequestsUsed = Object.values(requestsUsed).reduce((sum, count) => sum + (Number(count) || 0), 0);
         const maxRequests = Number(user.maxRequests || 25);
@@ -96,7 +118,8 @@ module.exports = async function(context, req) {
                 subscriptionEndsAt,
                 requestsUsed,
                 totalRequestsUsed,
-                maxRequests
+                maxRequests,
+                creditsBalance: Number(user.creditsBalance || 0)
             }
         };
     } catch (error) {
