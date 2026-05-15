@@ -1351,6 +1351,20 @@ async function updateUI() {
         if (email && pendingSignupEmail && email.toLowerCase() === pendingSignupEmail.toLowerCase()) {
             localStorage.removeItem("pendingSignupEmail");
         }
+
+        const shouldReturnToExperienceActivation = localStorage.getItem("experienceSignupReturnToActivation") === "1";
+        if (shouldReturnToExperienceActivation) {
+            localStorage.removeItem("experienceSignupReturnToActivation");
+            const pendingActivationCode = (localStorage.getItem("pendingActivationCode") || "").trim().toUpperCase();
+            const activationTarget = pendingActivationCode
+                ? `/activate-experience-box.html?code=${encodeURIComponent(pendingActivationCode)}`
+                : "/activate-experience-box.html";
+            const currentPath = (window.location.pathname || "").toLowerCase();
+            if (currentPath !== "/activate-experience-box.html") {
+                window.location.href = activationTarget;
+                return;
+            }
+        }
     } else {
         const requiresCiamSignup = localStorage.getItem("requiresCiamSignup") === "1";
         if (requiresCiamSignup) {
