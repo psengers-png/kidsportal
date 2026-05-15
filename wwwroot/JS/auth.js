@@ -1349,15 +1349,6 @@ async function updateUI() {
         const email = emailFromClaims || pendingSignupEmail;
         console.log("Resolved email from claims:", email || "(none)");
         const name = account.name || account.idTokenClaims?.name || email || "Unknown";
-        userStatus = await checkUserStatus(userId);
-        if (userStatus && userStatus.error === "User not found" && userId) {
-            await registerUser(userId, email, name);
-            userStatus = await checkUserStatus(userId);
-        }
-
-        if (email && pendingSignupEmail && email.toLowerCase() === pendingSignupEmail.toLowerCase()) {
-            localStorage.removeItem("pendingSignupEmail");
-        }
 
         const shouldReturnToExperienceActivation = localStorage.getItem("experienceSignupReturnToActivation") === "1";
         if (shouldReturnToExperienceActivation) {
@@ -1372,6 +1363,17 @@ async function updateUI() {
                 return;
             }
         }
+
+        userStatus = await checkUserStatus(userId);
+        if (userStatus && userStatus.error === "User not found" && userId) {
+            await registerUser(userId, email, name);
+            userStatus = await checkUserStatus(userId);
+        }
+
+        if (email && pendingSignupEmail && email.toLowerCase() === pendingSignupEmail.toLowerCase()) {
+            localStorage.removeItem("pendingSignupEmail");
+        }
+
     } else {
         const requiresCiamSignup = localStorage.getItem("requiresCiamSignup") === "1";
         if (requiresCiamSignup) {
