@@ -344,12 +344,7 @@ setTimeout(() => {
     const form = document.getElementById("scetchyForm");
 
     form.style.display = "block";
-
-    if (!userId) {
-        statusText.textContent = "Je bent niet ingelogd. Je kunt alvast invullen; bij genereren vragen we je om in te loggen.";
-    } else {
-        statusText.style.display = "none";
-    }
+    statusText.style.display = "none";
 
     window.refreshHeaderAccountMenu?.();
 }, 1000);
