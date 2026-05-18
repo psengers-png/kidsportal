@@ -1854,3 +1854,6 @@ if (window.location.search.includes("stripeSuccess=true")) {
 
 // Expose for non-module scripts (e.g., inline handlers in home.html)
 window.startStripeCheckout = startStripeCheckout;
+
+// Export for ES6 modules
+export { msalInstance };
