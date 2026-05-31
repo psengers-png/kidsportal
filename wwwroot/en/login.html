@@ -534,12 +534,13 @@
                 loginBtn.disabled = true;
                 loginBtn.innerHTML = '<span class="loading"></span>Log in...';
                 sessionStorage.setItem("ciamLoginInProgress", "1");
-                localStorage.removeItem("pendingSignupEmail");
+                localStorage.setItem("pendingSignupEmail", emailHint);
                 localStorage.removeItem("marketingConsent");
                 localStorage.removeItem("marketingConsentAt");
 
                 await msalInstance.loginRedirect({
                     scopes: ["openid", "profile", "offline_access"],
+                    loginHint: emailHint,
                     redirectUri: window.location.origin + "/en/home.html"
                 });
             } catch (error) {

@@ -1421,7 +1421,8 @@ async function updateUI() {
 
         const emailFromClaims = resolveAccountEmail(account);
         const pendingSignupEmail = (localStorage.getItem("pendingSignupEmail") || "").trim();
-        const email = emailFromClaims || pendingSignupEmail;
+        const storedUserEmail = (localStorage.getItem("userEmail") || "").trim();
+        const email = emailFromClaims || pendingSignupEmail || storedUserEmail;
         console.log("Resolved email from claims:", email || "(none)");
         const name = account.name || account.idTokenClaims?.name || email || "Unknown";
 
@@ -1647,7 +1648,15 @@ async function registerUser(userId, email, name) {
         ? (localStorage.getItem("marketingConsentAt") || new Date().toISOString())
         : null;
 
-    // If no email from MSAL claims, ask user directly
+    // If no reliable email from MSAL claims, reuse a previously captured value first.
+    if (!safeEmail || safeEmail.includes("@unknown.local")) {
+        const fallbackEmail = (localStorage.getItem("pendingSignupEmail") || localStorage.getItem("userEmail") || "").trim();
+        if (isLikelyEmail(fallbackEmail) && !fallbackEmail.includes("@unknown.local")) {
+            safeEmail = fallbackEmail;
+        }
+    }
+
+    // Ask user directly only when no reliable email is available in claims or storage.
     if (!safeEmail || safeEmail.includes("@unknown.local")) {
         console.log("Email not found in claims, asking user to enter email address...");
         safeEmail = await showEmailInputModal();
