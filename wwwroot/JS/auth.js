@@ -1137,6 +1137,11 @@ function isPublicPage() {
     return path === "/" || publicPageSuffixes.some((suffix) => path.endsWith(suffix));
 }
 
+function getLocalizedPath(nlPath, enPath) {
+    const currentPath = (window.location.pathname || "").toLowerCase();
+    return currentPath.startsWith("/en/") ? enPath : nlPath;
+}
+
 function normalizeUserId(rawUserId) {
     if (!rawUserId) {
         return "";
@@ -1442,8 +1447,19 @@ async function updateUI() {
 
         userStatus = await checkUserStatus(userId);
         if (userStatus && userStatus.error === "User not found" && userId) {
-            await registerUser(userId, email, name);
+            const registrationResult = await registerUser(userId, email, name);
+            if (registrationResult?.status === "cancelled") {
+                const signupPath = getLocalizedPath("/signup.html", "/en/signup.html");
+                window.location.href = `${signupPath}?resume=1`;
+                return;
+            }
             userStatus = await checkUserStatus(userId);
+            if (userStatus && userStatus.error === "User not found") {
+                console.warn("User registration did not complete. Redirecting to signup flow.");
+                const signupPath = getLocalizedPath("/signup.html", "/en/signup.html");
+                window.location.href = `${signupPath}?resume=1`;
+                return;
+            }
         }
 
         if (email && pendingSignupEmail && email.toLowerCase() === pendingSignupEmail.toLowerCase()) {
@@ -1629,7 +1645,7 @@ const createUserUrl = "https://sengfam2-gvfpf5hndacgbfcc.westeurope-01.azurewebs
 async function registerUser(userId, email, name) {
     if (!userId) {
         console.error("registerUser called without userId");
-        return;
+        return { status: "failed" };
     }
 
     let safeEmail = (email || "").trim();
@@ -1663,11 +1679,12 @@ async function registerUser(userId, email, name) {
         
         if (!safeEmail) {
             console.log("User cancelled email input modal");
-            return;
+            return { status: "cancelled" };
         }
     }
 
     const finalEmail = safeEmail;
+    localStorage.setItem("pendingSignupEmail", finalEmail);
 
     try {
         // Try to get access token to send with registration
@@ -1718,12 +1735,15 @@ async function registerUser(userId, email, name) {
         if (response.ok) {
             const result = await response.json();
             console.log("User registration result:", result);
+            return { status: "created" };
         } else {
             const errorText = await response.text();
             console.error("Failed to register user. Status:", response.status, "Body:", errorText);
+            return { status: "failed" };
         }
     } catch (error) {
         console.error("Error registering user:", error);
+        return { status: "failed" };
     }
 }
 

@@ -520,6 +520,23 @@
             }
         });
 
+        function hydrateSignupFromPendingState() {
+            const emailInput = document.getElementById("emailInput");
+            const emailError = document.getElementById("emailError");
+            const pendingEmail = (localStorage.getItem("pendingSignupEmail") || "").trim();
+            if (emailInput && pendingEmail && !emailInput.value) {
+                emailInput.value = pendingEmail;
+            }
+
+            const params = new URLSearchParams(window.location.search || "");
+            if (params.get("resume") === "1" && emailError) {
+                emailError.textContent = "Je account is nog niet volledig aangemaakt. Rond je registratie hier af.";
+                emailError.classList.add("show");
+            }
+        }
+
+        hydrateSignupFromPendingState();
+
         bootstrapCiamLogin();
     </script>
 </body>

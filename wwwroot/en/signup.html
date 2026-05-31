@@ -523,6 +523,23 @@
             }
         });
 
+        function hydrateSignupFromPendingState() {
+            const emailInput = document.getElementById("emailInput");
+            const emailError = document.getElementById("emailError");
+            const pendingEmail = (localStorage.getItem("pendingSignupEmail") || "").trim();
+            if (emailInput && pendingEmail && !emailInput.value) {
+                emailInput.value = pendingEmail;
+            }
+
+            const params = new URLSearchParams(window.location.search || "");
+            if (params.get("resume") === "1" && emailError) {
+                emailError.textContent = "Your account is not fully created yet. Please complete signup here.";
+                emailError.classList.add("show");
+            }
+        }
+
+        hydrateSignupFromPendingState();
+
         bootstrapCiamLogin();
     </script>
 <script>
